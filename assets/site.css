@@ -649,6 +649,19 @@ img {
     grid-template-columns: 1fr;
   }
 
+  .geo-fact-grid,
+  .geo-answer-grid,
+  .geo-checklist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .geo-summary-panel,
+  .geo-answer-panel,
+  .geo-checklist-panel {
+    border-radius: 24px;
+    padding: 22px;
+  }
+
   .split,
   .cta {
     padding: 24px;
@@ -958,6 +971,110 @@ img {
   color: var(--green-dark);
   background: rgba(107, 191, 69, 0.12);
   border: 1px solid rgba(107, 191, 69, 0.25);
+}
+
+.seo-geo-enhancement {
+  display: grid;
+  gap: 18px;
+}
+
+.geo-summary-panel,
+.geo-answer-panel,
+.geo-checklist-panel {
+  padding: clamp(22px, 3.4vw, 34px);
+  border: 1px solid rgba(23, 33, 43, 0.10);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,250,241,0.88)),
+    radial-gradient(circle at 100% 0%, rgba(107, 191, 69, 0.18), transparent 32%);
+  box-shadow: 0 18px 54px rgba(20, 33, 61, 0.08);
+}
+
+.geo-summary-panel h2,
+.geo-answer-panel h2,
+.geo-checklist-panel h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.22;
+  letter-spacing: -0.045em;
+}
+
+.geo-summary-panel > p:not(.eyebrow),
+.geo-answer-panel > p:not(.eyebrow) {
+  max-width: 860px;
+  margin-top: 12px;
+  color: #43505d;
+}
+
+.geo-fact-grid,
+.geo-answer-grid,
+.geo-checklist-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.geo-fact-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.geo-answer-grid,
+.geo-checklist-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.geo-fact-card,
+.geo-answer-card,
+.geo-check-card,
+.geo-mini-faq {
+  padding: 18px;
+  border: 1px solid rgba(23, 33, 43, 0.08);
+  border-radius: 22px;
+  background: #fffaf1;
+}
+
+.geo-fact-card span,
+.geo-check-card b {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: var(--orange);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.geo-fact-card strong,
+.geo-answer-card strong,
+.geo-check-card strong {
+  display: block;
+  color: var(--green-dark);
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.geo-fact-card p,
+.geo-answer-card p,
+.geo-check-card p,
+.geo-mini-faq p {
+  margin: 9px 0 0;
+  color: #43505d;
+}
+
+.geo-mini-faq {
+  margin-top: 16px;
+}
+
+.geo-mini-faq details {
+  padding: 0;
+  border: 0;
+}
+
+.geo-mini-faq summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 900;
 }
 
 .review-grid {
@@ -2417,7 +2534,10 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .keyword-focus-grid {
+  .keyword-focus-grid,
+  .geo-fact-grid,
+  .geo-answer-grid,
+  .geo-checklist-grid {
     grid-template-columns: 1fr;
   }
 }

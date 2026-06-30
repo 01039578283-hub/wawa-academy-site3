@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://코칭학원.com/sitemap.xml
+Sitemap: https://xn--sp5b72l1taf0p.com/sitemap.xml
