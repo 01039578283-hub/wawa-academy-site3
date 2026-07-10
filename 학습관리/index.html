@@ -20,20 +20,74 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "EducationalOrganization",
+      "@id": "https://코칭학원.com/#organization",
+      "name": "와와학습코칭학원",
+      "alternateName": [
+        "와와학습코칭센터",
+        "와와학원",
+        "코칭학원"
+      ],
+      "url": "https://코칭학원.com/",
+      "logo": "https://코칭학원.com/assets/favicon.png",
+      "image": "https://코칭학원.com/assets/generated/site3-consult.webp",
+      "telephone": "010-3957-8283",
+      "areaServed": "KR",
+      "description": "초등·중등·고등 영어수학 학습코칭, 진단상담, 플래너 관리, 오답 관리를 안내하는 와와학습코칭학원 홈페이지입니다.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "010-3957-8283",
+        "contactType": "학습 상담",
+        "availableLanguage": "ko-KR",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdb2oE5Qk5YS0TfYDxyV1w-IOTkhkjOCmmpAKTI9FmqpVj6Yg/viewform"
+      },
+      "knowsAbout": [
+        "초등 영어수학 학습관리",
+        "중등 내신 대비",
+        "고등 내신·수능 학습관리",
+        "학습 진단 상담",
+        "주간 플래너 관리",
+        "오답 원인 분석"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://코칭학원.com/#website",
+      "name": "와와학습코칭학원",
+      "url": "https://코칭학원.com/",
+      "inLanguage": "ko-KR",
+      "publisher": {
+        "@id": "https://코칭학원.com/#organization"
+      }
+    },
+    {
       "@type": "WebPage",
       "@id": "https://코칭학원.com/학습관리/#webpage",
       "url": "https://코칭학원.com/학습관리/",
       "name": "학습관리 | 와와학습코칭학원",
-      "description": "진단 상담, 주간 플래너, 과제 확인, 오답 재학습, 시험 대비 관리 흐름 안내",
-      "inLanguage": "ko-KR"
+      "description": "와와학습코칭학원의 진단 상담, 주간 플래너, 과제 확인, 오답 재학습, 시험 대비 관리 흐름을 안내합니다.",
+      "inLanguage": "ko-KR",
+      "isPartOf": {
+        "@id": "https://코칭학원.com/#website"
+      },
+      "publisher": {
+        "@id": "https://코칭학원.com/#organization"
+      },
+      "breadcrumb": {
+        "@id": "https://코칭학원.com/학습관리/#breadcrumb"
+      },
+      "mainEntity": {
+        "@id": "https://코칭학원.com/학습관리/#service"
+      }
     },
     {
       "@type": "BreadcrumbList",
+      "@id": "https://코칭학원.com/학습관리/#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "홈",
+          "name": "와와학습코칭학원",
           "item": "https://코칭학원.com/"
         },
         {
@@ -41,6 +95,130 @@
           "position": 2,
           "name": "학습관리",
           "item": "https://코칭학원.com/학습관리/"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://코칭학원.com/학습관리/#service",
+      "name": "학습관리 시스템",
+      "serviceType": "진단·플래너·오답 관리",
+      "description": "와와학습코칭학원의 진단 상담, 주간 플래너, 과제 확인, 오답 재학습, 시험 대비 관리 흐름을 안내합니다.",
+      "provider": {
+        "@id": "https://코칭학원.com/#organization"
+      },
+      "areaServed": "KR",
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student",
+        "audienceType": "초등·중등·고등"
+      },
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "name": "학습 진단 상담",
+          "category": "학습코칭 상담",
+          "url": "https://docs.google.com/forms/d/e/1FAIpQLSdb2oE5Qk5YS0TfYDxyV1w-IOTkhkjOCmmpAKTI9FmqpVj6Yg/viewform",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "진단·플래너·오답 관리 상담"
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "영어수학 학습관리",
+          "category": "학습관리",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "주간 플래너와 오답 재학습 관리"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "@id": "https://코칭학원.com/학습관리/#article",
+      "headline": "학습관리 | 와와학습코칭학원",
+      "description": "와와학습코칭학원의 진단 상담, 주간 플래너, 과제 확인, 오답 재학습, 시험 대비 관리 흐름을 안내합니다.",
+      "image": "https://코칭학원.com/assets/generated/site3-consult.webp",
+      "inLanguage": "ko-KR",
+      "mainEntityOfPage": {
+        "@id": "https://코칭학원.com/학습관리/#webpage"
+      },
+      "author": {
+        "@id": "https://코칭학원.com/#organization"
+      },
+      "publisher": {
+        "@id": "https://코칭학원.com/#organization"
+      },
+      "dateModified": "2026-07-10",
+      "articleSection": [
+        "진단 상담",
+        "주간 플래너",
+        "과제 확인",
+        "오답 재학습",
+        "시험 대비"
+      ],
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "학습코칭"
+        },
+        {
+          "@type": "Thing",
+          "name": "영어수학 학습관리"
+        },
+        {
+          "@type": "Thing",
+          "name": "진단 상담"
+        }
+      ],
+      "mentions": [
+        {
+          "@type": "Thing",
+          "name": "플래너 관리"
+        },
+        {
+          "@type": "Thing",
+          "name": "오답 재학습"
+        },
+        {
+          "@type": "Thing",
+          "name": "내신 대비"
+        },
+        {
+          "@type": "Thing",
+          "name": "학부모 피드백"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://코칭학원.com/학습관리/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "학습관리는 어떤 순서로 진행되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "학생의 현재 상태를 진단한 뒤 주간 계획을 세우고, 과제 수행과 오답 재학습 여부를 확인하는 흐름으로 관리합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "플래너 관리는 매일 확인하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "학생 상황과 수업 운영 기준에 따라 확인 주기는 달라질 수 있지만, 계획이 실제 실행으로 이어지는지를 중심으로 점검합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "오답 관리는 왜 중요한가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "틀린 문제를 다시 푸는 데서 끝내지 않고 개념 부족, 실수, 문제 해석 오류를 구분해야 다음 시험에서 같은 실수를 줄일 수 있습니다."
+          }
         }
       ]
     }
