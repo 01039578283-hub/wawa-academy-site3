@@ -1,5 +1,5 @@
 /* 코칭학원.com — clean modern minimal
-   cool paper + deep slate ink + warm terracotta accent
+   warm cream paper + deep slate ink + coral accent
    soft rounded cards, no gradients, no tilt, single sans typeface */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap');
@@ -8,11 +8,11 @@
   --ink: #20262f;
   --ink-soft: #5c6672;
   --ink-faint: #96a0aa;
-  --paper: #f5f6f4;
+  --paper: #f5efe0;
   --card: #ffffff;
-  --accent: #b3592c;
-  --accent-deep: #7a3b1c;
-  --accent-pale: #f3e2d4;
+  --accent: #ff865e;
+  --accent-deep: #d85f38;
+  --accent-pale: #ffe2d2;
   --line: rgba(32, 38, 47, 0.12);
   --line-soft: rgba(32, 38, 47, 0.07);
   --shadow-sm: 0 6px 18px rgba(32, 38, 47, 0.06);
@@ -78,7 +78,7 @@ img {
   top: 0;
   z-index: 30;
   border-bottom: 1px solid var(--line);
-  background: rgba(245, 246, 244, 0.92);
+  background: rgba(245, 239, 224, 0.92);
   backdrop-filter: blur(10px);
 }
 
@@ -249,7 +249,7 @@ img {
 
 .eyebrow {
   margin: 0 0 12px;
-  color: var(--accent-pale, #e8c4a8);
+  color: var(--accent-pale, #ffe2d2);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -603,7 +603,7 @@ img {
 }
 
 .process-card span {
-  color: var(--accent-pale, #e8c4a8);
+  color: var(--accent-pale, #ffe2d2);
   font-weight: 800;
 }
 
@@ -810,7 +810,7 @@ img {
 }
 
 .local-hero h1 span {
-  color: var(--accent-pale, #e8c4a8);
+  color: var(--accent-pale, #ffe2d2);
   font-size: 0.68em;
 }
 
