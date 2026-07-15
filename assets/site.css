@@ -1183,19 +1183,17 @@ img {
 /* ---------- 전국센터 hub directory ---------- */
 
 .center-toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
+  display: grid;
+  gap: 14px;
   margin: 8px 0 22px;
-  padding: 16px 20px;
+  padding: 20px;
   border-radius: var(--radius);
   background: var(--ink);
   color: var(--card);
 }
 
 .center-toolbar strong {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
 }
 
@@ -1203,8 +1201,36 @@ img {
   color: rgba(245, 246, 244, 0.76);
 }
 
+.region-jump-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.region-jump-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  color: var(--card);
+  font-size: 14px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.region-jump-list a:hover {
+  color: var(--ink);
+  border-color: transparent;
+  background: var(--accent-pale);
+}
+
 .hub-region {
   margin: 28px 0;
+  scroll-margin-top: 92px;
 }
 
 .center-search-card {
@@ -1833,11 +1859,10 @@ img {
   .floating-actions {
     right: 12px;
     bottom: 12px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .floating-actions a {
-    min-width: 0;
+    min-width: 108px;
     min-height: 40px;
     padding: 0 8px;
     font-size: 12px;
