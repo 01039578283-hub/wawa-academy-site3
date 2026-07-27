@@ -136,7 +136,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 15px;
   border-radius: 999px;
   color: var(--ink-soft);
@@ -1180,6 +1180,128 @@ img {
   font-weight: 800;
 }
 
+/* ---------- verified local information ---------- */
+
+.verified-center-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.verified-center-card,
+.verified-map-card {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+
+.verified-center-card {
+  padding: clamp(22px, 3.4vw, 32px);
+}
+
+.verified-center-card h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(23px, 3vw, 31px);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.verified-data-list {
+  display: grid;
+  gap: 0;
+  margin: 20px 0;
+}
+
+.verified-data-list > div {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 14px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+}
+
+.verified-data-list dt {
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.verified-data-list dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.verified-school-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.verified-school-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.verified-note {
+  margin: 16px 0 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 15px;
+  border-radius: 999px;
+  color: var(--accent-deep);
+  background: var(--accent-pale);
+  font-weight: 800;
+}
+
+.verified-map-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.verified-map-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
+}
+
+.verified-map-card figcaption {
+  padding: 13px 16px;
+  color: var(--ink-soft);
+  background: var(--paper);
+  font-size: 13px;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 58%, white);
+  outline-offset: 3px;
+}
+
 /* ---------- 전국센터 hub directory ---------- */
 
 .center-toolbar {
@@ -1712,6 +1834,7 @@ img {
   .center-hero-inner,
   .local-hero-inner,
   .local-grid,
+  .verified-center-grid,
   .school-groups,
   .review-grid,
   .keyword-focus-card,
@@ -1771,7 +1894,7 @@ img {
   }
 
   .nav-links a {
-    min-height: 36px;
+    min-height: 44px;
     padding: 0 6px;
     font-size: 12px;
   }
@@ -1863,12 +1986,21 @@ img {
 
   .floating-actions a {
     min-width: 108px;
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 8px;
     font-size: 12px;
   }
 
   .site-footer {
     padding-bottom: 96px;
+  }
+
+  .verified-data-list > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .verified-map-card img {
+    min-height: 240px;
   }
 }
