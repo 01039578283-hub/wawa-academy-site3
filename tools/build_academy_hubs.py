@@ -31,6 +31,14 @@ CATEGORIES = {
     "고등영어학원": ("고등 영어학원", "내신 범위·모의고사 독해·어휘·구문을 확인하는 고등 영어 학습 안내"),
     "고등수학학원": ("고등 수학학원", "단원 개념·내신 유형·수능형 접근·서술형을 확인하는 고등 수학 학습 안내"),
 }
+CATEGORY_META = {
+    "초등영어학원": "기초 읽기·어휘·문법·독해",
+    "초등수학학원": "개념·연산·문장제·오답",
+    "중등영어학원": "교과서·어휘·문법·서술형",
+    "중등수학학원": "단원 개념·내신 유형·서술형·오답",
+    "고등영어학원": "내신·모의고사·어휘·구문",
+    "고등수학학원": "내신·수능형 문제·서술형·오답",
+}
 CONSULT_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdb2oE5Qk5YS0TfYDxyV1w-IOTkhkjOCmmpAKTI9FmqpVj6Yg/viewform"
 
 
@@ -315,7 +323,7 @@ def main() -> None:
         ),
         (
             "동네명 페이지가 해당 동네 안의 독립 센터를 뜻하나요?",
-            "항상 그렇지는 않습니다. 각 페이지는 상담 가능 생활권을 설명하며, 방문할 실제 센터명과 주소는 페이지의 ‘확인된 센터 정보’ 또는 ‘인근 실제 센터 정보’에서 구분해 안내합니다.",
+            "항상 그렇지는 않습니다. 각 페이지는 상담 가능 생활권을 설명하며, 방문할 실제 센터명과 주소는 페이지의 ‘확인된 센터 정보’ 또는 ‘연결 상담 센터 정보’에서 구분해 안내합니다.",
         ),
         (
             "영어와 수학의 수업 가능 학년은 모두 같은가요?",
@@ -329,8 +337,9 @@ def main() -> None:
     body, script = root_body(rows)
     body += "\n" + faq_section("전국 학습코칭 안내 자주 묻는 질문", root_faqs)
     root_url = page_url(CENTER_DIR)
+    root_description = "전국 371개 동네의 영어·수학 학습관리를 광역지역과 학년·과목별로 찾고 실제 센터 주소와 가능 학년을 확인하는 안내입니다."
     root_schema = schema_graph(
-        url=root_url, title="전국 371개 동네별 학습 안내", description="전국 371개 동네의 영어·수학 학습관리 안내를 광역지역과 학년·과목 기준으로 찾는 페이지입니다.",
+        url=root_url, title="전국 371개 동네별 학습 안내", description=root_description,
         crumbs=[("와와학습코칭학원", BASE_URL + "/"), ("전국센터", root_url)], items=root_items,
         about={"@type": "Thing", "name": "전국 초중고 영어수학 학습관리"},
     )
@@ -347,25 +356,28 @@ def main() -> None:
         ],
     })
     (center / "index.html").write_text(shell(
-        depth=1, title="전국 371개 동네별 학습 안내 | 와와학습코칭학원", description="전국 371개 동네의 영어·수학 학습관리 안내를 광역지역과 학년·과목 기준으로 찾아보세요.", canonical=root_url,
+        depth=1, title="전국 371개 동네별 학습 안내 | 와와학습코칭학원", description=root_description, canonical=root_url,
         h1="전국 371개 동네 학습코칭 안내", eyebrow="REGION & CURRICULUM HUB", intro="광역지역이나 학년·과목을 먼저 선택한 뒤 실제 센터 정보가 연결된 동네 안내를 확인할 수 있습니다.", metric="371개", metric_label="LOCAL PAGES",
         crumbs=[("홈", "../"), ("전국센터", None)], body=body, schema=root_schema, extra_script=script,
     ), encoding="utf-8", newline="\n")
 
     for region in REGION_ORDER:
         regional = [row for row in rows if row["region"] == region]
+        district_count = len({row["district"] for row in regional})
+        region_description = f"{region} {len(regional)}개 동네와 {district_count}개 시·군·구의 영어·수학 진단·계획·오답관리, 실제 센터 주소와 가능 학년을 확인합니다."
         url = page_url(CENTER_DIR, region)
         items = [(f"{row['display']} 학원", page_url(CENTER_DIR, row["folder"])) for row in regional]
-        schema = schema_graph(url=url, title=f"{region} 지역 학습코칭 안내", description=f"{region} {len(regional)}개 동네의 영어·수학 학습관리와 실제 안내 센터 정보를 시·군·구별로 확인하세요.", crumbs=[("와와학습코칭학원", BASE_URL + "/"), ("전국센터", root_url), (region, url)], items=items, about={"@type": "Place", "name": region})
+        schema = schema_graph(url=url, title=f"{region} 지역 학습코칭 안내", description=region_description, crumbs=[("와와학습코칭학원", BASE_URL + "/"), ("전국센터", root_url), (region, url)], items=items, about={"@type": "Place", "name": region})
         path = center / region / "index.html"; path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(shell(depth=2, title=f"{region} 지역 학원 안내 | 와와학습코칭학원", description=f"{region} {len(regional)}개 동네의 영어·수학 학습관리와 실제 안내 센터 정보를 시·군·구별로 확인하세요.", canonical=url, h1=f"{region} 지역 학습코칭 안내", eyebrow="REGIONAL ACADEMY DIRECTORY", intro=f"{region} 지역의 {len(regional)}개 동네를 시·군·구별로 정리했습니다. 각 페이지에서 실제 센터 주소와 가능 학년을 확인하세요.", metric=f"{len(regional)}개", metric_label="LOCAL PAGES", crumbs=[("홈", "../../"), ("전국센터", "../"), (region, None)], body=region_body(region, regional), schema=schema), encoding="utf-8", newline="\n")
+        path.write_text(shell(depth=2, title=f"{region} 지역 학원 안내 | 와와학습코칭학원", description=region_description, canonical=url, h1=f"{region} 지역 학습코칭 안내", eyebrow="REGIONAL ACADEMY DIRECTORY", intro=f"{region} 지역의 {len(regional)}개 동네를 시·군·구별로 정리했습니다. 각 페이지에서 실제 센터 주소와 가능 학년을 확인하세요.", metric=f"{len(regional)}개", metric_label="LOCAL PAGES", crumbs=[("홈", "../../"), ("전국센터", "../"), (region, None)], body=region_body(region, regional), schema=schema), encoding="utf-8", newline="\n")
 
     for slug, (label, note) in CATEGORIES.items():
         url = page_url(CENTER_DIR, slug)
+        category_description = f"전국 371개 동네의 {label} 페이지입니다. 지역별 {CATEGORY_META[slug]} 관리 기준과 실제 상담 센터·가능 학년을 확인합니다."
         items = [(f"{row['display']} {label}", page_url(CENTER_DIR, row["folder"], slug)) for row in rows]
-        schema = schema_graph(url=url, title=f"전국 {label} 안내", description=f"전국 371개 동네의 {note}를 지역별로 확인하세요.", crumbs=[("와와학습코칭학원", BASE_URL + "/"), ("전국센터", root_url), (label, url)], items=items, about={"@type": "Thing", "name": label})
+        schema = schema_graph(url=url, title=f"전국 {label} 안내", description=category_description, crumbs=[("와와학습코칭학원", BASE_URL + "/"), ("전국센터", root_url), (label, url)], items=items, about={"@type": "Thing", "name": label})
         path = center / slug / "index.html"; path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(shell(depth=2, title=f"전국 {label} 안내 | 와와학습코칭학원", description=f"전국 371개 동네의 {note}를 실제 센터 정보와 함께 지역별로 확인하세요.", canonical=url, h1=f"전국 {label} 안내", eyebrow="CURRICULUM ACADEMY DIRECTORY", intro=f"{note}입니다. 동네별 페이지에서 현재 교재와 학생 상황, 실제 센터의 가능 학년을 함께 확인하세요.", metric="371개", metric_label="LOCAL PAGES", crumbs=[("홈", "../../"), ("전국센터", "../"), (label, None)], body=category_body(slug, rows), schema=schema), encoding="utf-8", newline="\n")
+        path.write_text(shell(depth=2, title=f"전국 {label} 안내 | 와와학습코칭학원", description=category_description, canonical=url, h1=f"전국 {label} 안내", eyebrow="CURRICULUM ACADEMY DIRECTORY", intro=f"{note}입니다. 진단·계획·실행 확인·오답 재학습 기준과 실제 센터의 가능 학년을 동네별로 확인하세요.", metric="371개", metric_label="LOCAL PAGES", crumbs=[("홈", "../../"), ("전국센터", "../"), (label, None)], body=category_body(slug, rows), schema=schema), encoding="utf-8", newline="\n")
 
     updated = update_context_links(root, rows)
     print(f"neighbourhoods={len(rows)} regions={len(REGION_ORDER)} categories={len(CATEGORIES)} context_pages_updated={updated}")

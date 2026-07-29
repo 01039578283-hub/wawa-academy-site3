@@ -2,8 +2,6 @@
    warm cream paper + deep slate ink + coral accent
    soft rounded cards, no gradients, no tilt, single sans typeface */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap');
-
 :root {
   --ink: #20262f;
   --ink-soft: #5c6672;
@@ -820,6 +818,42 @@ img {
   max-width: 68ch;
   color: rgba(245, 246, 244, 0.78);
   font-size: 16px;
+}
+
+.hero-center-fact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 3px 12px;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 18px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-center-fact span {
+  grid-row: 1 / span 2;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--accent-pale);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.hero-center-fact strong {
+  overflow-wrap: anywhere;
+  color: #fff;
+  font-size: 14px;
+}
+
+.hero-center-fact small {
+  overflow-wrap: anywhere;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
 }
 
 .hero-mini-panel {
@@ -1917,6 +1951,18 @@ input:focus-visible {
   .section-title p,
   .split-copy p {
     font-size: 15px;
+  }
+
+  .hero-center-fact {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 6px;
+    padding: 13px;
+  }
+
+  .hero-center-fact span {
+    grid-row: auto;
+    width: fit-content;
   }
 
   .hero-photo,

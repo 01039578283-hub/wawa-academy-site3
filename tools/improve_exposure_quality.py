@@ -408,6 +408,17 @@ def choose(ctx: PageContext, values: list[str]) -> str:
     return values[ctx.rng.randrange(len(values))]
 
 
+def keyed_choose(ctx: PageContext, namespace: str, values: list[str]) -> str:
+    """Choose a variant independently of the other generated sections.
+
+    Using an independent key keeps title/snippet variants stable even when a
+    new content block is inserted elsewhere in the generator.
+    """
+    key = f"{ctx.path.as_posix()}|{namespace}".encode("utf-8")
+    index = int.from_bytes(hashlib.sha256(key).digest()[:8], "big") % len(values)
+    return values[index]
+
+
 def school_phrase(ctx: PageContext, limit: int = 3) -> str:
     if ctx.schools:
         return "·".join(ctx.schools[:limit])
@@ -466,7 +477,12 @@ def locality_stem(value: str) -> str:
     areas.  A missing stem match is not treated as an error or a distance
     claim; it only triggers clearer wording about the actual visit address.
     """
-    compact = normalize_locality(value)
+    # Some manifest labels contain a regional prefix (for example
+    # ``울산 삼산동`` or ``부천 상동``).  The last token is the actual
+    # neighbourhood and is the part that should be compared with the centre
+    # name/address.
+    tokens = re.findall(r"[^\s]+", unicodedata.normalize("NFKC", value or "").strip())
+    compact = normalize_locality(tokens[-1] if tokens else value)
     compact = re.sub(r"(?:국제도시|신도시|중앙|마을|지구|동|읍|면|리)$", "", compact)
     return compact
 
@@ -490,36 +506,122 @@ def check_items(ctx: PageContext) -> list[str]:
     return [item.strip() for item in ctx.config["checks"].split(",") if item.strip()]
 
 
+def seo_title(ctx: PageContext) -> str:
+    suffixes = {
+        "": "영어·수학 진단·계획·오답관리",
+        "초등영어학원": "기초 독해·문법 학습관리",
+        "초등수학학원": "개념·연산·오답 학습관리",
+        "중등영어학원": "내신·서술형 학습관리",
+        "중등수학학원": "내신·서술형 학습관리",
+        "고등영어학원": "내신·모의고사 학습관리",
+        "고등수학학원": "내신·수능형 학습관리",
+    }
+    return f"{ctx.title} | {suffixes[ctx.category]}"
+
+
+def _complete_sentence(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip().rstrip(".。 ") + "."
+
+
+def short_center_name(ctx: PageContext) -> str:
+    value = actual_center_name(ctx)
+    value = re.sub(r"^와와학습코칭(?:센터|학원)\s*", "", value).strip()
+    return value or actual_center_name(ctx)
+
+
 def meta_description(ctx: PageContext) -> str:
-    school = actual_school_phrase(ctx, 2)
-    if ctx.category:
-        if school == SCHOOL_FALLBACK:
-            value = f"{ctx.title} 안내입니다. 현재 교재와 최근 평가 자료를 기준으로 {ctx.config['meta_focus']}, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
-        else:
-            value = f"{ctx.title} 안내입니다. {school} 학생의 {ctx.config['meta_focus']}, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
+    school = actual_school_phrase(ctx, 1)
+    center = short_center_name(ctx)
+    focus = ctx.config["meta_focus"]
+    school_known = school != SCHOOL_FALLBACK
+    service_area = is_service_area_page(ctx)
+    if service_area:
+        candidates = [
+            f"{ctx.title}: {focus}를 점검하고 연결 센터 {center}의 실제 방문 주소와 가능 학년을 안내합니다",
+            f"{ctx.title}: {center} 상담권역에서 {focus}와 학생 일정, 실제 방문 위치를 함께 확인합니다",
+            f"{ctx.title}: {school + ' 등 재학 학교 자료' if school_known else '최근 학습자료'}로 {focus}를 살피고 연결 센터 주소를 안내합니다",
+            f"{ctx.title}: {focus} 범위를 확인한 뒤 플래너 실행과 오답 재학습, {center} 방문 정보를 안내합니다",
+            f"{ctx.title}: {ctx.locality} 학생의 {focus}와 연결 센터 {center}의 개설 학년·위치를 확인합니다",
+            f"{ctx.title}: {school if school_known else '재학 학교'} 진도에 맞춘 {focus}와 실제 상담 센터 위치를 정리했습니다",
+        ]
     else:
-        if school == SCHOOL_FALLBACK:
-            value = f"{ctx.title} 안내입니다. 재학 학교의 진도와 현재 교재를 기준으로 영어·수학 학습관리, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
-        else:
-            value = f"{ctx.title} 안내입니다. {school} 인근 영어·수학 학습관리, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
-    if len(value) <= 95:
-        return value
-    shortened = value[:94]
-    if " " in shortened:
-        shortened = shortened.rsplit(" ", 1)[0]
-    return shortened.rstrip("., ") + "…"
+        candidates = [
+            f"{ctx.title}: {school if school_known else '현재 교재'} 기준 {focus}를 점검하고 {center}의 가능 학년·위치를 안내합니다",
+            f"{ctx.title}: {center}에서 {focus}를 확인하고 학생에게 맞는 진단·계획·오답관리 순서를 정리합니다",
+            f"{ctx.title}: {school + ' 등 재학 학교 자료' if school_known else '최근 학습자료'}와 {focus}, 실제 센터 주소·개설 학년을 확인합니다",
+            f"{ctx.title}: 최근 교재와 평가자료로 {focus}를 살피고 {center}의 상담 기준과 방문 정보를 안내합니다",
+            f"{ctx.title}: {focus} 범위를 확인한 뒤 플래너 실행과 오답 재학습까지 이어지는 관리 기준을 안내합니다",
+            f"{ctx.title}: {school if school_known else '재학 학교'} 진도에 맞춘 {focus}와 {center}의 실제 상담 정보를 정리했습니다",
+        ]
+    complete = [_complete_sentence(value) for value in candidates]
+    eligible = [value for value in complete if 60 <= len(value) <= 80]
+    if eligible:
+        return keyed_choose(ctx, "meta-description", eligible)
+
+    fallback = _complete_sentence(
+        f"{ctx.title}: {focus}를 점검하고 {center}의 실제 방문 위치와 가능 학년, 상담 준비 자료를 안내합니다"
+    )
+    if len(fallback) < 60:
+        fallback = fallback.rstrip(".") + " 최근 교재와 시간표도 함께 확인합니다."
+    if len(fallback) > 80:
+        fallback = _complete_sentence(
+            f"{ctx.title}: {ctx.config['label']}의 진단·계획·오답관리와 실제 센터 위치, 가능 학년을 안내합니다"
+        )
+    if not 60 <= len(fallback) <= 80:
+        raise ValueError(f"Unable to fit meta description ({len(fallback)}): {ctx.path}")
+    return fallback
 
 
 def hero_intro(ctx: PageContext) -> str:
-    templates = [
-        "{title}을 알아볼 때는 {checks} 항목을 함께 확인해야 합니다. 실제 상담 센터인 {center}에서는 현재 교재와 최근 학습 자료를 바탕으로 시작 범위를 정리합니다.",
-        "{title} 선택 전에는 성적만 비교하기보다 {checks} 항목을 나누어 보는 것이 좋습니다. 실제 안내 센터 {center}에서 학생에게 필요한 관리 순서를 확인할 수 있습니다.",
-        "{title} 상담의 출발점은 학생이 막히는 지점을 구체적으로 찾는 것입니다. {checks} 항목을 확인한 뒤 {center}의 개설 정보와 맞는 학습 순서를 안내합니다.",
-        "{title}을 찾는 학생이라면 먼저 {checks} 항목을 점검해 보세요. 이 페이지는 {center}의 확인된 센터정보를 기준으로 상담 범위를 정리합니다.",
-        "{title}에서는 현재 결과보다 {checks} 가운데 반복해서 막히는 지점을 먼저 살펴봅니다. 상담 장소와 가능 학년은 {center}의 실제 정보를 기준으로 확인합니다.",
-        "{title} 상담을 준비할 때는 최근 자료에서 {checks} 상태를 구분하는 것이 먼저입니다. {center}의 수업 가능 학년과 학생 일정을 대조해 시작 범위를 정합니다.",
-    ]
-    return choose(ctx, templates).format(title=ctx.title, checks=ctx.config["checks"], center=actual_center_name(ctx))
+    if is_service_area_page(ctx):
+        templates = [
+            "{title}에서는 {checks} 기록을 먼저 살펴 학습 우선순위를 정합니다. 이 지역은 {center} 상담권역이며 실제 방문 주소는 아래 센터 정보에서 구분해 안내합니다.",
+            "{title} 상담은 현재 성적만 비교하지 않고 {checks} 상태를 나누어 확인합니다. 수업 상담은 {center}로 연결되므로 방문 전에 실제 주소와 시간표를 확인해 주세요.",
+            "{title}을 찾는 학생은 최근 교재에서 {checks} 중 막힌 지점을 표시해 두는 것이 좋습니다. 이 페이지의 실제 안내 센터는 {center}입니다.",
+            "{title} 학습 방향은 {checks} 기록과 학교 일정을 함께 보고 정합니다. {locality} 상담권역은 {center}로 연결되며 센터 위치를 별도로 명시했습니다.",
+            "{title} 선택 전에는 {checks} 상태와 실행 가능한 시간을 먼저 구분해야 합니다. 실제 상담 장소는 {center}이므로 페이지의 주소를 확인해 주세요.",
+            "{title}은 진단에서 끝나지 않고 계획 실행과 오답 재학습까지 연결해야 합니다. {locality} 안내는 {center}의 확인된 센터정보를 기준으로 작성했습니다.",
+            "{title} 상담에서는 최근 자료로 {checks} 상태를 확인한 뒤 가능한 관리 순서를 정합니다. {locality} 학생의 방문 센터는 {center}입니다.",
+            "{title} 페이지는 {checks} 중 우선 보완할 항목과 실제 수업 가능 범위를 구분합니다. 연결 상담 센터는 {center}이며 주소는 아래에서 확인할 수 있습니다.",
+        ]
+    else:
+        templates = [
+            "{title}에서는 {checks} 중 반복해서 막히는 지점을 먼저 찾습니다. {center}의 실제 개설 정보와 학생 일정을 대조해 학습 순서를 정합니다.",
+            "{title} 상담은 현재 교재와 최근 평가자료에서 {checks} 상태를 확인하는 것부터 시작합니다. {center}에서 진단·계획·오답관리 순서를 안내합니다.",
+            "{title}을 선택할 때는 성적만 보지 않고 {checks} 기록을 함께 확인해야 합니다. 실제 상담 장소는 {center}이며 가능 학년은 센터 자료를 기준으로 안내합니다.",
+            "{title} 학습 방향은 학생이 막힌 원인과 실행 가능한 시간을 구분해 정합니다. {center}의 시간표와 맞춰 계획 실행과 재학습 범위를 확인합니다.",
+            "{title}에서는 학습량보다 {checks} 가운데 먼저 바꿀 항목을 구체적으로 찾습니다. {center} 상담에서 학생별 시작 범위를 확인할 수 있습니다.",
+            "{title} 상담 전 최근 교재와 오답 기록을 준비하면 {checks} 상태를 더 정확히 구분할 수 있습니다. 안내 정보는 {center}의 확인 자료를 기준으로 합니다.",
+            "{title}은 진단·주간계획·실행확인·오답 재학습이 한 흐름으로 이어져야 합니다. {center}의 개설 학년과 학생 일정을 함께 확인합니다.",
+            "{title} 페이지에서는 {checks} 항목을 학생 상황에 맞춰 나누고, {center}에서 실제로 이어갈 수 있는 학습 범위를 정리합니다.",
+        ]
+    return keyed_choose(ctx, "hero-intro", templates).format(
+        title=ctx.title,
+        checks=ctx.config["checks"],
+        center=actual_center_name(ctx),
+        locality=ctx.locality,
+    )
+
+
+def hero_center_fact(ctx: PageContext) -> str:
+    label = "상담권역의 실제 방문 센터" if is_service_area_page(ctx) else "확인된 상담 장소"
+    note = f"{ctx.locality} 상담권역" if is_service_area_page(ctx) else f"{ctx.locality} 센터 안내"
+    return f'''              <div class="hero-center-fact">
+                <span>{html.escape(label)}</span>
+                <strong>{html.escape(actual_center_name(ctx))}</strong>
+                <small>{html.escape(actual_address(ctx))} · {html.escape(note)}</small>
+              </div>'''
+
+
+def representative_image_url(ctx: PageContext) -> str:
+    match = re.search(
+        r'<img\b[^>]*data-role=["\']representative-image["\'][^>]*\bsrc=["\']([^"\']+)',
+        ctx.image_block,
+        re.I,
+    )
+    if not match:
+        match = re.search(r'<meta\b[^>]*property=["\']og:image["\'][^>]*content=["\']([^"\']+)', ctx.text, re.I)
+    return html.unescape(match.group(1)) if match else BASE_URL + "/assets/generated/site3-hero.webp"
 
 
 def method_intro(ctx: PageContext) -> tuple[str, str, str]:
@@ -623,7 +725,7 @@ def build_verified_section(ctx: PageContext) -> str:
     if is_service_area_page(ctx):
         relationship_label = "연결 상담 센터 정보"
         relationship_note = (
-            f"{ctx.locality} 페이지는 제공된 상담권역 자료에서 {actual_center_name(ctx)}와 연결됩니다. "
+            f"{ctx.locality} 페이지는 제공된 상담권역 자료에 따라 {actual_center_name(ctx)}로 연결됩니다. "
             "페이지의 지역명과 실제 센터 위치가 다를 수 있으므로 방문 위치는 아래 센터명과 주소를 기준으로 확인해 주세요."
         )
     else:
@@ -651,6 +753,13 @@ def build_verified_section(ctx: PageContext) -> str:
         f"학교 정보는 {ctx.config['label']} 상담 준비를 위한 기준입니다. 수업 여부는 학년, 선택 과목, 센터의 현재 개설 시간을 확인한 후 결정됩니다.",
         f"{ctx.locality} 학생은 재학 학교의 교재와 시험 일정을 준비하되, 수업 가능 여부는 {actual_center_name(ctx)}의 최신 시간표로 확인해야 합니다.",
     ])
+    source_notes = [
+        f"확인 자료: {source_basis(ctx)} · 정리일 {TODAY}",
+        f"안내 근거: {source_basis(ctx)} · 최종 확인 {TODAY}",
+        f"센터 정보 출처: {source_basis(ctx)} · 페이지 확인일 {TODAY}",
+        f"페이지 작성 기준: {source_basis(ctx)} · 정보 정리 {TODAY}",
+    ]
+    source_note = keyed_choose(ctx, "source-note", source_notes)
     return f'''    <section id="verified-center" class="local-section verified-center-section">
       <div class="wrap verified-center-grid">
         <article class="verified-center-card">
@@ -664,7 +773,7 @@ def build_verified_section(ctx: PageContext) -> str:
           </dl>
 {tuition_block}          <div class="verified-school-list" aria-label="상담 참고 학교">{school_markup}</div>
           <p class="verified-note">{html.escape(verified_note)}</p>
-          <p class="verified-note">자료 기준: {html.escape(source_basis(ctx))} · 페이지 정리일 {TODAY}</p>
+          <p class="verified-note source-note">{html.escape(source_note)}</p>
         </article>
         <figure class="verified-map-card">
           {ctx.map_image}
@@ -972,7 +1081,15 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
     # Service landing page, while this node describes the substantial visible
     # guidance copy.  Tuition links stay with the Service instead of being
     # misrepresented as citations for the full article.
-    graph = [node for node in data["@graph"] if not (isinstance(node, dict) and node_has_type(node, "Article"))]
+    primary_image_id = ctx.page_url + "#primaryimage"
+    primary_image_url = representative_image_url(ctx)
+    graph = [
+        node for node in data["@graph"]
+        if not (
+            isinstance(node, dict)
+            and (node_has_type(node, "Article") or node.get("@id") == primary_image_id)
+        )
+    ]
     data["@graph"] = graph
     old_org = find_node(graph, "EducationalOrganization")
     stable_id = ctx.center.primary_url + "#organization"
@@ -991,6 +1108,7 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
             node["@id"] = BASE_URL + "/#website"
             node["url"] = BASE_URL + "/"
         if node_type == "WebPage":
+            node["name"] = seo_title(ctx)
             node["description"] = description
             node["isPartOf"] = {"@id": BASE_URL + "/#website"}
             node["dateModified"] = TODAY
@@ -1002,6 +1120,7 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
             school_mentions = ([{"@type": "Organization", "name": school} for school in schools.split("·") if is_specific_school(school)]
                                if schools != SCHOOL_FALLBACK else [])
             node["mentions"] = [{"@id": stable_id}, *school_mentions]
+            node["primaryImageOfPage"] = {"@id": primary_image_id}
             node["hasPart"] = [
                 {"@type": "WebPageElement", "name": "학습관리 방법", "url": ctx.page_url + "#learning-plan"},
                 {"@type": "WebPageElement", "name": "연결 상담 센터 정보" if is_service_area_page(ctx) else "확인된 센터 정보", "url": ctx.page_url + "#verified-center"},
@@ -1024,6 +1143,7 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
                     "educationalRole": "student",
                     "audienceType": ctx.config["stage"],
                 },
+                "image": {"@id": primary_image_id},
             }
             if ctx.info.tuition_url:
                 rebuilt["offers"] = {
@@ -1062,9 +1182,18 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
             {"@type": "Thing", "name": ctx.config["label"]},
         ],
         "mentions": article_mentions,
+        "image": {"@id": primary_image_id},
         "dateModified": TODAY,
     }
     graph.append(article)
+    graph.append({
+        "@type": "ImageObject",
+        "@id": primary_image_id,
+        "contentUrl": primary_image_url,
+        "url": primary_image_url,
+        "caption": f"{ctx.title} 코칭학원.com 대표 이미지",
+        "inLanguage": "ko-KR",
+    })
     data = normalize_machine_urls(data)
     compact = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     _, match = parse_jsonld(ctx.text)
@@ -1073,12 +1202,23 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
 
 def transform_page(ctx: PageContext) -> str:
     description = meta_description(ctx)
+    title_tag = seo_title(ctx)
     faqs = build_faqs(ctx)
 
     # Start with JSON-LD because its replacement offsets are based on the original page.
     text = update_jsonld(ctx, faqs, description)
     text = text.replace("https://코칭학원.com", BASE_URL)
+    text, title_count = re.subn(
+        r"<title>.*?</title>",
+        f"<title>{html.escape(title_tag)}</title>",
+        text,
+        count=1,
+        flags=re.S,
+    )
+    if title_count != 1:
+        raise ValueError(f"Title not replaced: {ctx.path}")
     text = replace_meta(text, key="description", value=description, attr_name="name")
+    text = replace_meta(text, key="og:title", value=title_tag, attr_name="property")
     text = replace_meta(text, key="og:description", value=description, attr_name="property")
     text = replace_meta(text, key="og:type", value="article", attr_name="property")
     if 'type="application/rss+xml"' not in text:
@@ -1088,8 +1228,17 @@ def transform_page(ctx: PageContext) -> str:
         rss_link = f'\n  <link rel="alternate" type="application/rss+xml" title="와와학습코칭학원 RSS" href="{BASE_URL}/rss.xml">'
         text = text[:canonical.end()] + rss_link + text[canonical.end():]
 
+    text = re.sub(r'\s*<div class="hero-center-fact">.*?</div>', "", text, count=1, flags=re.S)
     hero_pattern = re.compile(r'(<section class="local-hero">.*?<h1>.*?</h1>)\s*<p>.*?</p>', re.S)
-    text, count = hero_pattern.subn(lambda match: match.group(1) + "\n              <p>" + html.escape(hero_intro(ctx)) + "</p>", text, count=1)
+    text, count = hero_pattern.subn(
+        lambda match: match.group(1)
+        + "\n              <p>"
+        + html.escape(hero_intro(ctx))
+        + "</p>\n"
+        + hero_center_fact(ctx),
+        text,
+        count=1,
+    )
     if count != 1:
         raise ValueError(f"Hero not replaced: {ctx.path}")
     eyebrow = "지역 학습 안내" if not ctx.category else f"{ctx.config['stage']} {ctx.config['subject']} 학습 안내"
@@ -1161,9 +1310,15 @@ def validate_transformed(ctx: PageContext, text: str) -> list[str]:
     errors: list[str] = []
     if len(re.findall(r"<h1\b", text, re.I)) != 1:
         errors.append("H1 count")
-    for bad in ("수학는", "수학를", "관리을", "점는", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
+    for bad in ("수학는", "수학를", "관리을", "점는", "점와", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
         if bad in text:
             errors.append(f"remaining token: {bad}")
+    description = meta_description(ctx)
+    if not 60 <= len(description) <= 80:
+        errors.append(f"description length: {len(description)}")
+    title_tag = seo_title(ctx)
+    if not 24 <= len(title_tag) <= 30:
+        errors.append(f"title length: {len(title_tag)}")
     if ctx.image_block not in text:
         errors.append("image block changed")
     if ctx.map_image not in text:
