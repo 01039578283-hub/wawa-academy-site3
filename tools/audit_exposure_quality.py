@@ -103,7 +103,21 @@ def jaccard(left: set[str], right: set[str]) -> float:
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
     pages = sorted(root.rglob("index.html"))
-    local_pages = sorted((root / LOCAL_ROOT).glob("*/index.html")) + sorted((root / LOCAL_ROOT).glob("*/*/index.html"))
+    # A neighbourhood directory always owns curriculum children.  Deriving the
+    # set structurally keeps newly-added region/category collection hubs out of
+    # locality metrics without relying on a hard-coded Korean slug list.
+    local_parent_dirs = sorted(
+        path.parent
+        for path in (root / LOCAL_ROOT).glob("*/index.html")
+        if any(path.parent.glob("*/index.html"))
+    )
+    local_pages = [path / "index.html" for path in local_parent_dirs]
+    local_pages.extend(
+        child
+        for parent in local_parent_dirs
+        for child in sorted(parent.glob("*/index.html"))
+    )
+    local_page_set = set(local_pages)
 
     missing = Counter()
     canonical_values: list[str] = []
@@ -125,7 +139,7 @@ def main() -> None:
     bad_tokens = [
         "수학는", "수학를", "관리을", "학습관리은", "풀이을",
         "현재 수준과 목표에 맞춰 다시 확인합니다", "동일하게 적용합니다",
-        "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide",
+        "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "점는",
         "친구와 함께 등록하면 할인", "PARENT REVIEW",
     ]
 
@@ -160,12 +174,16 @@ def main() -> None:
                     review_nodes += len(node.get("review", [])) if isinstance(node.get("review"), list) else int("review" in node)
                     rating_nodes += int("aggregateRating" in node)
             org = find_node(graph, "EducationalOrganization")
-            if org and page in local_pages:
+            if org and page in local_page_set:
                 org_ids.add(str(org.get("@id", "")))
             service = find_node(graph, "Service")
-            if service and page in local_pages:
+            if service and page in local_page_set:
                 provider = service.get("provider", {})
                 if isinstance(provider, dict): provider_ids.add(str(provider.get("@id", "")))
+            if page in local_page_set:
+                for expected_type in ("EducationalOrganization", "LocalBusiness", "WebPage", "Service", "FAQPage", "BreadcrumbList", "ItemList", "Article"):
+                    if not find_node(graph, expected_type):
+                        missing[f"local_missing_{expected_type}"] += 1
             if visible_faq(text) != schema_faq(graph): faq_mismatch += 1
             breadcrumb = find_node(graph, "BreadcrumbList")
             if breadcrumb and canonical:
@@ -185,7 +203,7 @@ def main() -> None:
         for token in bad_tokens:
             grammar_counts[token] += text.count(token)
 
-        if page in local_pages:
+        if page in local_page_set:
             main_block = match_one(text, r"<main\b[^>]*>(.*?)</main>") or ""
             visible = clean(main_block)
             visible_hashes.add(hashlib.sha256(visible.encode("utf-8")).hexdigest())

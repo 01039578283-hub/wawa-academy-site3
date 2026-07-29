@@ -27,8 +27,10 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 DOMAIN = "xn--sp5b72l1taf0p.com"
 BASE_URL = f"https://{DOMAIN}"
-TODAY = "2026-07-27"
+TODAY = "2026-07-29"
 CENTER_DIRNAME = "전국센터"
+SCHOOL_FALLBACK = "학교별 진도 상담 확인"
+GRADE_FALLBACK = "상담 시 학년 범위 확인"
 
 
 CATEGORIES: dict[str, dict[str, Any]] = {
@@ -435,7 +437,7 @@ def available_grade_items(ctx: PageContext) -> list[str]:
 
 def available_grade_text(ctx: PageContext) -> str:
     values = available_grade_items(ctx)
-    return " / ".join(values) if values else "현재 개설 학년 상담 확인"
+    return " / ".join(values) if values else GRADE_FALLBACK
 
 
 def actual_center_name(ctx: PageContext) -> str:
@@ -454,15 +456,52 @@ def actual_school_phrase(ctx: PageContext, limit: int = 4) -> str:
     schools = [school for school in schools if is_specific_school(school)]
     if not schools:
         schools = [school for school in ctx.schools if is_specific_school(school)]
-    return "·".join(schools[:limit]) if schools else "학교별 진도 상담 확인"
+    return "·".join(schools[:limit]) if schools else SCHOOL_FALLBACK
+
+
+def locality_stem(value: str) -> str:
+    """Return a conservative stem used only to explain service-area pages.
+
+    The CSV contains both physical-centre neighbourhoods and nearby service
+    areas.  A missing stem match is not treated as an error or a distance
+    claim; it only triggers clearer wording about the actual visit address.
+    """
+    compact = normalize_locality(value)
+    compact = re.sub(r"(?:국제도시|신도시|중앙|마을|지구|동|읍|면|리)$", "", compact)
+    return compact
+
+
+def is_service_area_page(ctx: PageContext) -> bool:
+    stem = locality_stem(ctx.info.locality or ctx.locality)
+    if len(stem) < 2:
+        return False
+    physical = normalize_locality(f"{actual_center_name(ctx)} {actual_address(ctx)}")
+    return stem not in physical
+
+
+def source_basis(ctx: PageContext) -> str:
+    parts = ["학원 제공 센터정보", "교육지원청 등록정보"]
+    if ctx.info.tuition_url:
+        parts.append("연결된 교습비 공개자료")
+    return " · ".join(parts)
+
+
+def check_items(ctx: PageContext) -> list[str]:
+    return [item.strip() for item in ctx.config["checks"].split(",") if item.strip()]
 
 
 def meta_description(ctx: PageContext) -> str:
     school = actual_school_phrase(ctx, 2)
     if ctx.category:
-        value = f"{ctx.title} 안내입니다. {school} 학생의 {ctx.config['meta_focus']}, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
+        if school == SCHOOL_FALLBACK:
+            value = f"{ctx.title} 안내입니다. 현재 교재와 최근 평가 자료를 기준으로 {ctx.config['meta_focus']}, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
+        else:
+            value = f"{ctx.title} 안내입니다. {school} 학생의 {ctx.config['meta_focus']}, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
     else:
-        value = f"{ctx.title} 안내입니다. {school} 인근 영어·수학 학습관리, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
+        if school == SCHOOL_FALLBACK:
+            value = f"{ctx.title} 안내입니다. 재학 학교의 진도와 현재 교재를 기준으로 영어·수학 학습관리, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
+        else:
+            value = f"{ctx.title} 안내입니다. {school} 인근 영어·수학 학습관리, 가능 학년과 {actual_center_name(ctx)} 위치를 확인하세요."
     if len(value) <= 95:
         return value
     shortened = value[:94]
@@ -473,10 +512,12 @@ def meta_description(ctx: PageContext) -> str:
 
 def hero_intro(ctx: PageContext) -> str:
     templates = [
-        "{title}을 알아볼 때는 {checks} 등의 항목을 함께 확인해야 합니다. {center} 상담에서는 현재 교재와 최근 학습 자료를 바탕으로 시작 범위를 정리합니다.",
-        "{title} 선택 전에는 성적만 비교하기보다 {checks} 등의 항목을 나누어 보는 것이 좋습니다. {center}에서 학생에게 필요한 관리 순서를 상담할 수 있습니다.",
-        "{title} 상담의 출발점은 학생이 막히는 지점을 구체적으로 찾는 것입니다. {checks} 등을 확인한 뒤 학습 순서와 점검 방식을 안내합니다.",
-        "{title}을 찾는 학생이라면 먼저 {checks} 등의 항목을 점검해 보세요. {center}는 확인된 자료를 기준으로 무리하지 않는 학습 계획을 세웁니다.",
+        "{title}을 알아볼 때는 {checks} 항목을 함께 확인해야 합니다. 실제 상담 센터인 {center}에서는 현재 교재와 최근 학습 자료를 바탕으로 시작 범위를 정리합니다.",
+        "{title} 선택 전에는 성적만 비교하기보다 {checks} 항목을 나누어 보는 것이 좋습니다. 실제 안내 센터 {center}에서 학생에게 필요한 관리 순서를 확인할 수 있습니다.",
+        "{title} 상담의 출발점은 학생이 막히는 지점을 구체적으로 찾는 것입니다. {checks} 항목을 확인한 뒤 {center}의 개설 정보와 맞는 학습 순서를 안내합니다.",
+        "{title}을 찾는 학생이라면 먼저 {checks} 항목을 점검해 보세요. 이 페이지는 {center}의 확인된 센터정보를 기준으로 상담 범위를 정리합니다.",
+        "{title}에서는 현재 결과보다 {checks} 가운데 반복해서 막히는 지점을 먼저 살펴봅니다. 상담 장소와 가능 학년은 {center}의 실제 정보를 기준으로 확인합니다.",
+        "{title} 상담을 준비할 때는 최근 자료에서 {checks} 상태를 구분하는 것이 먼저입니다. {center}의 수업 가능 학년과 학생 일정을 대조해 시작 범위를 정합니다.",
     ]
     return choose(ctx, templates).format(title=ctx.title, checks=ctx.config["checks"], center=actual_center_name(ctx))
 
@@ -489,24 +530,49 @@ def method_intro(ctx: PageContext) -> tuple[str, str, str]:
         f"{ctx.title} 학습 방향을 정하는 방법",
     ]
     first = [
-        f"{ctx.config['label']}에서는 학습량을 늘리기 전에 {ctx.config['checks']} 중 어디에서 어려움이 생기는지 구분하는 과정이 먼저입니다.",
-        f"학생마다 필요한 보완 범위가 다르므로 {ctx.config['checks']} 항목을 한 번에 점검한 뒤 우선순위를 정하는 것이 좋습니다.",
-        f"상담에서는 현재 결과만 평가하지 않고 {ctx.config['checks']} 항목을 살펴 실제로 이어갈 수 있는 계획을 정합니다.",
-        f"같은 학년이라도 막히는 지점은 다를 수 있어 {ctx.config['checks']} 항목을 나누어 확인해야 합니다.",
+        f"{ctx.locality} {ctx.config['label']}에서는 학습량을 늘리기 전에 {ctx.config['checks']} 중 어디에서 어려움이 생기는지 구분하는 과정이 먼저입니다.",
+        f"{ctx.locality} 학생마다 필요한 보완 범위가 다르므로 {ctx.config['checks']} 항목을 한 번에 점검한 뒤 우선순위를 정하는 것이 좋습니다.",
+        f"{actual_center_name(ctx)} 상담에서는 현재 결과만 평가하지 않고 {ctx.config['checks']} 항목을 살펴 실제로 이어갈 수 있는 계획을 정합니다.",
+        f"{ctx.locality}의 같은 학년 학생이라도 막히는 지점은 다를 수 있어 {ctx.config['checks']} 항목을 나누어 확인해야 합니다.",
+        f"{ctx.config['label']}의 시작점은 {ctx.locality} 학생이 가져온 교재와 최근 기록에서 {ctx.config['checks']} 상태를 구분하는 것입니다.",
+        f"{ctx.locality}에서 {ctx.config['label']} 상담을 알아볼 때에는 {ctx.config['checks']} 가운데 먼저 바꿀 항목과 오래 관리할 항목을 나누어야 합니다.",
     ]
     school = actual_school_phrase(ctx)
     center_name = actual_center_name(ctx)
-    second = [
-        f"이 페이지에는 {school} 학생이 참고할 수 있는 상담 범위와 {center_name} 위치 정보를 함께 정리했습니다.",
-        f"{school} 관련 상담을 준비한다면 현재 교재와 최근 시험 자료를 가져오면 필요한 범위를 더 구체적으로 확인할 수 있습니다.",
-        f"센터 정보와 학교 참고 목록은 상담 범위를 이해하기 위한 자료이며, 실제 개설 여부는 학년과 시간표에 따라 확인합니다.",
-        f"{center_name}의 주소와 학교 참고 정보를 확인한 뒤 방문 전 상담 시간을 먼저 맞추는 것을 권합니다.",
-    ]
+    if school == SCHOOL_FALLBACK:
+        second = [
+            f"재학 학교의 진도와 시험 범위는 {center_name} 상담에서 현재 교재와 함께 확인합니다.",
+            f"학교명이 제공된 자료에 없을 때는 임의로 넣지 않고 현재 교재와 최근 시험 자료로 필요한 범위를 정합니다.",
+            f"{ctx.locality} 학생의 재학 학교 일정과 공부 가능 시간을 알려주면 {ctx.config['label']}의 시작 범위를 더 구체적으로 조정할 수 있습니다.",
+            f"학교별 진도는 상담에서 확인하므로 현재 사용하는 교재와 최근 평가 자료를 {center_name} 방문 전에 준비해 주세요.",
+            f"학교 정보가 따로 표시되지 않은 경우 학생의 실제 진도와 시험 일정을 기준으로 학습 순서를 정합니다.",
+            f"제공 자료에 없는 학교명은 추가하지 않았습니다. 상담에서는 학생이 가져온 교재와 시험 범위부터 확인합니다.",
+        ]
+    else:
+        second = [
+            f"이 페이지에는 {school} 학생이 참고할 수 있는 상담 범위와 {center_name} 위치 정보를 함께 정리했습니다.",
+            f"{school} 관련 상담을 준비한다면 현재 교재와 최근 시험 자료를 가져오면 필요한 범위를 더 구체적으로 확인할 수 있습니다.",
+            f"센터 정보와 학교 참고 목록은 상담 범위를 이해하기 위한 자료이며, 실제 개설 여부는 학년과 시간표에 따라 확인합니다.",
+            f"{center_name}의 주소와 학교 참고 정보를 확인한 뒤 방문 전 상담 시간을 먼저 맞추는 것을 권합니다.",
+        ]
     return choose(ctx, headings), choose(ctx, first), choose(ctx, second)
 
 
 def process_items(ctx: PageContext) -> list[tuple[str, str]]:
-    return [(label, choose(ctx, variants)) for label, variants in ctx.config["process"]]
+    school = actual_school_phrase(ctx, 2)
+    items: list[tuple[str, str]] = []
+    for index, (label, variants) in enumerate(ctx.config["process"]):
+        body = choose(ctx, variants).rstrip(".。")
+        frames = [
+            f"{ctx.locality} {ctx.config['label']}의 {label} 단계에서는 {body}.",
+            f"학생의 현재 자료를 기준으로 {body}. 이후 {actual_center_name(ctx)} 상담에서 다음 확인 범위를 정합니다.",
+            f"{ctx.config['checks']} 상태를 함께 살피면서 {body}.",
+            (f"{school}의 교재·일정을 참고할 때에도 {body}." if school != SCHOOL_FALLBACK
+             else f"재학 학교의 교재와 일정을 확인하면서 {body}."),
+            f"{ctx.locality} 학생이 실제로 이어갈 수 있도록 {body}.",
+        ]
+        items.append((label, frames[(ctx.rng.randrange(len(frames)) + index) % len(frames)]))
+    return items
 
 
 def build_primary_section(ctx: PageContext) -> str:
@@ -550,21 +616,47 @@ def build_verified_section(ctx: PageContext) -> str:
     else:
         school_values = ctx.info.schools.get(ctx.config["stage"], [])
     school_markup = ("".join(f"<span>{html.escape(school)}</span>" for school in school_values)
-                     if school_values else "<span>학교별 진도 상담 확인</span>")
+                     if school_values else "<span>재학 학교 진도는 상담 시 확인</span>")
     tuition = (f'<a class="text-link" href="{html.escape(ctx.info.tuition_url, quote=True)}" target="_blank" rel="noopener noreferrer">센터 교습비 자료 확인</a>'
                if ctx.info.tuition_url else "")
     tuition_block = f"          {tuition}\n" if tuition else ""
+    if is_service_area_page(ctx):
+        relationship_label = "연결 상담 센터 정보"
+        relationship_note = (
+            f"{ctx.locality} 페이지는 제공된 상담권역 자료에서 {actual_center_name(ctx)}와 연결됩니다. "
+            "페이지의 지역명과 실제 센터 위치가 다를 수 있으므로 방문 위치는 아래 센터명과 주소를 기준으로 확인해 주세요."
+        )
+    else:
+        relationship_label = "확인된 센터 정보"
+        if available_grade_items(ctx):
+            relationship_note = (
+                f"{ctx.locality} 페이지에 연결된 실제 상담 센터입니다. 등록 전 {available_grade_text(ctx)} 개설 여부와 "
+                "현재 시간표를 다시 확인해 주세요."
+            )
+        else:
+            relationship_note = (
+                f"{ctx.locality} 페이지에 연결된 실제 상담 센터입니다. 제공 자료에 학년 범위가 따로 표시되지 않아 "
+                "학생의 현재 학년과 센터 시간표를 상담에서 확인해야 합니다."
+            )
+    school_context = actual_school_phrase(ctx)
+    school_statement = (
+        f"{school_context} 등 표시된 학교명은 상담 범위를 이해하기 위한 참고 정보입니다."
+        if school_context != SCHOOL_FALLBACK
+        else "재학 학교 정보는 상담 범위를 이해하기 위한 참고 정보입니다."
+    )
     verified_note = choose(ctx, [
-        "학교명은 상담 범위를 이해하기 위한 참고 정보입니다. 실제 개설 여부는 학생의 학년·과목과 센터 시간표를 함께 확인해 안내합니다.",
-        "표시된 학교는 통학권 참고 자료이며 수업 개설을 의미하지 않습니다. 등록 전 학년·과목과 현재 시간표를 확인해 주세요.",
-        "참고 학교와 별개로 학생의 현재 진도와 센터 시간표를 대조한 뒤 실제 수업 가능 여부를 안내합니다.",
-        "학교 정보는 상담 준비를 위한 기준입니다. 수업 여부는 학년, 선택 과목, 센터의 현재 개설 시간을 확인한 후 결정됩니다.",
+        f"{school_statement} 실제 개설 여부는 학생의 학년·과목과 {actual_center_name(ctx)} 시간표를 함께 확인합니다.",
+        f"표시된 학교는 {ctx.locality} 상담 준비를 위한 참고 자료이며 수업 개설을 뜻하지 않습니다. 등록 전 {ctx.config['stage']} 학년과 {ctx.config['subject']} 개설 시간을 확인해 주세요.",
+        f"참고 학교와 별개로 학생의 현재 진도와 {actual_center_name(ctx)} 시간표를 대조한 뒤 실제 수업 가능 여부를 안내합니다.",
+        f"학교 정보는 {ctx.config['label']} 상담 준비를 위한 기준입니다. 수업 여부는 학년, 선택 과목, 센터의 현재 개설 시간을 확인한 후 결정됩니다.",
+        f"{ctx.locality} 학생은 재학 학교의 교재와 시험 일정을 준비하되, 수업 가능 여부는 {actual_center_name(ctx)}의 최신 시간표로 확인해야 합니다.",
     ])
     return f'''    <section id="verified-center" class="local-section verified-center-section">
       <div class="wrap verified-center-grid">
         <article class="verified-center-card">
-          <p class="eyebrow">확인된 센터 정보</p>
+          <p class="eyebrow">{html.escape(relationship_label)}</p>
           <h2>{html.escape(actual_center_name(ctx))}</h2>
+          <p class="verified-note">{html.escape(relationship_note)}</p>
           <dl class="verified-data-list">
             <div><dt>수업 가능 학년</dt><dd>{html.escape(available_grade_text(ctx))}</dd></div>
             <div><dt>주소</dt><dd>{html.escape(actual_address(ctx))}</dd></div>
@@ -572,6 +664,7 @@ def build_verified_section(ctx: PageContext) -> str:
           </dl>
 {tuition_block}          <div class="verified-school-list" aria-label="상담 참고 학교">{school_markup}</div>
           <p class="verified-note">{html.escape(verified_note)}</p>
+          <p class="verified-note">자료 기준: {html.escape(source_basis(ctx))} · 페이지 정리일 {TODAY}</p>
         </article>
         <figure class="verified-map-card">
           {ctx.map_image}
@@ -581,22 +674,40 @@ def build_verified_section(ctx: PageContext) -> str:
     </section>'''
 
 
+def student_answer(ctx: PageContext, student: str, index: int) -> str:
+    focuses = check_items(ctx)
+    focus = focuses[(ctx.rng.randrange(len(focuses)) + index) % len(focuses)]
+    process_count = len(ctx.config["process"])
+    process_label, process_variants = ctx.config["process"][(ctx.rng.randrange(process_count) + index) % process_count]
+    action = choose(ctx, process_variants)
+    school = actual_school_phrase(ctx, 2)
+    grades = available_grade_text(ctx)
+    evidence = [
+        f"{ctx.locality} 학생의 최근 교재에서 ‘{focus}’ 항목이 막힌 지점을 먼저 표시합니다.",
+        f"{student} 상황은 과제 기록과 최근 평가 자료에서 ‘{focus}’ 항목을 함께 살펴 원인을 구분합니다.",
+        (f"{school}의 교재·시험 일정을 참고하되 학생 풀이에서 ‘{focus}’ 상태를 먼저 확인합니다."
+         if school != SCHOOL_FALLBACK
+         else f"재학 학교의 교재와 시험 일정을 준비하고 ‘{focus}’ 상태를 먼저 확인합니다."),
+        (f"센터 자료에 표시된 {grades} 범위와 학생의 실제 진도를 대조해 ‘{focus}’ 항목의 시작점을 정합니다."
+         if available_grade_items(ctx)
+         else f"센터 자료에 학년 범위가 따로 표시되지 않아 학생의 현재 학년과 실제 진도를 상담에서 대조한 뒤 ‘{focus}’ 항목의 시작점을 정합니다."),
+        f"{actual_center_name(ctx)} 상담에서는 {student} 상황을 성적만으로 판단하지 않고 최근 학습 기록으로 확인합니다.",
+        f"{ctx.config['label']}에서 ‘{focus}’ 항목이 반복되는 시점과 사용 중인 교재 범위를 나누어 봅니다.",
+    ]
+    followups = [
+        f"{action} 이후 {process_label} 결과를 다음 상담에서 다시 확인합니다.",
+        f"{action} 실행 여부는 {ctx.locality} 학생의 주중·주말 가능 시간에 맞춰 점검합니다.",
+        f"{action} 한 번에 많은 분량을 정하기보다 완료 기록을 보고 다음 범위를 조정합니다.",
+        f"{action} 이 과정에서 확인된 내용은 {actual_center_name(ctx)}의 실제 시간표와 대조합니다.",
+        f"{action} 다음 점검에서는 같은 어려움이 남아 있는지 유사한 과제로 확인합니다.",
+        f"{action} 계획은 {ctx.config['checks']} 가운데 우선순위가 높은 항목부터 실행합니다.",
+    ]
+    return f"{choose(ctx, evidence)} {choose(ctx, followups)}"
+
+
 def build_quality_section(ctx: PageContext) -> str:
     students = ctx.rng.sample(ctx.config["students"], 3)
-    student_bodies = ctx.rng.sample([
-        "현재 자료를 확인한 뒤 필요한 단원과 학습량을 정합니다.",
-        "상담에서 원인을 나누어 보고 실행 가능한 계획부터 세웁니다.",
-        "최근 시험과 과제 기록을 바탕으로 우선 보완할 내용을 확인합니다.",
-        "풀이가 멈춘 지점을 확인하고 복습할 개념과 적용 문제를 구분합니다.",
-        "과제 완료 기록을 살펴 분량과 난도를 현실적으로 다시 맞춥니다.",
-        "시험 범위와 남은 기간을 나누어 우선순위가 높은 학습부터 정합니다.",
-        "반복되는 오답을 유형별로 묶고 다음 확인 시점을 계획합니다.",
-        "공부 가능한 시간을 기준으로 주중과 주말의 역할을 다르게 잡습니다.",
-        "현재 진도에 필요한 이전 개념을 찾아 짧은 복습 단계를 먼저 둡니다.",
-        "정답보다 풀이 과정을 살펴 개념, 계산, 해석 중 원인을 구분합니다.",
-        "학생이 스스로 설명할 수 있는 범위와 추가 지도가 필요한 범위를 나눕니다.",
-        "완료할 수 있는 작은 목표를 정하고 다음 상담에서 실행 결과를 확인합니다.",
-    ], 3)
+    student_bodies = [student_answer(ctx, student, index) for index, student in enumerate(students)]
     student_cards = "\n".join(
         f'''            <article class="geo-answer-card">
               <strong>{html.escape(student)}</strong>
@@ -606,33 +717,40 @@ def build_quality_section(ctx: PageContext) -> str:
     )
     school = actual_school_phrase(ctx)
     fit_intro = choose(ctx, [
-        f"{ctx.config['label']}에서는 학생의 현재 상태를 확인하고 우선순위를 정하는 것부터 시작합니다.",
-        f"{ctx.config['label']} 상담은 결과보다 막힌 원인과 실행 습관을 먼저 구분합니다.",
-        f"{ctx.config['label']} 과정은 같은 학년이라도 교재·진도·오답 유형에 따라 점검 순서가 달라집니다.",
-        f"{ctx.config['label']} 상담을 시작하기 전 현재 자료와 실제 공부 시간을 함께 살펴봅니다.",
+        f"{ctx.locality} {ctx.config['label']}에서는 학생의 현재 상태를 확인하고 우선순위를 정하는 것부터 시작합니다.",
+        f"{actual_center_name(ctx)}의 {ctx.config['label']} 상담은 결과보다 막힌 원인과 실행 습관을 먼저 구분합니다.",
+        f"{ctx.locality}의 같은 학년 학생이라도 교재·진도·오답 유형에 따라 {ctx.config['label']} 점검 순서가 달라집니다.",
+        f"{ctx.title} 상담을 시작하기 전 현재 자료와 실제 공부 시간을 함께 살펴봅니다.",
+        f"{ctx.locality} 학생에게 필요한 {ctx.config['label']} 범위는 {ctx.config['checks']} 기록을 대조한 뒤 정합니다.",
+        (f"{available_grade_text(ctx)} 학생이라도 현재 진도는 다를 수 있어 {ctx.config['checks']} 상태를 따로 확인합니다."
+         if available_grade_items(ctx)
+         else f"센터 자료에 학년 범위가 따로 표시되지 않은 경우 {ctx.locality} 학생의 현재 학년과 시간표를 상담에서 확인합니다."),
     ])
     school_check = (choose(ctx, [
         f"{school}의 현재 진도와 다음 시험 일정을 확인합니다.",
         f"{school}에서 사용하는 교재와 시험 범위를 정리합니다.",
         f"{school}의 진도 차이를 고려해 필요한 복습 범위를 확인합니다.",
         f"{school}의 시험 일정과 센터 수업 가능 시간을 함께 대조합니다.",
-    ]) if school != "학교별 진도 상담 확인" else choose(ctx, [
+    ]) if school != SCHOOL_FALLBACK else choose(ctx, [
         "재학 중인 학교의 현재 진도와 다음 시험 일정을 확인합니다.",
         "학교에서 사용하는 교재와 최근 시험 범위를 준비합니다.",
         "학교 진도와 시험 일정을 알려주면 상담 범위를 정하기 좋습니다.",
         "재학 학교의 수업 진도와 센터 시간표를 함께 대조합니다.",
     ]))
+    focus = choose(ctx, check_items(ctx))
     recent_check = choose(ctx, [
-        "현재 교재와 최근 시험지, 자주 틀리는 문제를 준비합니다.",
-        "사용 중인 교재와 최근 평가 자료에서 막힌 문제를 표시해 둡니다.",
-        "최근 시험지와 과제 기록을 모아 반복되는 어려움을 확인합니다.",
-        "현재 진도와 오답이 남은 단원을 알 수 있는 자료를 챙깁니다.",
+        f"{ctx.config['label']} 상담을 위해 현재 교재와 최근 시험지에서 ‘{focus}’ 항목이 드러나는 문제를 준비합니다.",
+        f"사용 중인 교재와 최근 평가 자료에서 {ctx.locality} 학생이 ‘{focus}’ 부분에서 막힌 문제를 표시해 둡니다.",
+        f"최근 시험지와 과제 기록을 모아 {ctx.config['checks']} 가운데 반복되는 어려움을 확인합니다.",
+        f"현재 진도와 오답이 남은 단원을 알 수 있는 자료를 챙겨 {actual_center_name(ctx)} 상담 범위를 좁힙니다.",
+        f"{ctx.title} 상담 전에 교재·시험지·오답 기록을 나누어 ‘{focus}’ 상태를 확인합니다.",
     ])
     time_check = choose(ctx, [
-        "주중과 주말에 실제로 실행할 수 있는 학습 시간을 정리합니다.",
-        "학교와 다른 일정까지 고려해 꾸준히 확보할 수 있는 시간을 적어 봅니다.",
-        "과제와 복습에 사용할 수 있는 요일별 시간을 현실적으로 계산합니다.",
-        "계획이 무너지지 않도록 평일과 주말의 공부 가능 시간을 나누어 봅니다.",
+        f"{ctx.config['stage']} {ctx.config['subject']} 과제와 복습을 주중·주말에 실제로 실행할 수 있는 시간으로 나눕니다.",
+        f"학교와 다른 일정까지 고려해 {ctx.config['label']}에 꾸준히 사용할 수 있는 시간을 적어 봅니다.",
+        f"‘{focus}’ 항목의 과제와 복습에 사용할 요일별 시간을 현실적으로 계산합니다.",
+        f"{ctx.locality} 학생의 계획이 무너지지 않도록 평일과 주말의 공부 가능 시간을 나누어 봅니다.",
+        f"{actual_center_name(ctx)} 시간표와 학생의 학교 일정을 대조해 실행 가능한 시간을 정리합니다.",
     ])
     goal_check = choose(ctx, [
         f"{ctx.config['checks']} 중 우선 해결할 내용을 한두 가지로 좁힙니다.",
@@ -671,77 +789,117 @@ def build_faqs(ctx: PageContext) -> list[dict[str, str]]:
     school = actual_school_phrase(ctx)
     grades = available_grade_text(ctx)
     label = ctx.config["label"]
-    first_answers = [
-        f"현재 교재와 최근 시험 자료를 보고 {ctx.config['checks']} 중 우선 확인할 부분을 정합니다. 상담 결과에 따라 시작 단원과 학습량을 안내합니다.",
-        f"학생의 현재 진도와 과제 기록, 오답을 함께 확인합니다. {ctx.config['label']}에서 먼저 보완할 내용을 정한 뒤 실행 가능한 계획을 세웁니다.",
-        f"성적만으로 반을 정하지 않고 최근 풀이 과정과 학습 시간을 함께 봅니다. {ctx.config['checks']} 항목을 기준으로 상담 범위를 좁힙니다.",
-    ]
-    school_answer = (choose(ctx, [
-        f"{school} 등은 상담 범위를 이해하기 위한 참고 학교입니다. 학교명만으로 수업이 확정되지는 않으며, 현재 진도와 시험 일정, 센터 시간표를 확인한 뒤 가능한 범위를 안내합니다.",
-        f"{school} 등의 진도와 시험 일정은 상담 자료로 활용합니다. 실제 수업 여부는 학생의 학년·과목과 센터 시간표를 대조해 확인합니다.",
-        f"{school} 등 학교별 자료를 참고할 수 있습니다. 사용 교재와 시험 범위를 알려주시면 현재 개설 수업과 맞는지 확인해 안내합니다.",
-        f"{school} 등 재학 학교의 일정은 학습 계획에 반영할 수 있습니다. 다만 학교명만으로 반이 정해지지 않으므로 현재 진도도 함께 살펴봅니다.",
-    ]) if school != "학교별 진도 상담 확인" else choose(ctx, [
-        "학교별 진도와 시험 범위는 상담에서 확인합니다. 현재 교재와 시험 일정을 알려주시면 센터 시간표와 함께 가능한 범위를 안내합니다.",
-        "재학 학교의 교재와 시험 일정을 준비해 주시면 현재 개설 수업과 연결할 수 있는 범위를 확인합니다.",
-        "학교 진도는 학생마다 다를 수 있어 최근 시험 범위와 사용 교재를 먼저 살펴본 뒤 학습 순서를 정합니다.",
-        "상담에서 재학 학교와 현재 진도를 확인하고 센터 시간표에 맞는 수업 범위를 안내합니다.",
-    ]))
+    center = actual_center_name(ctx)
+    address = actual_address(ctx)
+    focus = choose(ctx, check_items(ctx))
+    process_label, process_variants = choose(ctx, ctx.config["process"])
+    process_answer = choose(ctx, process_variants)
+    first_question = choose(ctx, [
+        f"{ctx.title} 상담에서는 무엇을 가장 먼저 확인하나요?",
+        f"{ctx.title}을 알아볼 때 첫 상담에서 어떤 자료를 살펴보나요?",
+        f"{ctx.title} 학습 방향은 어떤 기준으로 정하나요?",
+        f"{ctx.title} 상담은 성적 외에 무엇을 확인하나요?",
+        f"{ctx.title}에서 시작 단원을 정하는 방법은 무엇인가요?",
+        f"{ctx.title} 상담 전에 가장 먼저 정리할 항목은 무엇인가요?",
+    ])
+    first_answer = choose(ctx, [
+        f"{ctx.locality} 학생의 현재 교재와 최근 시험 자료를 보고 ‘{focus}’ 항목이 막힌 지점을 먼저 확인합니다. {process_answer}",
+        f"성적만으로 시작 범위를 정하지 않습니다. {ctx.config['checks']} 기록을 나누어 보고 {center}의 실제 개설 학년과 시간표를 대조합니다.",
+        f"최근 풀이와 과제 완료 기록에서 ‘{focus}’ 상태를 확인한 뒤 {process_label} 순서를 정합니다. 학생이 실행할 수 있는 분량인지도 함께 살펴봅니다.",
+        f"{label} 상담은 현재 진도, 오답, 공부 가능 시간을 함께 확인합니다. 그중 ‘{focus}’ 항목을 우선 점검한 뒤 다음 확인 시점을 정합니다.",
+        f"{ctx.locality} 학생이 가져온 교재·시험지·오답 기록을 기준으로 {ctx.config['checks']} 상태를 구분합니다. 상담 결과는 {center}의 수업 가능 범위와 함께 안내합니다.",
+        f"먼저 학생이 혼자 설명할 수 있는 부분과 도움이 필요한 부분을 나눕니다. 이후 ‘{focus}’ 항목을 중심으로 {process_answer}",
+    ])
     if available_grade_items(ctx):
         grade_answer = choose(ctx, [
-            f"센터 정보에 확인된 학년은 {grades}입니다. 같은 학년이라도 과목과 시간표에 따라 달라질 수 있으므로 등록 전 현재 개설 반을 다시 확인해 주세요.",
-            f"제공된 센터 자료에는 {grades} 수업이 표시되어 있습니다. 등록 시점의 개설 반과 잔여 시간은 상담에서 다시 확인합니다.",
-            f"현재 자료상 가능한 학년은 {grades}입니다. 과목별 개설 시간은 달라질 수 있어 학생 일정과 함께 대조해야 합니다.",
-            f"{grades} 학년이 센터 정보에 포함되어 있습니다. 정확한 수업 요일과 시간은 방문 전 확인해 주세요.",
+            f"{ctx.locality} 페이지에 연결된 {center} 자료에는 {grades} 수업이 표시되어 있습니다. 등록 전 현재 개설 반과 학생 일정을 다시 대조해 주세요.",
+            f"확인된 가능 학년은 {grades}입니다. 다만 {label}의 요일·시간은 달라질 수 있어 {center}의 최신 시간표를 기준으로 확인해야 합니다.",
+            f"학원 제공 센터정보에서 {grades} 학년을 확인했습니다. 같은 학년이라도 현재 진도와 잔여 시간이 다르므로 {ctx.locality} 상담 시 다시 확인합니다.",
+            f"{grades} 범위가 현재 자료에 포함되어 있습니다. {ctx.config['subject']} 과목의 정확한 개설 시간은 {center} 방문 전 문의해 주세요.",
+            f"{ctx.title}의 자료상 학년 범위는 {grades}입니다. 수업 확정 정보가 아니라 상담 기준이므로 현재 시간표와 함께 확인해야 합니다.",
         ])
     else:
         grade_answer = choose(ctx, [
-            "제공된 센터 정보에서 이 과목·학년의 개설 범위가 확인되지 않았습니다. 실제 수업 가능 여부는 등록 전 센터 시간표를 기준으로 상담해 주세요.",
-            "현재 센터 자료만으로는 해당 학년과 과목의 개설 여부를 확정하기 어렵습니다. 방문 전 최신 시간표를 확인해 주세요.",
-            "표시된 자료에 이 학년의 수업 범위가 없어 임의로 안내하지 않습니다. 센터 상담에서 현재 개설 반을 확인해 주세요.",
-            "해당 학년·과목은 제공된 자료에서 확인되지 않습니다. 등록 가능 여부는 최신 센터 일정으로 다시 확인해야 합니다.",
+            f"제공된 {center} 정보에서 {label} 개설 범위를 확인하지 못했습니다. 임의로 학년을 안내하지 않으며 등록 전 최신 시간표를 확인해야 합니다.",
+            f"현재 센터 자료만으로 {ctx.title} 개설 여부를 확정하기 어렵습니다. {address} 방문 전 학년·과목별 시간을 문의해 주세요.",
+            f"{ctx.locality} 페이지에 연결된 자료에는 해당 학년 범위가 표시되지 않았습니다. {center}의 현재 개설 반을 기준으로 상담해 주세요.",
         ])
-    grade_question = choose(ctx, [
-        "센터 자료에서 확인되는 수업 가능 학년은 어떻게 되나요?",
-        f"{label} 상담이 가능한 학년 범위는 어디까지인가요?",
-        "현재 안내 자료에 표시된 개설 학년을 알 수 있나요?",
-        "학년별 수업 가능 여부는 어떤 기준으로 확인하나요?",
-        "학생 학년에 맞는 수업이 있는지 어떻게 확인하나요?",
-        "등록 전에 확인해야 할 학년별 개설 정보는 무엇인가요?",
-    ])
+    grade_item = {
+        "q": choose(ctx, [
+            f"{ctx.locality} {label}에서 확인되는 수업 가능 학년은 어떻게 되나요?",
+            f"{center}의 {label} 가능 학년은 어디까지인가요?",
+            f"{ctx.title} 등록 전에 어떤 학년 정보를 확인해야 하나요?",
+            f"{ctx.locality} 학생의 학년에 맞는 {ctx.config['subject']} 수업은 어떻게 확인하나요?",
+            f"{ctx.title} 페이지에 표시된 개설 학년은 확정 정보인가요?",
+        ]),
+        "a": grade_answer,
+    }
+    school_answer = (choose(ctx, [
+        f"{school} 등은 {ctx.locality} 상담 범위를 이해하기 위한 참고 학교입니다. 학교명만으로 수업이 확정되지는 않으며 {center}의 현재 시간표를 함께 확인합니다.",
+        f"{school} 등의 진도와 시험 일정은 {label} 상담 자료로 활용합니다. 실제 수업 여부는 학생의 학년·과목과 {center} 시간표를 대조해 확인합니다.",
+        f"{school} 등 학교별 자료를 참고할 수 있습니다. 사용 교재와 시험 범위를 알려주시면 {center}의 현재 개설 수업과 맞는지 안내합니다.",
+        f"{school} 등 재학 학교의 일정은 {ctx.locality} 학생의 학습 계획에 반영할 수 있습니다. 다만 학교명만으로 반을 정하지 않고 현재 진도도 함께 살펴봅니다.",
+    ]) if school != SCHOOL_FALLBACK else choose(ctx, [
+        f"재학 학교의 진도와 시험 범위는 {ctx.title} 상담에서 확인합니다. 현재 교재와 시험 일정을 알려주시면 {center} 시간표와 가능한 범위를 안내합니다.",
+        f"학교명이 제공된 자료에 없어 임의로 추가하지 않습니다. {ctx.locality} 학생이 실제 사용하는 교재와 시험 일정을 준비하면 {label} 범위를 구체화할 수 있습니다.",
+        f"학교 진도는 학생마다 다를 수 있어 {ctx.config['checks']} 기록을 먼저 살펴봅니다. 이후 {center}의 개설 정보와 맞는 학습 순서를 정합니다.",
+        f"{ctx.locality} 상담에서 재학 학교와 현재 진도를 확인하고 {center} 시간표에 맞는 수업 범위를 안내합니다.",
+    ]))
     school_question = choose(ctx, [
         f"{school} 등 학교 진도와 시험 일정을 반영할 수 있나요?",
         f"{school} 등의 교재와 시험 범위는 학습 계획에 어떻게 반영하나요?",
         f"{school} 등 재학 학교에 맞춘 {label} 상담이 가능한가요?",
         f"{school} 등의 학사 일정을 고려해 공부 계획을 조정할 수 있나요?",
-    ]) if school != "학교별 진도 상담 확인" else choose(ctx, [
+    ]) if school != SCHOOL_FALLBACK else choose(ctx, [
         "학교 진도와 시험 일정은 어떻게 반영하나요?",
         "재학 학교의 교재와 시험 범위도 상담에서 확인하나요?",
         f"학교별 일정에 맞춰 {label} 계획을 조정할 수 있나요?",
         "학교마다 다른 진도는 어떤 자료로 확인하나요?",
     ])
-    visit_question = choose(ctx, [
-        "방문 상담 전에는 어떤 자료를 준비하면 좋나요?",
-        "첫 상담을 효율적으로 진행하려면 무엇을 가져가야 하나요?",
-        "학생의 현재 상태를 확인하려면 어떤 기록이 필요한가요?",
-        f"{label} 상담 전에 미리 정리할 내용이 있나요?",
-        "센터 방문 전에 확인하면 좋은 항목은 무엇인가요?",
-        "상담 예약과 준비 자료는 어떻게 확인하면 되나요?",
-    ])
-    visit_answer = choose(ctx, [
-        f"현재 교재와 최근 시험지, 오답 기록을 준비해 주세요. 실제 안내 센터는 {actual_center_name(ctx)}이며 주소는 {actual_address(ctx)}입니다. 방문 전 상담 시간을 확인하는 것이 좋습니다.",
-        f"사용 중인 교재, 최근 평가 자료, 평소 공부 가능한 시간을 정리해 오면 좋습니다. {actual_center_name(ctx)} 방문 전에는 {actual_address(ctx)} 위치와 예약 시간을 확인해 주세요.",
-        f"최근 시험 결과와 틀린 문제, 과제 수행 기록을 함께 준비하면 상담 범위를 구체화할 수 있습니다. 상담 장소는 {actual_center_name(ctx)}이며 주소는 {actual_address(ctx)}입니다.",
-        f"현재 진도와 어려운 단원, 주중 학습 가능 시간을 메모해 주세요. {actual_center_name(ctx)}의 최신 수업 시간과 {actual_address(ctx)} 방문 일정을 먼저 확인하는 것이 좋습니다.",
-        f"교재와 시험 범위표, 반복해서 틀리는 문제를 표시해 오면 시작점을 정하는 데 도움이 됩니다. 실제 상담은 {actual_center_name(ctx)}에서 진행하며 주소는 {actual_address(ctx)}입니다.",
-        f"학년·과목·현재 진도와 원하는 상담 시간을 먼저 알려주세요. {actual_center_name(ctx)}의 개설 시간 확인 후 {actual_address(ctx)} 방문 일정을 정할 수 있습니다.",
-    ])
-    return [
-        {"q": f"{ctx.title} 상담에서는 무엇을 가장 먼저 확인하나요?", "a": choose(ctx, first_answers)},
-        {"q": grade_question, "a": grade_answer},
-        {"q": school_question, "a": school_answer},
-        {"q": visit_question, "a": visit_answer},
-    ]
+    school_item = {"q": school_question, "a": school_answer}
+    preparation_item = {
+        "q": choose(ctx, [
+            f"{ctx.title} 상담 전에는 어떤 자료를 준비하면 좋나요?",
+            f"{center}에서 {label} 상담을 받을 때 무엇을 가져가야 하나요?",
+            f"{ctx.locality} 학생의 현재 상태를 확인하려면 어떤 기록이 필요한가요?",
+            f"{label} 상담 전에 ‘{focus}’ 항목을 어떻게 정리하면 되나요?",
+            f"{center} 방문 전 어떤 자료와 일정을 확인해야 하나요?",
+        ]),
+        "a": choose(ctx, [
+            f"현재 교재와 최근 시험지, 오답 기록에서 ‘{focus}’ 항목을 표시해 주세요. 실제 상담 장소는 {center}이며 주소는 {address}입니다.",
+            f"교재·최근 평가 자료·평소 공부 가능한 시간을 정리하면 좋습니다. {center} 방문 전에는 {address} 위치와 최신 시간표를 확인해 주세요.",
+            f"최근 시험 결과와 과제 수행 기록을 준비하면 {ctx.config['checks']} 가운데 우선 확인할 부분을 구체화할 수 있습니다.",
+            f"현재 진도와 어려운 단원, 주중 학습 가능 시간을 메모해 주세요. {ctx.locality} 상담 페이지의 실제 안내 센터는 {center}입니다.",
+        ]),
+    }
+    management_item = {
+        "q": choose(ctx, [
+            f"{ctx.locality} {label}에서 ‘{focus}’ 관리는 어떻게 진행하나요?",
+            f"{ctx.title} 수업에서 {process_label} 결과는 어떻게 다시 확인하나요?",
+            f"{ctx.config['subject']} 학습 중 ‘{focus}’ 어려움이 반복되면 무엇을 점검하나요?",
+            f"{ctx.locality} 학생의 {ctx.config['checks']} 우선순위는 어떻게 정하나요?",
+        ]),
+        "a": choose(ctx, [
+            f"최근 자료에서 ‘{focus}’ 문제가 나타난 지점을 표시한 뒤 원인을 개념·실행·오답으로 나눕니다. {process_answer}",
+            f"{ctx.config['checks']} 기록을 한 번에 확인하고 학생이 실행 가능한 항목부터 정합니다. 다음 점검에서는 완료 여부와 같은 오류의 반복 여부를 확인합니다.",
+            f"{ctx.locality} 학생의 교재와 학습 시간을 기준으로 ‘{focus}’ 항목의 분량을 정합니다. 결과는 {center} 상담에서 다시 조정합니다.",
+        ]),
+    }
+    center_item = {
+        "q": f"{ctx.locality} 페이지에서 안내하는 실제 상담 센터는 어디인가요?",
+        "a": f"이 페이지에 연결된 상담 센터는 {center}이며 주소는 {address}입니다. 페이지의 지역명과 실제 센터 위치가 다를 수 있으므로 방문 전 센터명·주소·시간표를 확인해 주세요.",
+    }
+    optional = [school_item, preparation_item, management_item]
+    if ctx.info.tuition_url:
+        optional.append({
+            "q": f"{ctx.title} 교습비 정보는 어디에서 확인할 수 있나요?",
+            "a": f"페이지의 ‘센터 교습비 자료 확인’ 링크에서 {center}의 공개 자료를 확인할 수 있습니다. 실제 수강 과목과 시간에 따른 금액은 등록 전 다시 확인해 주세요.",
+        })
+    if is_service_area_page(ctx):
+        tail = [center_item, choose(ctx, optional)]
+    else:
+        tail = ctx.rng.sample(optional, 2)
+    return [{"q": first_question, "a": first_answer}, grade_item, *tail]
 
 
 def build_faq_html(ctx: PageContext, faqs: list[dict[str, str]]) -> str:
@@ -810,6 +968,10 @@ def normalize_machine_urls(value: Any) -> Any:
 
 def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str) -> str:
     data = ctx.data
+    # Rebuild the informational Article deterministically.  The page remains a
+    # Service landing page, while this node describes the substantial visible
+    # guidance copy.  Tuition links stay with the Service instead of being
+    # misrepresented as citations for the full article.
     graph = [node for node in data["@graph"] if not (isinstance(node, dict) and node_has_type(node, "Article"))]
     data["@graph"] = graph
     old_org = find_node(graph, "EducationalOrganization")
@@ -837,11 +999,12 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
                 {"@type": "Thing", "name": ctx.config["label"]},
             ]
             schools = actual_school_phrase(ctx)
-            node["mentions"] = ([{"@type": "Organization", "name": school} for school in schools.split("·") if is_specific_school(school)]
-                                if schools != "학교별 진도 상담 확인" else [])
+            school_mentions = ([{"@type": "Organization", "name": school} for school in schools.split("·") if is_specific_school(school)]
+                               if schools != SCHOOL_FALLBACK else [])
+            node["mentions"] = [{"@id": stable_id}, *school_mentions]
             node["hasPart"] = [
                 {"@type": "WebPageElement", "name": "학습관리 방법", "url": ctx.page_url + "#learning-plan"},
-                {"@type": "WebPageElement", "name": "확인된 센터 정보", "url": ctx.page_url + "#verified-center"},
+                {"@type": "WebPageElement", "name": "연결 상담 센터 정보" if is_service_area_page(ctx) else "확인된 센터 정보", "url": ctx.page_url + "#verified-center"},
                 {"@type": "WebPageElement", "name": "추천 학생 점검", "url": ctx.page_url + "#student-fit"},
                 {"@type": "WebPageElement", "name": "상담 전 체크리스트", "url": ctx.page_url + "#consult-checklist"},
                 {"@type": "WebPageElement", "name": "자주 묻는 질문", "url": ctx.page_url + "#faq-section"},
@@ -862,6 +1025,13 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
                     "audienceType": ctx.config["stage"],
                 },
             }
+            if ctx.info.tuition_url:
+                rebuilt["offers"] = {
+                    "@type": "Offer",
+                    "url": ctx.info.tuition_url,
+                    "category": "교습비 안내",
+                    "description": "교습비와 현재 수업 가능 여부는 연결된 공개 자료와 상담에서 확인합니다.",
+                }
             node.clear()
             node.update(rebuilt)
         elif node_type == "FAQPage":
@@ -869,6 +1039,32 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
             node.update({"@type": "FAQPage", "@id": ctx.page_url + "#faq", "mainEntity": faq_entities})
         elif node_type == "BreadcrumbList" or node_type == "ItemList":
             pass
+    article_mentions: list[dict[str, Any]] = [{"@id": stable_id}]
+    article_schools = actual_school_phrase(ctx)
+    if article_schools != SCHOOL_FALLBACK:
+        article_mentions.extend(
+            {"@type": "Organization", "name": school}
+            for school in article_schools.split("·")
+            if is_specific_school(school)
+        )
+    article: dict[str, Any] = {
+        "@type": "Article",
+        "@id": ctx.page_url + "#article",
+        "headline": ctx.title,
+        "description": description,
+        "inLanguage": "ko-KR",
+        "articleSection": ctx.config["label"],
+        "mainEntityOfPage": {"@id": ctx.page_url + "#webpage"},
+        "author": {"@id": stable_id},
+        "publisher": {"@id": stable_id},
+        "about": [
+            {"@type": "Place", "name": ctx.region},
+            {"@type": "Thing", "name": ctx.config["label"]},
+        ],
+        "mentions": article_mentions,
+        "dateModified": TODAY,
+    }
+    graph.append(article)
     data = normalize_machine_urls(data)
     compact = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     _, match = parse_jsonld(ctx.text)
@@ -955,16 +1151,17 @@ def transform_page(ctx: PageContext) -> str:
     text = re.sub(r'aria-label="([^"]+) 부모 자식 페이지 이동"', r'aria-label="\1 학습 안내 페이지 이동"', text)
     text = text.replace(f"와와학습코칭학원 {ctx.locality} 지점", actual_center_name(ctx))
     text = text.replace(f"와와학습코칭센터 {ctx.locality} 지점", actual_center_name(ctx))
-    text = text.replace("수학는", "수학은").replace("수학를", "수학을").replace("관리을", "관리를")
+    text = (text.replace("수학는", "수학은").replace("수학를", "수학을")
+            .replace("관리을", "관리를").replace("점는", "점은"))
     text = text.replace("SEO GEO 학습 안내", "학습 및 상담 안내")
     return text
 
 
 def validate_transformed(ctx: PageContext, text: str) -> list[str]:
     errors: list[str] = []
-    if text.count("<h1") != 1:
+    if len(re.findall(r"<h1\b", text, re.I)) != 1:
         errors.append("H1 count")
-    for bad in ("수학는", "수학를", "관리을", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
+    for bad in ("수학는", "수학를", "관리을", "점는", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
         if bad in text:
             errors.append(f"remaining token: {bad}")
     if ctx.image_block not in text:
@@ -974,6 +1171,39 @@ def validate_transformed(ctx: PageContext, text: str) -> list[str]:
     try:
         data, _ = parse_jsonld(text)
         json.dumps(data, ensure_ascii=False)
+        graph = data.get("@graph", [])
+        articles = [node for node in graph if isinstance(node, dict) and node_has_type(node, "Article")]
+        faq_nodes = [node for node in graph if isinstance(node, dict) and node_has_type(node, "FAQPage")]
+        services = [node for node in graph if isinstance(node, dict) and node_has_type(node, "Service")]
+        if len(articles) != 1:
+            errors.append("Article count")
+        if len(faq_nodes) != 1 or len(faq_nodes[0].get("mainEntity", [])) != 4:
+            errors.append("FAQPage count")
+        stable_id = ctx.center.primary_url + "#organization"
+        if articles:
+            article = articles[0]
+            if article.get("mainEntityOfPage", {}).get("@id") != ctx.page_url + "#webpage":
+                errors.append("Article mainEntityOfPage")
+            if article.get("author", {}).get("@id") != stable_id or article.get("publisher", {}).get("@id") != stable_id:
+                errors.append("Article entity reference")
+        if len(services) != 1 or services[0].get("provider", {}).get("@id") != stable_id:
+            errors.append("Service provider")
+
+        faq_block = re.search(r'<section\b[^>]*id="faq-section"[^>]*>(.*?)</section>', text, re.I | re.S)
+        visible_faqs: list[tuple[str, str]] = []
+        if faq_block:
+            for detail in re.findall(r"<details\b[^>]*>(.*?)</details>", faq_block.group(1), re.I | re.S):
+                question = re.search(r"<summary\b[^>]*>(.*?)</summary>", detail, re.I | re.S)
+                answer = re.search(r"<p\b[^>]*>(.*?)</p>", detail, re.I | re.S)
+                if question and answer:
+                    visible_faqs.append((strip_tags(question.group(1)), strip_tags(answer.group(1))))
+        schema_faqs = [
+            (str(item.get("name", "")).strip(), str(item.get("acceptedAnswer", {}).get("text", "")).strip())
+            for item in (faq_nodes[0].get("mainEntity", []) if faq_nodes else [])
+            if isinstance(item, dict)
+        ]
+        if visible_faqs != schema_faqs:
+            errors.append("FAQ screen/schema mismatch")
     except Exception as exc:  # noqa: BLE001 - validator collects diagnostics
         errors.append(f"JSON-LD: {exc}")
     return errors
@@ -986,10 +1216,17 @@ def main() -> None:
 
     root = Path(__file__).resolve().parents[1]
     center = root / CENTER_DIRNAME
-    local_pages = sorted(center.glob("*/index.html"))
-    child_pages = sorted(center.glob("*/*/index.html"))
-    records, locality_to_key = build_center_records(root, local_pages)
     center_info = load_center_info(root)
+    local_pages = [
+        path for path in sorted(center.glob("*/index.html"))
+        if normalize_locality(path.parent.name) in center_info
+    ]
+    local_names = {path.parent.name for path in local_pages}
+    child_pages = [
+        path for path in sorted(center.glob("*/*/index.html"))
+        if path.parent.parent.name in local_names and path.parent.name in CATEGORIES and path.parent.name
+    ]
+    records, locality_to_key = build_center_records(root, local_pages)
     for record in records.values():
         record.areas = []
     for locality, key in locality_to_key.items():
