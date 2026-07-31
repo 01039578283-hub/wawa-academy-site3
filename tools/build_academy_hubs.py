@@ -20,7 +20,7 @@ from urllib.parse import quote
 
 DOMAIN = "xn--sp5b72l1taf0p.com"
 BASE_URL = f"https://{DOMAIN}"
-TODAY = "2026-07-29"
+TODAY = "2026-07-31"
 CENTER_DIR = "전국센터"
 REGION_ORDER = ["서울", "경기", "인천", "대전", "충청", "대구", "울산", "부산", "경상", "광주", "전라", "강원", "제주"]
 CATEGORIES = {
@@ -143,7 +143,7 @@ def shell(*, depth: int, title: str, description: str, canonical: str, h1: str, 
 <a class="skip-link" href="#main">본문 바로가기</a>
   <header class="site-header">
     <nav class="nav wrap" aria-label="주요 메뉴">
-      <a class="brand" href="{home}" aria-label="와와학습코칭학원 홈"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a>
+      <a class="brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a>
       <div class="nav-links"><a href="{home}">홈</a><a href="{home}학습관리/">학습관리</a><a class="active" href="{home}전국센터/">전국센터</a><a href="{home}상담문의/">상담문의</a></div>
       <a class="nav-cta" href="{CONSULT_URL}" target="_blank" rel="noopener">상담 신청</a>
     </nav>
@@ -154,7 +154,7 @@ def shell(*, depth: int, title: str, description: str, canonical: str, h1: str, 
         <div class="crumbs">{crumb_html}</div>
         <div class="center-hero-card"><div class="center-hero-inner">
           <div><p class="eyebrow">{html.escape(eyebrow)}</p><h1>{html.escape(h1)}</h1><p>{html.escape(intro)}</p>
-            <div class="local-actions"><a class="btn btn-primary" href="{CONSULT_URL}" target="_blank" rel="noopener">상담 신청</a><a class="btn btn-ghost" href="tel:010-3957-8283">전화 문의</a></div>
+            <div class="local-actions"><a class="btn btn-primary" href="{CONSULT_URL}" target="_blank" rel="noopener">상담 신청</a><a class="btn btn-ghost" href="tel:010-3957-8283">전화&nbsp;문의</a></div>
           </div>
           <aside class="hero-mini-panel"><span>{html.escape(metric_label)}</span><strong>{html.escape(metric)}</strong><span>확인된 안내 페이지</span></aside>
         </div></div>
@@ -162,8 +162,8 @@ def shell(*, depth: int, title: str, description: str, canonical: str, h1: str, 
     </section>
 {body}
   </main>
-  <footer class="site-footer" id="contact"><div class="wrap footer-inner"><div><a class="brand footer-brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a><p>초중고 영어수학 학습코칭 · 진단상담 · 플래너 관리</p></div><div class="footer-links"><a href="{home}학습관리/">학습관리</a><a href="{home}전국센터/">전국센터</a><a href="tel:010-3957-8283">010-3957-8283</a></div></div></footer>
-  <div class="floating-actions" aria-label="빠른 상담 메뉴"><a class="fab-call" href="tel:010-3957-8283">전화문의</a><a class="fab-sms" href="https://blogsms.net/01039578283" target="_blank" rel="noopener">문자문의</a><a class="fab-consult" href="{CONSULT_URL}" target="_blank" rel="noopener">상담신청</a></div>
+  <footer class="site-footer" id="contact"><div class="wrap footer-inner"><div><a class="brand footer-brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a><p>초중고 영어수학 학습코칭 · 진단상담 · 플래너 관리</p></div><div class="footer-links"><a href="{home}학습관리/">학습관리</a><a href="{home}전국센터/">전국센터</a><a href="tel:010-3957-8283">010&#8209;3957&#8209;8283</a></div></div></footer>
+  <nav class="floating-actions" aria-label="빠른 상담 메뉴"><a class="fab-call" href="tel:010-3957-8283">전화문의</a><a class="fab-sms" href="https://blogsms.net/01039578283" target="_blank" rel="noopener">문자문의</a><a class="fab-consult" href="{CONSULT_URL}" target="_blank" rel="noopener">상담신청</a></nav>
 {extra_script}</body>
 </html>
 '''
@@ -274,10 +274,10 @@ def update_context_links(root: Path, rows: list[dict[str, str]]) -> int:
                 ]
             else:
                 links = [(f"../{row['region']}/", f"{row['region']} 지역 안내")]
-            marker = '<!-- academy-hub-links:start -->\n        <div class="local-actions" aria-label="지역과 학년 과목 허브 이동">' + "".join(
+            marker = '<!-- academy-hub-links:start -->\n        <nav class="local-actions" aria-label="지역과 학년 과목 허브 이동">' + "".join(
                 f'<a class="btn btn-ghost" href="{html.escape(href, quote=True)}">{html.escape(label)}</a>' for href, label in links
-            ) + '</div>\n        <!-- academy-hub-links:end -->\n        '
-            needle = '<div class="family-link-grid"'
+            ) + '</nav>\n        <!-- academy-hub-links:end -->\n        '
+            needle = '<nav class="family-link-grid"'
             if marker_re.search(original):
                 text = marker_re.sub(marker, original, count=1)
             elif needle in original:
@@ -381,6 +381,16 @@ def main() -> None:
 
     updated = update_context_links(root, rows)
     print(f"neighbourhoods={len(rows)} regions={len(REGION_ORDER)} categories={len(CATEGORIES)} context_pages_updated={updated}")
+    # Reapply the answer/comparison/FAQ layer after every hub rebuild.  The
+    # refinement tool verifies that all existing internal links survive and
+    # that visible FAQ content exactly matches FAQPage JSON-LD before writing.
+    import refine_national_content
+
+    refine_national_content.run_refinement(
+        root,
+        scope="hubs",
+        apply=True,
+    )
 
 
 if __name__ == "__main__":

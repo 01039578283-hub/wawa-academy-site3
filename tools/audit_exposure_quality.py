@@ -45,7 +45,11 @@ def find_node(graph: list[dict], kind: str) -> dict | None:
 
 
 def visible_faq(text: str) -> list[tuple[str, str]]:
-    block = match_one(text, r'<section\b[^>]*id=["\'](?:faq-section|faq)["\'][^>]*>(.*?)</section>')
+    block = match_one(
+        text,
+        r'<section\b[^>]*id=["\'](?:faq-section|hub-faq-section|faq)["\']'
+        r"[^>]*>(.*?)</section>",
+    )
     if block is None:
         return []
     result = []

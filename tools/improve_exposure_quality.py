@@ -27,7 +27,7 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 DOMAIN = "xn--sp5b72l1taf0p.com"
 BASE_URL = f"https://{DOMAIN}"
-TODAY = "2026-07-29"
+TODAY = "2026-07-31"
 CENTER_DIRNAME = "전국센터"
 SCHOOL_FALLBACK = "학교별 진도 상담 확인"
 GRADE_FALLBACK = "상담 시 학년 범위 확인"
@@ -696,8 +696,8 @@ def build_primary_section(ctx: PageContext) -> str:
           </ul>
           {ctx.image_block}
         </article>
-        <aside class="local-card">
-          <h2>상담 요약</h2>
+        <aside class="local-card" aria-labelledby="consult-summary-title">
+          <h2 id="consult-summary-title">상담 요약</h2>
           <ul class="summary-list">
             <li>대상: {html.escape(target)}</li>
             <li>확인: {html.escape(ctx.config['checks'])}</li>
@@ -749,15 +749,15 @@ def build_verified_section(ctx: PageContext) -> str:
     verified_note = choose(ctx, [
         f"{school_statement} 실제 개설 여부는 학생의 학년·과목과 {actual_center_name(ctx)} 시간표를 함께 확인합니다.",
         f"표시된 학교는 {ctx.locality} 상담 준비를 위한 참고 자료이며 수업 개설을 뜻하지 않습니다. 등록 전 {ctx.config['stage']} 학년과 {ctx.config['subject']} 개설 시간을 확인해 주세요.",
-        f"참고 학교와 별개로 학생의 현재 진도와 {actual_center_name(ctx)} 시간표를 대조한 뒤 실제 수업 가능 여부를 안내합니다.",
+        f"참고 학교와 별개로 학생의 현재 진도를 {actual_center_name(ctx)} 시간표와 대조한 뒤 실제 수업 가능 여부를 안내합니다.",
         f"학교 정보는 {ctx.config['label']} 상담 준비를 위한 기준입니다. 수업 여부는 학년, 선택 과목, 센터의 현재 개설 시간을 확인한 후 결정됩니다.",
         f"{ctx.locality} 학생은 재학 학교의 교재와 시험 일정을 준비하되, 수업 가능 여부는 {actual_center_name(ctx)}의 최신 시간표로 확인해야 합니다.",
     ])
     source_notes = [
-        f"확인 자료: {source_basis(ctx)} · 정리일 {TODAY}",
-        f"안내 근거: {source_basis(ctx)} · 최종 확인 {TODAY}",
-        f"센터 정보 출처: {source_basis(ctx)} · 페이지 확인일 {TODAY}",
-        f"페이지 작성 기준: {source_basis(ctx)} · 정보 정리 {TODAY}",
+        f"{ctx.title} 확인 자료: {source_basis(ctx)} · 정리일 {TODAY}",
+        f"{ctx.title} 안내 근거: {source_basis(ctx)} · 최종 확인 {TODAY}",
+        f"{ctx.title} 센터 정보 출처: {source_basis(ctx)} · 페이지 확인일 {TODAY}",
+        f"{ctx.title} 작성 기준: {source_basis(ctx)} · 정보 정리 {TODAY}",
     ]
     source_note = keyed_choose(ctx, "source-note", source_notes)
     return f'''    <section id="verified-center" class="local-section verified-center-section">
@@ -771,7 +771,7 @@ def build_verified_section(ctx: PageContext) -> str:
             <div><dt>주소</dt><dd>{html.escape(actual_address(ctx))}</dd></div>
             <div><dt>등록 정보</dt><dd>{html.escape(registration_value(ctx))}</dd></div>
           </dl>
-{tuition_block}          <div class="verified-school-list" aria-label="상담 참고 학교">{school_markup}</div>
+{tuition_block}          <div class="verified-school-list" role="group" aria-label="상담 참고 학교">{school_markup}</div>
           <p class="verified-note">{html.escape(verified_note)}</p>
           <p class="verified-note source-note">{html.escape(source_note)}</p>
         </article>
@@ -1414,6 +1414,16 @@ def main() -> None:
         print(f"FAIL {rel}: {', '.join(errors)}")
     if failures:
         raise SystemExit(1)
+    # Keep the intent-specific copy and paired FAQ/schema layer after this
+    # base generator is rerun.  The refinement tool stages and validates the
+    # complete detail set before it writes any page.
+    import refine_national_content
+
+    refine_national_content.run_refinement(
+        root,
+        scope="details",
+        apply=not args.dry_run,
+    )
 
 
 if __name__ == "__main__":
