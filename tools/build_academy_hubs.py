@@ -144,7 +144,7 @@ def shell(*, depth: int, title: str, description: str, canonical: str, h1: str, 
   <header class="site-header">
     <nav class="nav wrap" aria-label="주요 메뉴">
       <a class="brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a>
-      <div class="nav-links"><a href="{home}">홈</a><a href="{home}학습관리/">학습관리</a><a class="active" href="{home}전국센터/">전국센터</a><a href="{home}상담문의/">상담문의</a></div>
+      <div class="nav-links"><a href="{home}">홈</a><a href="{home}학습관리/">학습관리</a><a href="{home}과목별학원/">과목별학원</a><a class="active" aria-current="page" href="{home}전국센터/">전국센터</a><a href="{home}상담문의/">상담문의</a></div>
       <a class="nav-cta" href="{CONSULT_URL}" target="_blank" rel="noopener">상담 신청</a>
     </nav>
   </header>
@@ -162,7 +162,7 @@ def shell(*, depth: int, title: str, description: str, canonical: str, h1: str, 
     </section>
 {body}
   </main>
-  <footer class="site-footer" id="contact"><div class="wrap footer-inner"><div><a class="brand footer-brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a><p>초중고 영어수학 학습코칭 · 진단상담 · 플래너 관리</p></div><div class="footer-links"><a href="{home}학습관리/">학습관리</a><a href="{home}전국센터/">전국센터</a><a href="tel:010-3957-8283">010&#8209;3957&#8209;8283</a></div></div></footer>
+  <footer class="site-footer" id="contact"><div class="wrap footer-inner"><div><a class="brand footer-brand" href="{home}"><span class="brand-mark">W</span><span><small>STUDY COACHING</small>와와학습코칭학원</span></a><p>초중고 영어수학 학습코칭 · 진단상담 · 플래너 관리</p></div><div class="footer-links"><a href="{home}학습관리/">학습관리</a><a href="{home}과목별학원/">과목별학원</a><a href="{home}전국센터/">전국센터</a><a href="tel:010-3957-8283">010&#8209;3957&#8209;8283</a></div></div></footer>
   <nav class="floating-actions" aria-label="빠른 상담 메뉴"><a class="fab-call" href="tel:010-3957-8283">전화문의</a><a class="fab-sms" href="https://blogsms.net/01039578283" target="_blank" rel="noopener">문자문의</a><a class="fab-consult" href="{CONSULT_URL}" target="_blank" rel="noopener">상담신청</a></nav>
 {extra_script}</body>
 </html>

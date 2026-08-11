@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
-TODAY = "2026-07-29"
+TODAY = "2026-08-11"
 KST = timezone(timedelta(hours=9))
 RSS_HUB_SLUGS = (
     "초등영어학원",
@@ -19,6 +19,11 @@ RSS_HUB_SLUGS = (
     "중등수학학원",
     "고등영어학원",
     "고등수학학원",
+)
+RSS_SUBJECT_HUB_SLUGS = (
+    "영수전문학원",
+    "영어전문학원",
+    "수학전문학원",
 )
 
 
@@ -113,6 +118,8 @@ def main() -> None:
         root / "학습관리" / "index.html",
         root / "전국센터" / "index.html",
         *(root / "전국센터" / slug / "index.html" for slug in RSS_HUB_SLUGS),
+        root / "과목별학원" / "index.html",
+        *(root / "과목별학원" / slug / "index.html" for slug in RSS_SUBJECT_HUB_SLUGS),
     ]
     missing = [path for path in feed_paths if not path.is_file()]
     if missing:
