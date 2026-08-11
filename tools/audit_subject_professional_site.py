@@ -1,7 +1,7 @@
 """Read-only release audit for the subject-professional page collection.
 
-The generator creates one subject directory, three category hubs, and
-3 x 371 locality detail pages.  This audit deliberately does not import the
+The generator creates one subject directory, four category hubs, and
+4 x 371 locality detail pages.  This audit deliberately does not import the
 generator: it checks the files that would actually be deployed against the
 independent centre-information source and the site's existing map mapping.
 
@@ -50,6 +50,11 @@ CATEGORIES: dict[str, dict[str, Any]] = {
         "focus": "math",
         "subjects": ("수학",),
     },
+    "전문학원": {
+        "label": "전문학원",
+        "focus": "combined",
+        "subjects": ("영어", "수학"),
+    },
 }
 
 DETAIL_SCHEMA_TYPES = {
@@ -81,6 +86,19 @@ BLOCKED_TEXT_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("broken_subject_spacing", re.compile(r"영어\s+수학")),
     ("broken_address_split", re.compile(r"304\.[가-힣]|305으로")),
     ("broken_duplicate_noun", re.compile(r"(?P<noun>학생|상담|관리|학습|수업)\s+(?P=noun)")),
+    ("broken_design_particle", re.compile(r"수업\s*설계은|피드백\s*구조은")),
+    ("broken_choice_phrase", re.compile(r"선택\s*전\s*확인할\s*(?:확인\s*항목|선택\s*기준)")),
+    ("authoring_source_wording", re.compile(r"자료에\s*(?:적힌|제시된)|제공된\s*주소\s*정보|구조화\s*데이터")),
+    ("broken_grade_student_phrase", re.compile(r"(?:(?:초등|중등|중|고등)(?:학교)?\s*[1-6]\s*학년|해당\s*학년)\s+중\s+[^,.]{2,120}?학생")),
+    ("authoring_address_wording", re.compile(r"주소\s*정보는\s*.{5,180}?\s*기준으로\s*제공되어\s*있습니다")),
+    ("broken_math_solution_particle", re.compile(r"수학\s*풀이이|영어\s*답안과\s*수학\s*풀이와")),
+    ("broken_repeated_school_source", re.compile(r"학생이\s*받은\s*학교에서\s*받은\s*자료|학생이\s*가져온\s*제공된\s*학교\s*자료")),
+    ("broken_repeated_process", re.compile(r"과정이\s*필요한\s*과정|학습학습|시험학습\s*성과")),
+    ("broken_guidance_phrase", re.compile(r"보는\s*지도가\s*확인할\s*필요|최근\s*교재\s*활용과\s*교재")),
+    ("broken_repeated_student_explanation", re.compile(r"학생이\s*설명한\s*두\s*과목\s*내용을\s*학생의\s*설명")),
+    ("broken_grade_list_particle", re.compile(r"[초중고][1-6](?:·[초중고][1-6])+?이\s+(?:확인된\s*수업\s*가능\s*학년|전문학원\s*상담\s*가능\s*학년)")),
+    ("broken_object_particle", re.compile(r"(?:루틴|장치|구조|절차|관리)(?:가|이)\s+확인할\s+필요")),
+    ("broken_repeated_consultation", re.compile(r"상담\s+첫\s+상담")),
 )
 
 # These terms came from an unrelated keyword bank and cannot be asserted as
@@ -899,6 +917,14 @@ def audit_detail(
     main = match_one(source, r"<main\b[^>]*>(.*?)</main>") or ""
     visible_main = clean_markup(main)
     check_blocked_text(page, visible_main, audit)
+    if slug == "전문학원":
+        generic_source_residue = re.search(
+            r"자료에\s*함께\s*제시된|추가\s*확인\s*항목|같은\s*운영\s*정보는|"
+            r"관련\s*안내를\s*확인|같은\s*항목을\s*체크리스트",
+            visible_main,
+        )
+        if generic_source_residue:
+            audit.fail("authoring_reference_term", page, generic_source_residue.group(0))
     unsupported_grades = extract_explicit_grades(visible_main) - set(expected_grade_list)
     if unsupported_grades:
         audit.fail("unsupported_visible_grade", page, sorted(unsupported_grades))
@@ -977,6 +1003,54 @@ def audit_sitemap(expected_urls: set[str], audit: Audit) -> dict[str, int]:
     for url in sorted(missing)[:5]:
         audit.fail("subject_url_missing_from_sitemap", path, url)
     return {"urls": len(values), "unique": len(set(values)), "expected_missing": len(missing)}
+
+
+def audit_rss(audit: Audit) -> dict[str, int]:
+    path = ROOT / "rss.xml"
+    if not path.is_file():
+        audit.fail("missing_rss", path, "")
+        return {"items": 0, "unique": 0, "subject_hubs": 0, "subject_details": 0}
+    try:
+        channel = ET.parse(path).getroot().find("channel")
+    except Exception as exc:  # noqa: BLE001
+        audit.fail("invalid_rss", path, exc)
+        return {"items": 0, "unique": 0, "subject_hubs": 0, "subject_details": 0}
+    if channel is None:
+        audit.fail("missing_rss_channel", path, "")
+        return {"items": 0, "unique": 0, "subject_hubs": 0, "subject_details": 0}
+
+    links: list[str] = []
+    for item in channel.findall("item"):
+        link = normalize_space(item.findtext("link"))
+        guid = normalize_space(item.findtext("guid"))
+        if not link or guid != link:
+            audit.fail("rss_link_guid", path, f"link={link!r} guid={guid!r}")
+        if link:
+            links.append(link)
+    if len(links) != len(set(links)):
+        audit.fail("duplicate_rss_link", path, len(links) - len(set(links)))
+
+    expected_subject = {
+        encoded_url("과목별학원"),
+        *[encoded_url("과목별학원", slug) for slug in CATEGORIES],
+    }
+    for url in expected_subject:
+        if links.count(url) != 1:
+            audit.fail("rss_subject_hub", path, f"{url} count={links.count(url)}")
+    subject_prefix = encoded_url("과목별학원")
+    subject_links = {url for url in links if url.startswith(subject_prefix)}
+    detail_links = subject_links - expected_subject
+    for url in sorted(detail_links)[:5]:
+        audit.fail("rss_subject_detail", path, url)
+    expected_count = 10 + len(CATEGORIES)
+    if len(links) != expected_count:
+        audit.fail("rss_item_count", path, f"expected={expected_count} actual={len(links)}")
+    return {
+        "items": len(links),
+        "unique": len(set(links)),
+        "subject_hubs": len(subject_links & expected_subject),
+        "subject_details": len(detail_links),
+    }
 
 
 def audit_discovery(audit: Audit) -> None:
@@ -1172,6 +1246,7 @@ def main() -> int:
             audit.fail(f"duplicate_{name}", SUBJECT_ROOT, duplicates[:5])
 
     sitemap = audit_sitemap(expected_urls, audit)
+    rss = audit_rss(audit)
     nav = audit_nav(audit)
     audit_discovery(audit)
 
@@ -1179,8 +1254,8 @@ def main() -> int:
         "status": "PASS" if not audit.counts else "FAIL",
         "expected": {
             "subject_root_hubs": 1,
-            "category_hubs": 3,
-            "detail_pages": 1113,
+            "category_hubs": len(CATEGORIES),
+            "detail_pages": 371 * len(CATEGORIES),
             "total_subject_pages": expected_page_count,
             "masked_five_shingle_threshold": "<0.75",
         },
@@ -1190,6 +1265,7 @@ def main() -> int:
             "unique_descriptions": len(set(filter(None, metadata_descriptions))),
             "unique_canonicals": len(set(filter(None, metadata_canonicals))),
             "sitemap": sitemap,
+            "rss": rss,
             "navigation": nav,
         },
         "categories": per_category,

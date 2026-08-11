@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import html
@@ -19,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE_URL = "https://xn--sp5b72l1taf0p.com"
 SITE_NAME = "와와학습코칭학원"
 DOMAIN_NAME = "코칭학원.com"
-TODAY = "2026-08-11"
+TODAY = "2026-08-12"
 SUBJECT_ROOT = ROOT / "과목별학원"
 SOURCE_DIR = ROOT.parent / "참고자료" / "사용한 원고" / "코칭학원.com 추가 원고"
 COMMON_DIR = ROOT.parent / "참고자료" / "공통자료"
@@ -29,8 +30,9 @@ PHONE = "010-3957-8283"
 SMS_URL = "https://blogsms.net/01039578283"
 
 REGION_ORDER = ["서울", "경기", "인천", "충청", "대전", "대구", "울산", "부산", "경상", "광주", "전라", "강원", "제주"]
-TARGET_SLUGS = ("영수전문학원", "영어전문학원", "수학전문학원")
+TARGET_SLUGS = ("영수전문학원", "영어전문학원", "수학전문학원", "전문학원")
 EXPECTED_REVIEW_COUNTS = {
+    "전문학원": 1,
     "영수전문학원": 2,
     "영어전문학원": 3,
     "수학전문학원": 3,
@@ -40,8 +42,45 @@ ENGINE_CONFIGS = {
     for config in content_engine.CATEGORIES
     if str(config["slug"]) in TARGET_SLUGS
 }
+GENERAL_CONFIG = dict(ENGINE_CONFIGS["영수전문학원"])
+GENERAL_CONFIG.update(
+    {
+        "slug": "전문학원",
+        "label": "전문학원",
+        "zip": "전문학원.zip",
+        "eyebrow": "LOCAL ACADEMY LEARNING MANAGEMENT GUIDE",
+        "directory": "LOCAL ACADEMY DIRECTORY",
+        "card_id": "academy-management",
+        "card_number": "11",
+        "card_small": "ACADEMY LEARNING MANAGEMENT",
+        "card_copy": "확인된 수업 가능 범위와 학생 유형, 학교 일정, 숙제·오답·질문 기록이 이어지는 관리 방식을 살펴봅니다.",
+        "topics": (
+            "현재 학습 상태 진단",
+            "학년·학교 일정 확인",
+            "숙제·오답·질문 기록",
+            "주간 학습 실행",
+            "상담 후 재확인 기준",
+        ),
+        "hero_copy": "과목 이름만 비교하지 않고 확인된 수업 가능 범위, 학생의 현재 기록, 학교 일정과 복습 실행 과정을 함께 살펴봅니다.",
+        "hero_tags": (
+            ("학생 유형", "학교 일정", "학습 기록"),
+            ("현재 교재", "숙제 점검", "오답 재확인"),
+            ("질문 기록", "주간 계획", "실행 점검"),
+            ("가능 학년", "상담 기준", "다음 계획"),
+        ),
+        "hub_lead": "특정 과목의 심화 방식보다 학생의 현재 상태, 학년과 학교 일정, 숙제·오답·질문 기록이 수업 뒤 어떻게 이어지는지 살펴보도록 371개 동네 안내를 정리했습니다.",
+    }
+)
+ENGINE_CONFIGS["전문학원"] = GENERAL_CONFIG
 
 CATEGORY_COPY = {
+    "전문학원": {
+        "label": "전문학원",
+        "eyebrow": "ACADEMY LEARNING MANAGEMENT DIRECTORY",
+        "lead": "특정 과목의 진도보다 확인된 수업 가능 범위, 학생 유형, 학교 일정과 숙제·오답·질문 기록이 어떻게 이어지는지 살펴보도록 371개 동네 안내를 정리했습니다.",
+        "summary": "센터 자료에서 확인된 수업 가능 과목과 학년을 먼저 보고, 현재 교재·시험 기록·주간 일정·복습 실행 과정을 상담 기준으로 나눕니다.",
+        "tags": ("학생 유형", "주간 일정", "학습 기록"),
+    },
     "영수전문학원": {
         "label": "영수 전문학원",
         "eyebrow": "ENGLISH & MATH SPECIALIST DIRECTORY",
@@ -352,6 +391,42 @@ def site_polish(value: str, local: str, config: dict[str, object]) -> str:
         ("확인 항목와", "확인 항목과"),
         ("학생와", "학생과"),
         ("학원라는", "학원이라는"),
+        ("수업 설계은", "수업 설계는"),
+        ("피드백 구조은", "피드백 구조는"),
+        ("선택 전 확인할 확인 항목", "선택 전 점검할 항목"),
+        ("선택 전 확인할 선택 기준", "선택 전 확인할 기준"),
+        ("자료에 적힌", "확인된"),
+        ("자료에 제시된", "확인된"),
+        ("제공된 주소 정보", "확인된 센터 주소"),
+        ("학습 운영 기준 같은 운영 정보는", "학습 운영 기준은"),
+        ("학습 운영 기준 같은 환경 정보와", "학습 운영 기준과"),
+        ("학습 운영 기준 관련 학습 환경 확인", "학습 운영 기준 확인"),
+        ("학습 운영 기준까지 함께 살펴보는 학습 환경", "학습 운영 기준과 가정 복습 흐름"),
+        (
+            "자료에 함께 제시된 추가 확인 항목은 학습 운영 기준입니다",
+            "학습 운영 기준은 상담에서 실제 적용 방식을 확인해야 합니다",
+        ),
+        ("이 항목을 단순 시설명으로만 보지 말고", "이 기준을 이름만 보고 판단하지 말고"),
+        ("수학 풀이이", "수학 풀이가"),
+        ("영어 답안과 수학 풀이와", "영어 답안과 수학 풀이를"),
+        ("학생이 받은 학교에서 받은 자료", "학교에서 받은 자료"),
+        ("학생이 가져온 제공된 학교 자료", "학생이 가져온 학교 자료"),
+        ("과정이 필요한 과정입니다", "과정이 필요합니다"),
+        ("보는 지도가 확인할 필요가 있습니다", "보는 지도가 필요합니다"),
+        ("최근 교재 활용과 교재", "최근 교재와 학습 기록"),
+        ("학습학습", "학습"),
+        ("시험학습 성과", "시험 대비 과정"),
+        (
+            "학생이 설명한 두 과목 내용을 학생의 설명과 나란히 놓으면",
+            "학생이 설명한 두 과목 내용을 실제 답안과 나란히 놓으면",
+        ),
+        ("제공 자료에서는", "확인된 자료에는"),
+        ("제공된 센터 자료", "확인된 센터 정보"),
+        ("학습 운영 기준 관련 안내를 확인할 때", "학습 운영 기준을 확인할 때"),
+        ("학습 운영 기준 같은 항목을 체크리스트로", "학습 운영 기준을 체크리스트로"),
+        ("학습 운영 기준 관련 내용", "학습 운영 기준"),
+        ("학습 운영 기준 항목은", "학습 운영 기준은"),
+        ("상담 첫 상담", "첫 상담"),
         ("이 페이지에서 설정한", "상담에서 먼저 살펴볼"),
         ("이 페이지는", "이 안내는"),
         ("이 페이지에서", "이 안내에서"),
@@ -369,6 +444,46 @@ def site_polish(value: str, local: str, config: dict[str, object]) -> str:
         text,
     )
     text = re.sub(r"(?<=\d)으로(?=\s|[,.]|$)", "로", text)
+    text = text.replace("중등학교", "중학교")
+    text = re.sub(
+        r"((?:(?:초등|중등|중|고등)(?:학교)?\s*[1-6]\s*학년)|해당\s*학년)\s+중\s+"
+        r"(?=[^,.]{2,120}?학생)",
+        r"\1이면서 ",
+        text,
+    )
+    text = re.sub(
+        r"주소\s*정보는\s*(.{5,180}?)\s*기준으로\s*제공되어\s*있습니다",
+        r"확인된 센터 주소는 \1입니다",
+        text,
+    )
+    text = re.sub(
+        r"([초중고][1-6](?:·[초중고][1-6])+?)이\s+확인된\s+수업\s+가능\s+학년입니다",
+        r"확인된 수업 가능 학년은 \1입니다",
+        text,
+    )
+    text = re.sub(
+        r"확인된\s+센터\s+정보에는\s+([초중고][1-6](?:·[초중고][1-6])+?)이\s+"
+        r"전문학원\s+상담\s+가능\s+학년으로\s+확인됩니다",
+        r"확인된 센터 정보에서 전문학원 상담 가능 학년은 \1입니다",
+        text,
+    )
+    text = re.sub(
+        rf"같은\s+([^,.]{{0,50}}{re.escape(local)})\s+학생이라도",
+        r"\1 학생이라도",
+        text,
+    )
+    object_particles = {
+        "루틴": "루틴을",
+        "장치": "장치를",
+        "구조": "구조를",
+        "절차": "절차를",
+        "관리": "관리를",
+    }
+    text = re.sub(
+        r"(루틴|장치|구조|절차|관리)(?:가|이)\s+확인할\s+필요가\s+있습니다",
+        lambda match: f"{object_particles[match.group(1)]} 확인할 필요가 있습니다",
+        text,
+    )
     text = text.replace("학원 운영 정보", "수업 운영 기준")
     text = text.replace("보강 가능 시간", "복습 가능한 시간")
     text = text.replace(f"{local}{config['label']}", f"{local} {config['label']}")
@@ -448,12 +563,54 @@ def polish_manuscript(
     verified_grades = [str(item) for item in center.get("verified_grades", [])]
     schools = [str(item) for item in center.get("schools", [])]
 
+    source_reference = ""
+    if str(config["slug"]) == "전문학원":
+        candidates = (
+            [str(item) for item in manuscript.get("intro", [])]
+            + [str(value) for pair in manuscript.get("sections", []) for value in (pair[0], *pair[1])]
+            + [str(value) for item in manuscript.get("faqs", []) for value in (item["question"], item["answer"])]
+            + [str(value) for item in manuscript.get("reviews", []) for value in (item.get("label", ""), item["content"])]
+            + [str(manuscript.get("summary", ""))]
+        )
+        for candidate in candidates:
+            match = re.fullmatch(r".+?\s+통학\s+동선과\s+(.+?)\s+점검", candidate)
+            if not match:
+                match = re.fullmatch(r"학습\s+지속성을\s+높이는\s+(.+?)\s+확인법", candidate)
+            if not match:
+                match = re.search(
+                    r"(?:참고\s*키워드|추가\s*확인\s*항목)(?:은|는)\s*([^.!?]{1,40}?)입니다",
+                    candidate,
+                )
+            if not match:
+                match = re.search(
+                    r"(?:^|[.!?,]\s+)([가-힣A-Za-z0-9· _-]{1,40}?)\s+같은\s+운영\s+정보는",
+                    candidate,
+                )
+            if match:
+                source_reference = match.group(1).strip()
+                break
+
     def clean(value: object) -> str:
-        first = site_polish(str(value or ""), local, config)
+        raw = str(value or "")
+        if source_reference:
+            raw = raw.replace(source_reference, "학습 운영 기준")
+        first = site_polish(raw, local, config)
         grammar = content_engine.final_polish(first, local, config, verified_grades, schools)
         return site_polish(grammar, local, config)
 
     manuscript["meta"] = clean(manuscript.get("meta"))
+    if len(str(manuscript["meta"])) > 100:
+        meta = str(manuscript["meta"])
+        selected: list[str] = []
+        for sentence in re.split(r"(?<=[.!?])\s+", meta):
+            candidate = " ".join([*selected, sentence]).strip()
+            if len(candidate) > 100:
+                break
+            selected.append(sentence)
+        compact = " ".join(selected).strip()
+        if len(compact) < 70:
+            compact = meta[:99].rsplit(" ", 1)[0].rstrip(" ,·.?!") + "."
+        manuscript["meta"] = compact
     manuscript["intro"] = [clean(item) for item in manuscript.get("intro", [])]
     manuscript["sections"] = [
         (clean(heading), [clean(paragraph) for paragraph in paragraphs])
@@ -497,11 +654,33 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
         r"후기형\s*예시|설정한\s*학생\s*유형|놓치는\s*편\s*학생|것이라는\s*목표|"
         r"형식의\s*후기|수업학교|확인\s*항목[가는와]|학생와|학원라는|편\s*(?:학생|아이)|"
         r"학원\s*(?:실\s*시간|온라인|화상|대면)\s*수업|이\s*안내에서\s*설정한|"
-        r"남길\s*수\s*있습니다|목표도\s*이런|(?<![가-힣])본문에서(?![가-힣]))"
+        r"남길\s*수\s*있습니다|목표도\s*이런|(?<![가-힣])본문에서(?![가-힣])|"
+        r"수업\s*설계은|피드백\s*구조은|선택\s*전\s*확인할\s*(?:확인\s*항목|선택\s*기준)|"
+        r"자료에\s*(?:적힌|제시된)|제공된\s*주소\s*정보|구조화\s*데이터|"
+        r"(?:(?:초등|중등|중|고등)(?:학교)?\s*[1-6]\s*학년|해당\s*학년)\s+중\s+"
+        r"[^,.]{2,120}?학생|"
+        r"수학\s*풀이이|영어\s*답안과\s*수학\s*풀이와|학생이\s*받은\s*학교에서\s*받은\s*자료|"
+        r"학생이\s*가져온\s*제공된\s*학교\s*자료|과정이\s*필요한\s*과정|"
+        r"보는\s*지도가\s*확인할\s*필요|최근\s*교재\s*활용과\s*교재|학습학습|"
+        r"시험학습\s*성과|학생이\s*설명한\s*두\s*과목\s*내용을\s*학생의\s*설명|"
+        r"[초중고][1-6](?:·[초중고][1-6])+?이\s+(?:확인된\s*수업\s*가능\s*학년|"
+        r"전문학원\s*상담\s*가능\s*학년)|(?:루틴|장치|구조|절차|관리)(?:가|이)\s+확인할\s+필요|"
+        r"상담\s+첫\s+상담)"
     )
     match = forbidden.search(visible)
     if match:
         raise ValueError(f"{slug}/{local}: 공개용 문장 금지 표현 {match.group(0)!r}")
+    if slug == "전문학원":
+        generic_source_residue = re.search(
+            r"자료에\s*함께\s*제시된|추가\s*확인\s*항목|"
+            r"주소\s*정보는\s*.{5,180}?\s*기준으로\s*제공되어\s*있습니다|"
+            r"같은\s*운영\s*정보는|관련\s*안내를\s*확인|같은\s*항목을\s*체크리스트",
+            visible,
+        )
+        if generic_source_residue:
+            raise ValueError(
+                f"{slug}/{local}: 임의 참고 항목 잔여 {generic_source_residue.group(0)!r}"
+            )
     operation = UNVERIFIED_OPERATION_RE.search(visible)
     if operation:
         raise ValueError(f"{slug}/{local}: 검증되지 않은 운영 표현 {operation.group(0)!r}")
@@ -609,7 +788,7 @@ def subject_root_schema() -> dict[str, object]:
     return {
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "CollectionPage", "@id": url + "#webpage", "url": url, "name": f"과목별학원 | {DOMAIN_NAME}", "description": "영수·영어·수학 전문학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다.", "inLanguage": "ko-KR", "isPartOf": {"@id": SITE_URL + "/#website"}, "breadcrumb": {"@id": url + "#breadcrumb"}, "mainEntity": {"@id": url + "#directory"}, "dateModified": TODAY},
+            {"@type": "CollectionPage", "@id": url + "#webpage", "url": url, "name": f"과목별학원 | {DOMAIN_NAME}", "description": "종합 전문학원과 영수·영어·수학 전문학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다.", "inLanguage": "ko-KR", "isPartOf": {"@id": SITE_URL + "/#website"}, "breadcrumb": {"@id": url + "#breadcrumb"}, "mainEntity": {"@id": url + "#directory"}, "dateModified": TODAY},
             {"@type": "BreadcrumbList", "@id": url + "#breadcrumb", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": SITE_URL + "/"}, {"@type": "ListItem", "position": 2, "name": "과목별학원", "item": url}]},
             {"@type": "ItemList", "@id": url + "#directory", "name": "전문학원 분류", "numberOfItems": len(items), "itemListElement": items},
             {"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
@@ -619,7 +798,7 @@ def subject_root_schema() -> dict[str, object]:
 
 def subject_root_faqs() -> list[tuple[str, str]]:
     return [
-        ("과목별학원 페이지는 전국센터와 무엇이 다른가요?", "전국센터는 동네와 센터를 먼저 선택하는 구조이고, 과목별학원은 영수·영어·수학 전문학원 분류를 먼저 고른 뒤 해당 동네의 학습 안내를 확인하는 구조입니다."),
+        ("과목별학원 페이지는 전국센터와 무엇이 다른가요?", "전국센터는 동네와 센터를 먼저 선택하는 구조이고, 과목별학원은 종합 전문학원과 영수·영어·수학 전문학원 분류를 먼저 고른 뒤 해당 동네의 학습 안내를 확인하는 구조입니다."),
         ("전문학원 상담 전에는 어떤 자료를 준비하면 좋나요?", "최근 시험지와 현재 교재, 틀린 문제의 답안·풀이 기록, 학교 시험 범위와 일주일 공부 시간을 준비하면 현재 상태를 더 구체적으로 나눌 수 있습니다."),
         ("동네 페이지에 표시된 센터 정보는 어떻게 확인하나요?", "제공된 센터정보 자료의 센터명, 주소, 교육지원청 등록번호, 가능 학년과 학교 정보를 사용하며 실제 개설 여부와 시간표는 상담에서 다시 확인합니다."),
     ]
@@ -627,7 +806,7 @@ def subject_root_faqs() -> list[tuple[str, str]]:
 
 def render_subject_root() -> str:
     canonical = encoded_url("과목별학원")
-    description = "영수·영어·수학 전문학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다."
+    description = "종합 전문학원과 영수·영어·수학 전문학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다."
     cards = "".join(
         f'''<a class="home-link-card{' is-primary' if index == 0 else ''}" href="./{slug}/"><span>{esc(CATEGORY_COPY[slug]['eyebrow'])}</span><strong>{esc(CATEGORY_COPY[slug]['label'])}</strong><p>{esc(CATEGORY_COPY[slug]['lead'])}</p></a>'''
         for index, slug in enumerate(TARGET_SLUGS)
@@ -636,9 +815,9 @@ def render_subject_root() -> str:
     return f'''{head(f"과목별학원 | {DOMAIN_NAME}", description, canonical, SITE_URL + "/assets/generated/site3-hero.webp", subject_root_schema(), 1, "website")}
 <body class="center-page subject-page"><a class="skip-link" href="#main">본문 바로가기</a>{navigation("../", "과목별학원")}
   <main id="main">
-    <section class="center-hero"><div class="wrap"><div class="crumbs"><span><a href="../">홈</a></span><span>과목별학원</span></div><div class="center-hero-card"><div class="center-hero-inner"><div><p class="eyebrow">SUBJECT ACADEMY DIRECTORY</p><h1>과목별학원</h1><p>{description}</p><div class="local-actions"><a class="btn btn-primary" href="#subject-categories">분류 선택</a><a class="btn btn-ghost" href="../전국센터/">전국센터 보기</a></div></div><aside class="hero-mini-panel"><span>전문학원 분류</span><strong>3개</strong><span>각 371개 동네 안내</span></aside></div></div></div></section>
-    <section id="subject-categories" class="local-section"><div class="wrap"><article class="home-link-hub"><p class="eyebrow">CHOOSE A SUBJECT</p><h2>학생의 현재 과목 상황부터 선택하세요</h2><p>두 과목의 균형이 필요하면 영수 전문학원, 한 과목의 진단과 복습을 깊게 보고 싶다면 영어 또는 수학 전문학원 안내를 선택할 수 있습니다.</p><div class="home-link-grid">{cards}</div></article></div></section>
-    <section class="local-section"><div class="wrap local-grid"><article class="local-card"><p class="eyebrow">HOW TO USE</p><h2>동네 페이지 확인 순서</h2><ol class="process-list"><li><strong>1. 분류 선택</strong>영수·영어·수학 가운데 현재 우선순위를 고릅니다.</li><li><strong>2. 동네 검색</strong>허브에서 동네명 또는 광역지역을 선택합니다.</li><li><strong>3. 자료 확인</strong>최근 교재·시험지, 센터 정보와 가능 학년을 함께 봅니다.</li><li><strong>4. 상담 질문</strong>진단·과제·오답 재확인 과정을 실제 시간표와 대조합니다.</li></ol></article><article class="local-card"><p class="eyebrow">FACT CHECK</p><h2>안내 정보의 기준</h2><p>센터명·주소·교육지원청 등록번호·가능 학년·참고 학교는 제공된 센터정보 자료를 사용합니다. 자료가 비어 있는 항목은 임의로 만들지 않으며 상담 확인이 필요하다고 표시합니다.</p><p class="verified-note">자료 기준: 센터정보 정리 자료 · 최종 검수 {TODAY}</p></article></div></section>
+    <section class="center-hero"><div class="wrap"><div class="crumbs"><span><a href="../">홈</a></span><span>과목별학원</span></div><div class="center-hero-card"><div class="center-hero-inner"><div><p class="eyebrow">SUBJECT ACADEMY DIRECTORY</p><h1>과목별학원</h1><p>{description}</p><div class="local-actions"><a class="btn btn-primary" href="#subject-categories">분류 선택</a><a class="btn btn-ghost" href="../전국센터/">전국센터 보기</a></div></div><aside class="hero-mini-panel"><span>전문학원 분류</span><strong>{len(TARGET_SLUGS)}개</strong><span>각 371개 동네 안내</span></aside></div></div></div></section>
+    <section id="subject-categories" class="local-section"><div class="wrap"><article class="home-link-hub"><p class="eyebrow">CHOOSE A SUBJECT</p><h2>학생의 현재 상황에 맞는 안내를 선택하세요</h2><p>학습 일정과 관리 흐름을 먼저 비교하려면 전문학원, 두 과목의 균형은 영수 전문학원, 한 과목의 진단과 복습은 영어 또는 수학 전문학원 안내를 선택할 수 있습니다.</p><div class="home-link-grid">{cards}</div></article></div></section>
+    <section class="local-section"><div class="wrap local-grid"><article class="local-card"><p class="eyebrow">HOW TO USE</p><h2>동네 페이지 확인 순서</h2><ol class="process-list"><li><strong>1. 분류 선택</strong>종합 관리 또는 영수·영어·수학 가운데 현재 우선순위를 고릅니다.</li><li><strong>2. 동네 검색</strong>허브에서 동네명 또는 광역지역을 선택합니다.</li><li><strong>3. 자료 확인</strong>최근 교재·시험지, 센터 정보와 가능 학년을 함께 봅니다.</li><li><strong>4. 상담 질문</strong>진단·과제·오답 재확인 과정을 실제 시간표와 대조합니다.</li></ol></article><article class="local-card"><p class="eyebrow">FACT CHECK</p><h2>안내 정보의 기준</h2><p>센터명·주소·교육지원청 등록번호·가능 학년·참고 학교는 제공된 센터정보 자료를 사용합니다. 자료가 비어 있는 항목은 임의로 만들지 않으며 상담 확인이 필요하다고 표시합니다.</p><p class="verified-note">자료 기준: 센터정보 정리 자료 · 최종 검수 {TODAY}</p></article></div></section>
     <section id="faq-section" class="local-section"><div class="wrap faq-local"><p class="eyebrow">FAQ</p><h2>과목별학원 이용 전 확인사항</h2>{faq}</div></section>
   </main>{footer("../")}
 </body></html>'''
@@ -646,7 +825,9 @@ def render_subject_root() -> str:
 
 def hub_faqs(slug: str) -> list[tuple[str, str]]:
     label = str(CATEGORY_COPY[slug]["label"])
-    if slug == "영수전문학원":
+    if slug == "전문학원":
+        first = "센터 자료에서 확인된 수업 가능 범위와 학년을 먼저 보고, 현재 교재·시험 기록·학교 일정·숙제·오답·질문 기록이 어떻게 이어지는지 확인할 수 있습니다."
+    elif slug == "영수전문학원":
         first = "영어와 수학의 최근 시험지·교재를 따로 놓고 취약 영역, 과목별 오답, 학교 일정과 주간 학습시간을 비교할 수 있습니다."
     elif slug == "영어전문학원":
         first = "최근 영어 시험지와 교재에서 어휘 누적, 문법 적용, 독해 근거와 서술형 표현을 나누어 확인할 수 있습니다."
@@ -876,11 +1057,14 @@ def update_navigation() -> int:
 def update_home_discovery() -> None:
     path = ROOT / "index.html"
     source = path.read_text(encoding="utf-8")
-    if 'class="home-link-card" href="과목별학원/"' not in source:
+    card = '<a class="home-link-card" href="과목별학원/"><span>SUBJECT DIRECTORY</span><strong>과목별학원 4개 분류</strong><p>종합 전문학원과 영수·영어·수학 전문학원 안내를 371개 동네별로 확인합니다.</p></a>\n          '
+    card_pattern = re.compile(r'<a class="home-link-card" href="과목별학원/">.*?</a>\s*', re.DOTALL)
+    if card_pattern.search(source):
+        source = card_pattern.sub(card, source, count=1)
+    else:
         marker = '<a class="home-link-card is-primary" href="전국센터/">'
         position = source.find(marker)
         if position >= 0:
-            card = '<a class="home-link-card" href="과목별학원/"><span>SUBJECT DIRECTORY</span><strong>과목별학원 3개 분류</strong><p>영수·영어·수학 전문학원 안내를 371개 동네별로 확인합니다.</p></a>\n          '
             source = source[:position] + card + source[position:]
     path.write_text(source, encoding="utf-8", newline="\n")
 
@@ -888,7 +1072,7 @@ def update_home_discovery() -> None:
 def update_llms() -> None:
     path = ROOT / "llms.txt"
     source = path.read_text(encoding="utf-8")
-    block = f'''\n## 과목별학원\n\n- 과목별학원: {encoded_url('과목별학원')}\n- 영수 전문학원: {encoded_url('과목별학원', '영수전문학원')}\n- 영어 전문학원: {encoded_url('과목별학원', '영어전문학원')}\n- 수학 전문학원: {encoded_url('과목별학원', '수학전문학원')}\n'''
+    block = f'''\n## 과목별학원\n\n- 과목별학원: {encoded_url('과목별학원')}\n- 전문학원: {encoded_url('과목별학원', '전문학원')}\n- 영수 전문학원: {encoded_url('과목별학원', '영수전문학원')}\n- 영어 전문학원: {encoded_url('과목별학원', '영어전문학원')}\n- 수학 전문학원: {encoded_url('과목별학원', '수학전문학원')}\n'''
     if "## 과목별학원" not in source:
         source = source.rstrip() + "\n" + block
     else:
@@ -897,13 +1081,22 @@ def update_llms() -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="과목별 전문학원 페이지 생성")
+    parser.add_argument("--category", choices=TARGET_SLUGS, help="선택한 카테고리만 재생성")
+    args = parser.parse_args()
     if set(ENGINE_CONFIGS) != set(TARGET_SLUGS):
         raise ValueError(f"콘텐츠 엔진 카테고리 누락: {set(TARGET_SLUGS) - set(ENGINE_CONFIGS)}")
     SUBJECT_ROOT.mkdir(parents=True, exist_ok=True)
+    build_slugs = (args.category,) if args.category else TARGET_SLUGS
+    prepared: dict[str, tuple[dict[str, dict[str, object]], object]] = {}
+    for slug in build_slugs:
+        prepared[slug] = prepare_manuscripts(ENGINE_CONFIGS[slug])
+        print(f"{slug}: preflight=371")
+
     generated = 0
-    for slug in TARGET_SLUGS:
+    for slug in build_slugs:
         config = ENGINE_CONFIGS[slug]
-        manuscripts, namespace = prepare_manuscripts(config)
+        manuscripts, namespace = prepared[slug]
         representatives = representative_mapping(slug)
         category_root = SUBJECT_ROOT / slug
         if category_root.exists():
@@ -924,7 +1117,7 @@ def main() -> None:
     update_home_discovery()
     nav_changed = update_navigation()
     update_llms()
-    print(f"generated_details={generated} subject_hubs=4 navigation_pages={nav_changed}")
+    print(f"generated_details={generated} subject_hubs={1 + len(TARGET_SLUGS)} navigation_pages={nav_changed}")
 
 
 if __name__ == "__main__":
