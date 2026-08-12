@@ -75,7 +75,7 @@ HUB_SCHEMA_TYPES = {"CollectionPage", "BreadcrumbList", "ItemList", "FAQPage"}
 # appropriate in reader-facing detail content.
 BLOCKED_TEXT_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("authoring_seo_aeo_geo", re.compile(r"(?<![A-Za-z])(?:SEO|AEO|GEO|JSON-LD)(?![A-Za-z])", re.I)),
-    ("authoring_manuscript", re.compile(r"(?<![가-힣])원고(?:처럼|라면|입니다|에서는|에서|에는|에|의|를|로|가|는|와)?(?![가-힣])")),
+    ("authoring_manuscript", re.compile(r"(?<![가-힣])원고(?:처럼|라면|라|입니다|에서는|에서|에는|에|의|를|로|가|는|와)?(?![가-힣])")),
     ("authoring_page_intent", re.compile(r"이 페이지|페이지여야|검색 의도|검색자|참고 키워드|운영 키워드|설정한 학생")),
     ("synthetic_review_wording", re.compile(r"후기형\s*예시|후기\s*예시|형식의\s*후기|내용으로\s*정리할\s*수\s*있습니다")),
     ("source_column_wording", re.compile(r"D열|수업학교|본문에서\s*학교명|자료에\s*없는\s*학교를\s*임의로")),
@@ -85,7 +85,22 @@ BLOCKED_TEXT_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("broken_semicolon", re.compile(r"(?:합니다|입니다|있습니다);")),
     ("broken_subject_spacing", re.compile(r"영어\s+수학")),
     ("broken_address_split", re.compile(r"304\.[가-힣]|305으로")),
-    ("broken_duplicate_noun", re.compile(r"(?P<noun>학생|상담|관리|학습|수업)\s+(?P=noun)")),
+    (
+        "broken_duplicate_noun",
+        re.compile(
+            r"(?<![가-힣])(?P<noun>학생|학부모|상담|관리|확인|자료|학습|수업|학교|기준|과정|"
+            r"결과|계획|기록|답안|풀이|교재|영역|오답|복습|진단|설명|단원|학년)\s+(?P=noun)"
+            r"(?=(?:에서|으로|은|는|이|가|을|를|과|와|의|에|도|만|부터|까지)?(?:\s|[,.!?]|$))"
+        ),
+    ),
+    ("broken_duplicate_particle", re.compile(r"에서는는|에게는는|으로으로|에서에서|에는에는")),
+    ("broken_duplicate_adverb", re.compile(r"가장\s+가장")),
+    ("broken_home_check_phrase", re.compile(r"집에서도\s+무엇을\s+봐야\s+하는지\s+집에서도")),
+    ("broken_combined_guide_phrase", re.compile(r"영수\s+전문학원\s+일반적인\s+안내처럼")),
+    ("broken_school_material_phrase", re.compile(r"학생이\s+받은\s+제공된|자녀\s+제공된")),
+    ("broken_math_instrumental", re.compile(r"수학\s+풀이으로")),
+    ("broken_next_consultation", re.compile(r"다음\s+첫\s+상담")),
+    ("broken_combined_reference", re.compile(r"이\s+영수\s+학습\s+과정")),
     ("broken_design_particle", re.compile(r"수업\s*설계은|피드백\s*구조은")),
     ("broken_choice_phrase", re.compile(r"선택\s*전\s*확인할\s*(?:확인\s*항목|선택\s*기준)")),
     ("authoring_source_wording", re.compile(r"자료에\s*(?:적힌|제시된)|제공된\s*주소\s*정보|구조화\s*데이터")),
@@ -99,6 +114,240 @@ BLOCKED_TEXT_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("broken_grade_list_particle", re.compile(r"[초중고][1-6](?:·[초중고][1-6])+?이\s+(?:확인된\s*수업\s*가능\s*학년|전문학원\s*상담\s*가능\s*학년)")),
     ("broken_object_particle", re.compile(r"(?:루틴|장치|구조|절차|관리)(?:가|이)\s+확인할\s+필요")),
     ("broken_repeated_consultation", re.compile(r"상담\s+첫\s+상담")),
+    (
+        "broken_extended_particle",
+        re.compile(
+            r"기준는|기준를|기준와|기록라는|예비고이|점검와|결과과|날짜과|과정를|기록를|피드백와|분위기을|"
+            r"일정와|기록와|과정는|학습량와|계획와|재확인가|배분와|적용와|구조을|설계을|"
+            r"교정와|해석와|대비이|과정와|준비이|누적와|정리이|분류이|복습와|연계이|테스트이|"
+            r"피드백는|공유이|활용를|점검는|기록가|기록는|학습를|구성를|자기주도반를|점검가|"
+            r"동선를|계획는|시간를|환경를|누적가|단기집중반를|(?:신창지구|첨단지구|청라)과"
+        ),
+    ),
+    (
+        "broken_composed_phrase",
+        re.compile(
+            r"예비해당\s*학년|나누는지부터\s+나누어\s+보면|설명하는\s+데\s+실제\s+계획을\s+세우는\s+데|"
+            r"을\s+함께\s+서술형\s+풀이|학교\s+학생에게|오답노트를\s+학생에게|"
+            r"영어\s+답안과\s+수학\s+풀이를\s+과목별\s+오답과\s+복습\s+일정을\s+나누면|"
+            r"필요한\s+학생에게\s+필요한|확인\s+내용을\s+확인|학생\s+설명과\s+풀이\s+흔적과|"
+            r"교재\s+진도와\s+이해도와"
+            r"|[가-힣]+(?:는지|인지)부터\s+나누어\s+보면|"
+            r"서술형\s+답안의\s+식과\s+설명과\s+서술형\s+풀이의\s+근거를|"
+            r"문제집\s+학생에게|시험분석|이\s+행의|학교\s+칸|해당\s+학년\s+(?:이|에게)(?=\s)|"
+            r"(?<![가-힣])페이지(?:이지만|는|를|가|에서)?(?![가-힣])"
+            r"|이\s+문장은|이\s+목록|목록\s+안에서만\s+언급|[,，]상담에서"
+            r"|센터\s+등록\s+자료에서|학교\s+참고\s+범위로|자료에\s+없는\s+학교명|"
+            r"제공된\s+학교\s+범위|주소가\s+.{1,250}?으로\s+제공된\s+.{1,80}?학습\s+과정을\s+방문한다면"
+            r"|(?:학교\s+)?항목에\s+기재된|(?<=[초중고])[.,](?=[가-힣])"
+            r"|학생처럼\s+약점이\s+뚜렷한\s+학생|상담을\s+상담할\s+때|"
+            r"(?:이\s+과정에서|상담\s+과정에서는)\s+영어\s+학습\s+과정에서|"
+            r"확인(?:이|하는지가)\s+핵심\s+확인사항|확인하는\s+방식이\s+확인할\s+필요가\s+있습니다|"
+            r"학습량\s+조정(?:은\s+학습량\s+조정에|을\s+학습량\s+조정과|과\s+학습량\s+조정을)|"
+            r"학생에게는\s+학생별\s+계획은|학습\s+과정을\s+(?:알아보는|찾는)\s+과정(?:에서는|에서)|"
+            r"수업을\s+시작하기\s+전에는\s+수업\s+위치는"
+        ),
+    ),
+    (
+        "reader_copy_residue",
+        re.compile(
+            r"‘[^’]{1,45}’\s*(?:학습\s*)?항목|[가-힣·0-9]+\s+단계의\s+[^,.!?]{1,50}생활권의|"
+            r"제공된\s+학교\s+범위|이\s+행의|학교\s+칸|해당\s+학년|현재\s+학년\s+진단|"
+            r"학생에게는[^,.!?]{0,70}학생(?:에게는|이라면|은|이)|예비고가라도|"
+            r"학원을\s+고르는\s+과정은[^.!?]{0,100}학습\s+흐름을\s+찾는\s+과정|"
+            r"문장\s+구조를\s+읽는\s+힘과\s+시험\s+조건을\s+해석하는\s+힘이\s+같이|"
+            r"시험\s+전후의\s+변화를\s+시험\s+전후로|확인된\s+자료에는[^.!?]{1,180}?등을\s+확인할\s+수\s+있습니다|"
+            r"등록\s+자료\s+기준|주소\s+항목에는[^.!?]{0,180}?정보가\s+제공|"
+            r"수업\s+위치는\s+자료에\s+기재된|학생에게는\s+내신\s+대비는|상담\s+과정에서\s+상담에서|"
+            r"정확히\s+다루는\s+순서로\s+상담\s+질문으로|확인하는\s+시간이\s+필요한\s+과정입니다|"
+            r"추가\s+확인\s+항목|두\s+과목의\s+주간\s+계획을\s+주간\s+계획과|"
+            r"어휘·문법·독해의\s+차이를\s+어휘·문법·독해로|"
+            r"학생이\s+(?:문장을|말로)\s+설명한\s+내용을\s+학생의\s+설명과|"
+            r"나눠\s+보는\s+것이\s+(?:필요한\s+과정|먼저\s+마련)|"
+            r"현재\s+단원과\s+누적\s+빈틈과|확인\s+가능한지|"
+            r"과목별\s+오답과\s+복습\s+일정이\s+수업\s+후\s+일정으로|확인된\s+자료에는|"
+            r"진단\s+내용을\s+다시\s+묻는\s+것이\s+필요한\s+과정입니다|"
+            r"(?:시험\s+범위와\s+남은\s+기간|숙제\s+수행과\s+오답)과|내신진도|"
+            r"주소가\s+.{3,220}?로\s+제공되어\s+있으니|주소는\s+.{3,220}?로\s+제공되어\s+있습니다|"
+            r"주소가\s+.{3,220}?로\s+제공된\s+.{1,80}?을\s+방문한다면|"
+            r"수업\s+시작\s+전에는\s+위치를\s+자료에\s+기재된|제공된\s+학교\s+자료가\s+있다면|"
+            r"주간\s+계획을\s+계획에\s+반영하는\s+순서|(?:영어\s+답안과\s+독해\s+근거|수학\s+답안과\s+풀이\s+과정)과|"
+            r",\s+또한\s+|"
+            r"(?:수업을\s+시작하기\s+전에는|학습\s+계획을\s+세울\s+때는)"
+            r"[^.!?]{1,160}?영어[^.!?]{0,80}?찾는\s+가정은"
+        ),
+    ),
+    (
+        "reader_internal_data_wording",
+        re.compile(
+            r"현재\s+학년에게|등록\s+자료에|특정\s+학교명을\s+임의로|"
+            r"센터\s+자료(?:\s+기준|에\s+나온)|"
+            r"(?:(?:영어|수학)\s+학습\s+과정|해당\s+(?:영어|수학)\s+관리\s+방식|"
+            r"지역별\s+(?:영어|수학)\s+학습\s+기준|영어·수학\s+학습\s+과정|"
+            r"해당\s+영수\s+관리\s+방식|지역별\s+영수\s+학습\s+기준)"
+            r"\s+(?:상담|수업|선택|기준)|"
+            r"살펴보기을|점검을\s+점검|등록\s+전\s+확인하면|"
+            r"것이\s+확인할\s+필요가\s+있습니다|,(?=확인된)|"
+            r"학습\s+계획을\s+세울\s+때는\s+확인된\s+수업\s+위치는|"
+            r"까지\s+무엇을\s+남길지까지|예비현재\s+학년|현재\s+학년(?:맞춤|과정)|"
+            r"현재\s+학년의\s+학생의|(?:이)?라는\s+표현은|’\s+표현은\s+결과를\s+약속|"
+            r"[가-힣 ]+\s+영어\s+(?:상담|수업)\s+(?:초등|중등|고등)\s+과정은|"
+            r"상담\s+때[^.!?]{0,100}?상담에서|학습\s+운영\s+기준\s+이\s+기준|"
+            r"(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면),\s*"
+            r"[^,.!?]{5,110}?(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면),"
+        ),
+    ),
+    (
+        "broken_double_object_heading",
+        re.compile(
+            r"(?:을|를)\s+[^,.!?:]{1,45}?(?:을|를)\s+연결하는\s+기준|"
+            r"(?:확인|점검|살펴보기)을\s+정하는\s+(?:순서|방법)"
+        ),
+    ),
+    (
+        "reader_current_grade_residue",
+        # ``현재 학년 확인이 필요한 자녀`` is an intentional one-reader
+        # phrase.  Other bare ``현재 학년`` wording is internal planning copy.
+        re.compile(r"현재\s+학년(?!\s+확인이\s+필요한\s+자녀)"),
+    ),
+    (
+        "reader_new_copy_residue",
+        re.compile(
+            r"필요한\s+과정입니다|"
+            r"(?:해당|지역별)\s+(?:영어|수학|영수|과목)\s+(?:관리\s+방식|학습\s+기준)|"
+            r"상담에서\s+살펴본\s+내용입니다|내용을\s+확인할\s+수\s+있습니다|"
+            r"흐름이\s+자연스럽습니다|관련\s+안내를\s+학습\s+관리\s+질문|"
+            r"확인된\s+학교\s+정보에는[^.!?]{0,200}?확인할\s+수|"
+            r"이\s+보완\s+과정은\s+학원과\s+가정이|"
+            r"설명받는지가\s+놓치지\s+말아야|"
+            r"문법\s+문제를?\s+감으로\s+찍는\s+횟수가\s+많은\s+부분|"
+            r"비교\s+기준\s+비교|가정\s+점검\s+내용을\s+점검|"
+            r"과정이\s+우선\s+살펴볼\s+기준|합니다입니다|다음\s+수업에서\s+상담에서|"
+            r"(?:학습설계|학습노트|입시준비|시험성적|학습목표설정|학습프로그램|학습반복|"
+            r"학습자율성|학습\s+성과\s+점검반|학습오답\s+관리|밀착학습관리|학습문제관리|내신과제관리)|"
+            r"(?:집중|자기주도|학습|입시|방학)\s*캠프|내신\s+과제\s+점검가|"
+            r"학년\s+확인이\s+필요한\s+학생|예비학년|학생학생|"
+            r"학생(?:학습|시험|학교|집|쉬운|수학|문제|풀이|상황|맞춤|과정)|"
+            r"(?:있는|분명한|이어지는|보는|작동하는)(?:가|이)입니다|으입니다|"
+            r"수업의\s+수업\s+내용을|(?:학습암기|학습심화|학습몰입도|학습부진|오답\s+반복)을?\s+잘\s+활용하려면|"
+            r"고등학교\s+1학년\s+학생에게\s+학습\s+성적이\s+필요하다면|"
+            r"(?:학습예습|학습실전|학습성장력|학습응용|학습암기|학습연습|학습복습|시험오답|학습정리|학습향상|학습이해|학습부진|학습심화|학습자립도|학습달성률|학습약점|학습요약|학습완성도|학습자극|학습보완)|"
+            r"영어\s+답안과\s+수학\s+풀이를\s+과목별\s+오답과\s+복습\s+일정을|"
+            r"서술형\s+교정과\s+가정\s+복습을\s+가정\s+복습과|"
+            r"영어\s+(?:수업|상담|학습\s+기준|학습\s+과정)\s+행에는\s+학교명이|"
+            r"학교명이\s+별도로\s+제공되지\s+않은|꾸며\s+쓰는\s+것이\s+아니라|"
+            r"차이를\s+구체적으로\s+설명하는\s+데\s+비교\s+기준을\s+세우기\s+수월합니다|"
+            r"(?:자녀|학생)의\s+두\s+과목의\s+최근\s+시험지|"
+            r"먼저\s+[^.!?]{1,90}?\s+먼저\s+정리하고|주소\s+항목에는|"
+            r"같은\s+운영\s+요소가\s+학습\s+지속성에\s+어떤\s+도움을|"
+            r"작은\s+항목처럼\s+보여도[^.!?]{0,120}?꾸준히\s+다닐\s+수\s+있는지|"
+            r"잘\s+활용하려면\s+강의\s+내용,\s*과제,\s*재확인\s+문제가|"
+            r"학생에게\s+[^.!?]{1,55}?(?:이|가)\s+필요하다면\s+먼저\s+최근\s+시험지|"
+            r"영어\s+학습\s+기준\s+(?:초등|중등|고등)\s+과정|영어\s+학습\s+기준\s+행|"
+            r"(?:영어|수학)\s+학습\s+기준\s+커리큘럼|수학\s+학습\s+기준\s+등록\s+전(?:에는)?|"
+            r"생활권의\s+(?:초등학교\s*[1-6]학년|중학교\s*[1-3]학년|고등학교\s*[1-3]학년|"
+            r"초[1-6]|중[1-3]|고[1-3]|예비[초중고])[^.!?]{3,150}?학생|"
+            r"기준으로\s+상담\s+질문으로|오답을\s+맞힌\s+문제처럼|문제집\s+안내\s+수|"
+            r"함께\s+살펴보는[^.!?]{0,100}?(?:한\s+번에|연결하는\s+방식)|"
+            r"별도\s+수업\s+가능\s+학교\s+정보가\s+제공되지\s+않았으므로|"
+            r"영어\s+(?:전문학원|전문\s+수업)\s+행에는\s+학교명이|"
+            r"[^.!?]{2,70}?(?:을|를)\s+먼저\s+안정시키는\s+접근|"
+            r"[^.!?]{2,75}?(?:을|를)\s+현재\s+수준을\s+판단하는\s+기준으로\s+삼으면|"
+            r"영어와\s+수학의\s+차이를\s+영어·수학으로\s+구분하면|"
+            r"어휘·문법·독해와\s+답의\s+근거와\s+서술형\s+교정|"
+            r"답의\s+근거를\s+설명하지\s+못하는\s+지점을\s+설명하고|"
+            r"학부모\s+관점에서\s+보면|학생에게는\s+[^,.!?]{0,80}?(?:질문은|영어·수학은|"
+            r"광고에는|등록\s+전에는|학습\s+공간은|이\s+보완은|상담\s+때는|상담\s+후에는|평일에는)"
+            r"|[^.!?]{1,100}?(?:이|가)\s+제공되는지보다\s+중요한\s+점은|"
+            r"학생이라는\s+가설을\s+세우고|목표는\s+작은\s+기록이\s+쌓일\s+때|"
+            r"(?:영어|수학)\s+학습\s+(?:과정|기준)을\s+찾는|학생의\s+시험을\s+준비할\s+때|"
+            r"학습\s+변화\s+확인을\s+보장한다는\s+표현|수학\s+(?:수업|상담|전문학원)의\s+확인된\s+주소|"
+            r"수학\s+학습\s+(?:과정|기준)\s+커리큘럼|커리큘럼은\s+빠른\s+선행표보다|"
+            r"먼저\s+[^.!?]{1,90}?\s+먼저\s+정리|다음\s+(?:영어|수학)\s+수업\s+전\s+실행\s+계획을\s+다음\s+점검|"
+            r"다음\s+계획을\s+다음\s+(?:학습|점검)|풀이\s+과정을\s+설명하게\s+해\s+보는\s+과정|"
+            r"영어\s+학생에게\s+맞는|영어\s+학습\s+(?:과정|기준)\s+안내에서|"
+            r"필요한\s+부분부터\s+살펴볼\s+부분은|최근\s+학교\s+교재\s+활용과\s+교재를|"
+            r"관리까지\s+확인하는\s+관리\s+포인트|수업의\s+수업\s+가능|수업에서\s+수업\s+가능한|"
+            r"서술형\s+답안의\s+식과\s+설명을\s+함께[^.!?]{2,100}?하는지를\s+점검|"
+            r"살펴볼\s+학생은|(?:에서는|으로는)\s+이\s+보완은|훈련이\s+비교\s+기준을\s+세우기|"
+            r"부분(?:이\s+생기는|에서\s+막히는)\s+부분은|영수\s+상담의\s+상담\s+기준|"
+            r"차이를\s+구체적으로\s+설명하는\s+데\s+비교\s+기준을\s+세우기\s+수월합니다|"
+            r"상담\s+자리에서\s+먼저\s+상담에서"
+            r"|서술형\s+답안의\s+식과\s+설명을\s+함께"
+            r"|수학\s+수업에서\s+수업과\s+가정\s+복습의\s+역할"
+            r"|(?:이처럼\s+약점이\s+뚜렷한|학생처럼\s+현재\s+약점이\s+분명한)\s+학생"
+            r"|중등\s+내신\s+이후|단어\s+시험을\s+시험\s+전후\s+변화로"
+            r"|찾는\s+가정은\s+가정에서|주소\s+정보\([^)]{3,180}\)는[^.!?]*정보입니다"
+            r"|수업을\s+검토할\s+때\s+커리큘럼을\s+볼\s+때|영어\s+학습\s+기준이[^.!?]*공간인지"
+            r"|학생에게는\s+수업\s+운영\s+기준은|함께\s+올라가는\s+흐름을\s+함께\s+겪는"
+            r"|(?:영어|수학)\s+영역별\s+취약\s+지점을\s+(?:영어|수학)\s+영역별로"
+            r"|영어·수학\s+수업의\s+(?:수학·영어|두\s+과목)\s+수업이"
+            r"|상황에\s+맞게\s+적용\s+범위를\s+다시\s+조정해야\s+합니다"
+            r"|(?:확인하는|확인할|물어볼)\s+질문\s*[:，,]\s*질문"
+            r"|주간\s+실행\s+계획을\s+확인하고\s+주간\s+계획을"
+            r"|오답\s+재확인\s+절차를\s+기준으로\s+보면[^?]{1,150}?오답\s+재확인도"
+            r"|수업\s+운영\s+기준은\s+수업\s+선택의\s+부가\s+요소"
+            r"|문제\s+조건을\s+표시한\s+흔적에서\s+문제\s+조건을"
+            r"|(?:과목별|영어|수학)\s+현재\s+차이를\s+바탕으로\s+현재\s+수준"
+            r"|학교\s+일정과\s+함께\s+살펴보면,\s*학교\s+일정과"
+            r"|상담\s+과정에서는[^.!?]{1,160}?(?:확인된\s+수업\s+위치는|"
+            r"확인된\s+수업\s+가능\s+학교\s+정보에는|영어\s+전문\s+수업의\s+기본은)"
+            r"|학생에게는[^.!?]{0,110}?(?:시험\s+기간\s+수업은|영어·수학\s+학습은|"
+            r"문제집(?:\s+선택)?은|학생일수록)"
+            r"|함께\s+챙겨야\s+하는\s+준비\s+과정을\s+함께\s+겪는"
+            r"|함께\s+계산해야\s+하는\s+상황도\s+함께\s+고려"
+            r"|충청\s+새롬중앙로\s+(?:다정동|새롬동)"
+            r"|등록된\s+학교\s+정보가\s+없는\s+경우에는\s+최근\s+학교"
+            r"|어휘\s+누적\s+기록과\s+단어\s+시험을\s+시험\s+전후\s+기록으로"
+            r"|상담\s+과정에서는[^.!?]{1,160}?학생은"
+            r"|상담\s+후\s+실행\s+계획[^.!?]{0,100}?다음\s+실행"
+            r"|문제\s+조건을\s+표시한\s+흔적[^.!?]{0,100}?문제\s+조건을\s+끝까지"
+            r"|상담[^.!?]{0,160}?상담에서\s+살펴보아야\s+합니다"
+            r"|과목별\s+취약\s+지점을\s+과목별로\s+나누어\s+보면"
+            r"|(?<=[.!?])(?=[가-힣])"
+        ),
+    ),
+    (
+        "nested_conditional_openers",
+        re.compile(
+            r"(?:하면|보면|대조하면|살펴보면|맞춰\s+보면|정리하면|바꾸면|넣으면|"
+            r"이어\s+보면|구체화하면|나란히\s+놓으면|놓고\s+보면|연결하면|배열하면|"
+            r"삼으면|포함하면|바뀌면|찾으면|나누면|비교하면|판단하면),\s+[^.!?]{2,190}?"
+            r"(?:하면|보면|대조하면|살펴보면|맞춰\s+보면|정리하면|바꾸면|넣으면|"
+            r"이어\s+보면|구체화하면|나란히\s+놓으면|놓고\s+보면|연결하면|배열하면|"
+            r"삼으면|포함하면|바뀌면|찾으면|나누면|비교하면|판단하면)(?:,|\s)"
+        ),
+    ),
+    (
+        "double_subject_parent_view",
+        re.compile(r"학부모\s+관점에서는\s+[^.!?]{0,100}?(?:학생은|질문은|기준은|광고에는)"),
+    ),
+    (
+        "faq_semantic_adjacent_pair",
+        re.compile(
+            r"학생이\s+혼자\s+다시\s+해낸\s+기록도\s+비교\s+기준입니다\.\s*"
+            r"학생이\s+혼자\s+다시\s+해낸\s+기록도\s+함께\s+남겨\s+두세요\."
+        ),
+    ),
+)
+
+# Heading-only rules stay outside ``BLOCKED_TEXT_PATTERNS`` so prose such as
+# a legitimate weekly planning example does not create a false positive.
+BROKEN_STUDENT_HEADING_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    (
+        "duplicate_question_heading",
+        re.compile(r"질문\s*[:,，]\s*질문\s*기록"),
+    ),
+    (
+        "broken_student_approach_heading",
+        re.compile(
+            r"(?:수학|영어|초등|고등학교|개념|집에서는|성실하지만)\s+학생을\s+위한\s+접근"
+        ),
+    ),
+    (
+        "broken_weekly_plan_heading",
+        re.compile(r"(?:오답을|학년이|방학에는|기초가|영어)\s+학생의\s+주간\s+계획\s+예시"),
+    ),
 )
 
 # These terms came from an unrelated keyword bank and cannot be asserted as
@@ -142,6 +391,17 @@ def normalize_space(value: object) -> str:
 def clean_markup(value: str) -> str:
     value = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", value, flags=re.I | re.S)
     return normalize_space(html.unescape(re.sub(r"<[^>]+>", " ", value)))
+
+
+def language_check_text(value: str) -> str:
+    """Flatten markup while retaining sentence boundaries between blocks."""
+    bounded = re.sub(
+        r"</(?:p|h[1-6]|li|summary|dt|dd|figcaption)\s*>",
+        ". ",
+        value,
+        flags=re.I,
+    )
+    return clean_markup(bounded)
 
 
 def match_one(value: str, pattern: str) -> str | None:
@@ -502,6 +762,62 @@ def audit_hub(
         audit.fail("hub_visible_faq_count", page, len(faq_visible))
     if faq_visible != faq_structured:
         audit.fail("faq_schema_mismatch", page, f"visible={len(faq_visible)} schema={len(faq_structured)}")
+    faq_answer_leads: set[str] = set()
+    faq_answer_sentences: set[str] = set()
+    conditional_endings = (
+        r"하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면|"
+        r"나란히\s+놓으면|놓고\s+보면|넣으면|바꾸면|이어\s+보면|"
+        r"구체화하면|연결하면|배열하면|삼으면|포함하면"
+    )
+    for _question, answer in faq_visible:
+        for sentence in re.split(r"(?<=[.!?])\s+", answer):
+            normalized = normalize_space(sentence)
+            lead = re.match(
+                rf"^([^,.!?]{{8,140}}?(?:{conditional_endings})),",
+                normalized,
+            )
+            if lead:
+                lead_text = lead.group(1).strip()
+                if lead_text in faq_answer_leads:
+                    audit.fail("faq_repeated_answer_lead", page, lead_text)
+                faq_answer_leads.add(lead_text)
+            if normalized in faq_answer_sentences:
+                audit.fail("faq_repeated_answer_sentence", page, normalized)
+            faq_answer_sentences.add(normalized)
+
+    review_block = match_one(
+        source,
+        r"<section\b[^>]*>\s*<div\b[^>]*>\s*<article\b[^>]*>\s*"
+        r"<p\b[^>]*>PARENT CONSULTATION SCENARIOS</p>(.*?)</section>",
+    ) or ""
+    review_sentences: set[str] = set()
+    for review_text in re.findall(
+        r"<article\b[^>]*\bclass=[\"'][^\"']*review-card[^\"']*[\"'][^>]*>.*?<p>(.*?)</p>.*?</article>",
+        review_block,
+        re.I | re.S,
+    ):
+        for sentence in re.split(r"(?<=[.!?])\s+", clean_markup(review_text)):
+            normalized = normalize_space(sentence)
+            if normalized in review_sentences:
+                audit.fail("review_repeated_sentence", page, normalized)
+            review_sentences.add(normalized)
+    faq_leads: set[str] = set()
+    faq_sentences: set[str] = set()
+    for question, answer in faq_visible:
+        lead = question.split(",", 1)[0].strip()
+        if 8 <= len(lead) <= 80 and lead.endswith(
+            ("면", "보면", "살펴보면", "정리하면", "대조하면", "때")
+        ):
+            if lead in faq_leads:
+                audit.fail("faq_repeated_context_lead", page, lead)
+            faq_leads.add(lead)
+        for sentence in re.split(r"(?<=[.!?])\s+", answer):
+            normalized = normalize_space(sentence)
+            if not normalized:
+                continue
+            if normalized in faq_sentences:
+                audit.fail("faq_repeated_answer_sentence", page, normalized)
+            faq_sentences.add(normalized)
 
     crumbs = visible_breadcrumb(source)
     if crumbs != expected_crumbs:
@@ -916,7 +1232,29 @@ def audit_detail(
 
     main = match_one(source, r"<main\b[^>]*>(.*?)</main>") or ""
     visible_main = clean_markup(main)
-    check_blocked_text(page, visible_main, audit)
+    # Preserve block boundaries while checking repeated words.  Flattening an
+    # H2 ending in ``확인`` and the following paragraph beginning in ``확인``
+    # would otherwise create a false ``확인 확인`` defect that does not occur
+    # in either reader-facing sentence.
+    language_main = re.sub(
+        r"<section\b[^>]*\bid=[\"'](?:internal-links|verified-center)[\"'][^>]*>.*?</section>",
+        "",
+        main,
+        flags=re.I | re.S,
+    )
+    check_blocked_text(page, language_check_text(language_main), audit)
+    heading_repeat = re.compile(
+        r"(?P<head_repeat>기준|순서|학부모|현재).{0,100}\b(?P=head_repeat)\b"
+    )
+    for heading_markup in re.findall(r"<h2\b[^>]*>(.*?)</h2>", article_markup(source), re.I | re.S):
+        heading = clean_markup(heading_markup)
+        match = heading_repeat.search(heading)
+        if match:
+            audit.fail("repeated_heading_head", page, match.group(0))
+        for code, pattern in BROKEN_STUDENT_HEADING_PATTERNS:
+            broken = pattern.search(heading)
+            if broken:
+                audit.fail(code, page, broken.group(0))
     if slug == "전문학원":
         generic_source_residue = re.search(
             r"자료에\s*함께\s*제시된|추가\s*확인\s*항목|같은\s*운영\s*정보는|"

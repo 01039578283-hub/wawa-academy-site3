@@ -233,6 +233,27 @@ def schools_for(row: dict[str, str]) -> list[str]:
     ]
 
 
+def public_school_names(values: list[str]) -> list[str]:
+    """Expand only unambiguous source separators for reader-facing copy.
+
+    The verified centre card and organization facts continue to use the CSV
+    strings verbatim.  Public prose may split dot- or space-delimited school
+    lists, but it must never infer a boundary inside an ordinary school name
+    such as ``성남중앙초``.
+    """
+    result: list[str] = []
+    school = r"[가-힣A-Za-z0-9]+?(?:초등학교|중학교|고등학교|초|중|고)"
+    for raw in values:
+        dot_parts = [part.strip() for part in re.split(r"[.,;；/|·]+", raw) if part.strip()]
+        for part in dot_parts:
+            spaced = [item for item in re.split(r"\s+", part) if item]
+            if len(spaced) > 1 and all(re.fullmatch(school, item) for item in spaced):
+                result.extend(spaced)
+            else:
+                result.append(part)
+    return unique(result)
+
+
 def image_size(path: Path) -> tuple[int, int]:
     try:
         from PIL import Image
@@ -263,6 +284,16 @@ def base_center_data(local: str) -> dict[str, object]:
     mobile_name = "seoul-mobile.webp" if is_seoul else "local-mobile.webp"
     identifier = row.get("교육지원청 등록번호", "")
     address = row.get("센터 주소", "")
+    public_region = row.get("지역", "")
+    public_city = row.get("시or구", "")
+    # The source rows for 다정동/새롬동 store a road name in the city field.
+    # Keep the verified street address untouched, but use the actual public
+    # administrative locality for areaServed, captions and reader copy.
+    if official_region(address, public_region) == "세종특별자치시":
+        public_region = "세종"
+        if public_city.endswith(("로", "길")):
+            public_city = "세종시"
+
     return {
         "organization_name": row.get("센터명") or f"{SITE_NAME} {local} 안내",
         "telephone": PHONE,
@@ -273,8 +304,8 @@ def base_center_data(local: str) -> dict[str, object]:
             "addressRegion": official_region(address, row.get("지역", "")),
             "addressLocality": row.get("시or구", ""),
         },
-        "region": row.get("지역", ""),
-        "city": row.get("시or구", ""),
+        "region": public_region,
+        "city": public_city,
         "street_address": address,
         "opening_hours": [],
         "identifier": ({"@type": "PropertyValue", "propertyID": "교육지원청 등록번호", "value": identifier} if identifier else None),
@@ -363,10 +394,13 @@ def site_polish(value: str, local: str, config: dict[str, object]) -> str:
     replacements = (
         ("학부모에게는 학부모 상담", "학부모 상담"),
         ("학부모에게는 학부모", "학부모에게는"),
-        ("지역내 모든 고등학교 가능", "고등학교별 적용 여부 상담 확인 필요"),
-        ("지역 내 모든 고등학교 가능", "고등학교별 적용 여부 상담 확인 필요"),
+        ("지역내 모든 고등학교 가능", "학교별 적용 여부는 상담에서 확인해야 합니다"),
+        ("지역 내 모든 고등학교 가능", "학교별 적용 여부는 상담에서 확인해야 합니다"),
         ("학부모에게는 학원 선택 전에는", "학부모가 학원을 선택하기 전에는"),
         ("확인 센터 안내 기준으로", "확인된 센터 자료 기준으로"),
+        ("확인된 센터 자료 기준으로", "확인된 정보상"),
+        ("센터 자료에 나온 학교는", "확인된 학교 정보에는"),
+        ("특정 학교명을 임의로 만들지 않습니다", "자녀 학교의 최신 자료로 수업 범위를 확인해야 합니다"),
         ("놓치는 편 학생", "놓치는 학생"),
         ("놓치는 편 아이", "놓치는 아이"),
         ("편 학생", "학생"),
@@ -408,7 +442,7 @@ def site_polish(value: str, local: str, config: dict[str, object]) -> str:
         ),
         ("이 항목을 단순 시설명으로만 보지 말고", "이 기준을 이름만 보고 판단하지 말고"),
         ("수학 풀이이", "수학 풀이가"),
-        ("영어 답안과 수학 풀이와", "영어 답안과 수학 풀이를"),
+        ("영어 답안과 수학 풀이와", "영어 답안·수학 풀이와"),
         ("학생이 받은 학교에서 받은 자료", "학교에서 받은 자료"),
         ("학생이 가져온 제공된 학교 자료", "학생이 가져온 학교 자료"),
         ("과정이 필요한 과정입니다", "과정이 필요합니다"),
@@ -547,11 +581,215 @@ def site_polish(value: str, local: str, config: dict[str, object]) -> str:
         "학교명을 임의로 추가하지 않는 것이 신뢰를 지키는 방법입니다.",
         "실제 학교와 시험 범위는 상담에서 최신 자료로 다시 확인합니다.",
     )
+    # This wrapper performs several context substitutions after the shared
+    # engine's grammar pass.  Run the deterministic language guard once more
+    # so a replacement prefix cannot leave a doubled particle (for example
+    # ``해당 ... 방식에서는`` becoming ``수업에서는는``).
+    text = content_engine.polish_known_language_defects(text)
+    text = re.sub(
+        r"(?:영어·수학\s+학습\s+과정|해당\s+영수\s+관리\s+방식|지역별\s+영수\s+학습\s+기준)"
+        r"\s+(상담|수업)",
+        r"영수 \1",
+        text,
+    )
     text = text.replace(";", ".")
     text = re.sub(r"\s+([,.!?])", r"\1", text)
     text = re.sub(r"([.!?]){2,}", r"\1", text)
+    text = text.replace("으입니다", "입니다")
     text = re.sub(r"\s+", " ", text).strip()
     return text
+
+
+MALFORMED_LANGUAGE_RE = re.compile(
+    r"집에서도\s+무엇을\s+봐야\s+하는지\s+집에서도|"
+    r"(?:에서는는|에게는는|으로으로|에서에서|에는에는)|"
+    r"영수\s+전문학원\s+일반적인\s+안내처럼|"
+    r"(?<![가-힣])원고라(?=\s|[,.!?]|$)|"
+    r"학생이\s+받은\s+제공된|자녀\s+제공된|"
+    r"가장\s+가장|기준\s+기준|수학\s+풀이으로|"
+    r"다음\s+첫\s+상담|이\s+영수\s+학습\s+과정|"
+    r"(?<![가-힣])(?P<repeat>학생|학부모|상담|관리|확인|자료|학습|수업|학교|"
+    r"기준|과정|결과|계획|기록|답안|풀이|교재|영역|오답|복습|진단|설명|단원|학년)"
+    r"\s+(?P=repeat)(?=(?:에서|으로|은|는|이|가|을|를|과|와|의|에|도|만|부터|까지)?(?:\s|[,.!?]|$))|"
+    r"기준는|기준를|기준와|기록라는|학습관리은|예비고이|점검와|결과과|날짜과|과정를|기록를|피드백와|분위기을|"
+    r"일정와|기록와|과정는|학습량와|계획와|재확인가|배분와|적용와|구조을|설계을|"
+    r"교정와|해석와|대비이|과정와|준비이|누적와|정리이|분류이|복습와|연계이|테스트이|"
+    r"피드백는|공유이|활용를|점검는|기록가|기록는|학습를|구성를|자기주도반를|점검가|"
+    r"동선를|계획는|시간를|환경를|누적가|단기집중반를|(?:신창지구|첨단지구|청라)과|"
+    r"예비해당\s*학년|나누는지부터\s+나누어\s+보면|설명하는\s+데\s+실제\s+계획을\s+세우는\s+데|"
+    r"을\s+함께\s+서술형\s+풀이|학교\s+학생에게|오답노트를\s+학생에게|"
+    r"영어\s+답안과\s+수학\s+풀이를\s+과목별\s+오답과\s+복습\s+일정을\s+나누면|"
+    r"필요한\s+학생에게\s+필요한|확인\s+내용을\s+확인|학생\s+설명과\s+풀이\s+흔적과|교재\s+진도와\s+이해도와"
+    r"|[가-힣]+(?:는지|인지)부터\s+나누어\s+보면|서술형\s+답안의\s+식과\s+설명과\s+서술형\s+풀이의\s+근거를|"
+    r"문제집\s+학생에게|시험분석|이\s+행의|학교\s+칸|해당\s+학년\s+(?:이|에게)(?=\s)|"
+    r"(?<![가-힣])페이지(?:이지만|는|를|가|에서)?(?![가-힣])"
+    r"|이\s+문장은|이\s+목록|목록\s+안에서만\s+언급|[,，]상담에서"
+    r"|센터\s+등록\s+자료에서|학교\s+참고\s+범위로|자료에\s+없는\s+학교명|제공된\s+학교\s+범위|"
+    r"주소가\s+.{1,250}?으로\s+제공된\s+.{1,80}?학습\s+과정을\s+방문한다면"
+    r"|(?:학교\s+)?항목에\s+기재된"
+    r"|학생처럼\s+약점이\s+뚜렷한\s+학생|상담을\s+상담할\s+때|"
+    r"(?:이\s+과정에서|상담\s+과정에서는)\s+영어\s+학습\s+과정에서|"
+    r"확인(?:이|하는지가)\s+핵심\s+확인사항|확인하는\s+방식이\s+확인할\s+필요가\s+있습니다|"
+    r"학습량\s+조정(?:은\s+학습량\s+조정에|을\s+학습량\s+조정과|과\s+학습량\s+조정을)|"
+    r"학생에게는\s+학생별\s+계획은|학습\s+과정을\s+(?:알아보는|찾는)\s+과정(?:에서는|에서)|"
+    r"수업을\s+시작하기\s+전에는\s+수업\s+위치는|"
+    r"현재\s+학년에게|등록\s+자료에|특정\s+학교명을\s+임의로|"
+    r"센터\s+자료(?:\s+기준|에\s+나온)|"
+    r"(?:(?:영어|수학)\s+학습\s+과정|해당\s+(?:영어|수학)\s+관리\s+방식|"
+    r"지역별\s+(?:영어|수학)\s+학습\s+기준|영어·수학\s+학습\s+과정|"
+    r"해당\s+영수\s+관리\s+방식|지역별\s+영수\s+학습\s+기준)"
+    r"\s+(?:상담|수업|선택|기준)|"
+    r"살펴보기을|점검을\s+점검|등록\s+전\s+확인하면|"
+    r"것이\s+확인할\s+필요가\s+있습니다|,(?=확인된)|"
+    r"학습\s+계획을\s+세울\s+때는\s+확인된\s+수업\s+위치는|"
+    r"까지\s+무엇을\s+남길지까지|예비현재\s+학년|현재\s+학년(?:맞춤|과정)|"
+    r"현재\s+학년의\s+학생의|(?:이)?라는\s+표현은|’\s+표현은\s+결과를\s+약속|"
+    r"상담\s+때[^.!?]{0,100}?상담에서|"
+    r"학습\s+운영\s+기준\s+이\s+기준|"
+    r"(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면|나란히\s+놓으면|넣으면|"
+    r"바꾸면|이어\s+보면|구체화하면|연결하면|배열하면|바뀌면|찾으면|나누면),\s*"
+    r"[^,.!?]{5,110}?(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면|"
+    r"나란히\s+놓으면|넣으면|바꾸면|이어\s+보면|구체화하면|연결하면|배열하면|"
+    r"바뀌면|찾으면|나누면),"
+)
+
+PUBLIC_COPY_RESIDUE_RE = re.compile(
+    r"‘[^’]{1,45}’\s*(?:학습\s*)?항목|"
+    r"[가-힣·0-9]+\s+단계의\s+[^,.!?]{1,50}생활권의|"
+    r"\b(?:서울|부산|대구|인천|광주|대전|울산|세종)\s+[가-힣]+(?:시|군|구)\s+"
+    r"(?:서울|부산|대구|인천|광주|대전|울산|세종)\s+|"
+    r"\b(?:경기|강원|충청|전라|경상|제주)\s+(?P<city>[가-힣]+)시\s+(?P=city)\s+|"
+    r"제공된\s+학교\s+범위|이\s+행의|학교\s+칸|해당\s+학년|현재\s+학년\s+진단|"
+    r"학생에게는[^,.!?]{0,70}학생(?:에게는|이라면|은|이)|"
+    r"예비고가라도|[가-힣A-Za-z0-9·]+가라는|"
+    r"학원을\s+고르는\s+과정은[^.!?]{0,100}학습\s+흐름을\s+찾는\s+과정|"
+    r"가정에서\s+가장\s+먼저\s+묻는\s+질문은\s+'여기\s+다니면\s+성적이\s+오르나요'이지만|"
+    r"(?:해당\s+영수\s+관리\s+방식|영어·수학\s+학습\s+과정|지역별\s+영수\s+학습\s+기준)\s+수업\s+전후로|"
+    r"문장\s+구조를\s+읽는\s+힘과\s+시험\s+조건을\s+해석하는\s+힘이\s+같이|"
+    r"학부모에게는[^.!?]{0,100}목표는|"
+    r"(?:영어\s+학습\s+과정|해당\s+영어\s+관리\s+방식|영어\s+전문\s+수업|"
+    r"지역별\s+영어\s+학습\s+기준|지역\s+영어\s+상담·수업)\s+(?:초등|중등|고등)\s+과정은|"
+    r"생활권의\s+(?:(?:초등|중등|고등)(?:학교)?\s*[1-6]학년|예비(?:중|고)1?|"
+    r"초[1-6]|중[1-3]|고[1-3])[^,.!?]{5,100}?학생에게는|"
+    r"진단\s+내용을\s+다시\s+묻는\s+것이\s+(?:확인할\s+필요|먼저\s+마련)|"
+    r"시험\s+전후의\s+변화를\s+시험\s+전후로|"
+    r"확인(?:하는\s+시간|되는\s+루틴|하는\s+절차)을?\s+확인할\s+필요|"
+    r"제공되지\s+않은\s+학교명을\s+만들지\s+않는\s+것이|"
+    r"학부모에게\s+비교\s+기준|학부모\s+관점에서는\s+가정에서|"
+    r"확인된\s+자료에는[^.!?]{1,180}?등을\s+확인할\s+수\s+있습니다|"
+    r"지역별\s+영수\s+학습\s+기준\s+상담\s+기준에서는|"
+    r"(?:영어\s+학습\s+과정|해당\s+영어\s+관리\s+방식)\s+수업에서는|"
+    r"영어\s+상담\s+수업에서는|"
+    r"이\s+행에는\s+수업\s+가능\s+학교명|제공\s+자료에\s+학교명이|등록\s+자료\s+기준|"
+    r"주소\s+항목에는[^.!?]{0,180}?정보가\s+제공|수업\s+위치는\s+자료에\s+기재된|"
+    r"학생에게는\s+내신\s+대비는|상담\s+과정에서\s+상담에서|"
+    r"(?:수학\s+학습\s+과정|해당\s+수학\s+관리\s+방식|[가-힣 ]+\s+수학\s+상담)\s+수업을\s+검토할\s+때|"
+    r"정확히\s+다루는\s+순서로\s+상담\s+질문으로|"
+    r"(?:상담\s+과정에서는|이\s+과정에서|학습\s+계획을\s+세울\s+때는|수업을\s+시작하기\s+전에는)"
+    r"[^.!?]{0,100}?영어\s+수업에서는|확인하는\s+시간이\s+필요한\s+과정입니다|"
+    r"현재\s+학년에게|등록\s+자료에|특정\s+학교명을\s+임의로|"
+    r"센터\s+자료(?:\s+기준|에\s+나온)|"
+    r"(?:(?:영어|수학)\s+학습\s+과정|해당\s+(?:영어|수학)\s+관리\s+방식|"
+    r"지역별\s+(?:영어|수학)\s+학습\s+기준|영어·수학\s+학습\s+과정|"
+    r"해당\s+영수\s+관리\s+방식|지역별\s+영수\s+학습\s+기준)"
+    r"\s+(?:상담|수업|선택|기준)|"
+    r"[가-힣 ]+\s+영어\s+(?:상담|수업)\s+(?:초등|중등|고등)\s+과정은|"
+    r"(?:이)?라는\s+표현은|’\s+표현은\s+결과를\s+약속|"
+    r"추가\s+확인\s+항목|두\s+과목의\s+주간\s+계획을\s+주간\s+계획과|"
+    r"어휘·문법·독해의\s+차이를\s+어휘·문법·독해로|"
+    r"학생이\s+(?:문장을|말로)\s+설명한\s+내용을\s+학생의\s+설명과|"
+    r"나눠\s+보는\s+것이\s+(?:필요한\s+과정|먼저\s+마련)|"
+    r"현재\s+단원과\s+누적\s+빈틈과|확인\s+가능한지|"
+    r"과목별\s+오답과\s+복습\s+일정이\s+수업\s+후\s+일정으로|확인된\s+자료에는|"
+    r"진단\s+내용을\s+다시\s+묻는\s+것이\s+필요한\s+과정입니다|"
+    r"(?:시험\s+범위와\s+남은\s+기간|숙제\s+수행과\s+오답)과|내신진도|"
+    r"주소가\s+.{3,220}?로\s+제공되어\s+있으니|주소는\s+.{3,220}?로\s+제공되어\s+있습니다|"
+    r"주소가\s+.{3,220}?로\s+제공된\s+.{1,80}?을\s+방문한다면|"
+    r"수업\s+시작\s+전에는\s+위치를\s+자료에\s+기재된|제공된\s+학교\s+자료가\s+있다면|"
+    r"주간\s+계획을\s+계획에\s+반영하는\s+순서|(?:영어\s+답안과\s+독해\s+근거|수학\s+답안과\s+풀이\s+과정)과|"
+    r",\s+또한\s+|"
+    r"(?:수업을\s+시작하기\s+전에는|학습\s+계획을\s+세울\s+때는)"
+    r"[^.!?]{1,160}?영어[^.!?]{0,80}?찾는\s+가정은|"
+    r"현재\s+학년(?!\s+확인이\s+필요한\s+자녀)|필요한\s+과정입니다|"
+    r"(?:해당\s+(?:영수|영어|수학)\s+관리\s+방식|지역별\s+(?:영수|영어|수학)\s+학습\s+기준)|"
+    r"상담에서\s+살펴본\s+내용입니다|내용을\s+확인할\s+수\s+있습니다|흐름이\s+자연스럽습니다|"
+    r"관련\s+안내를\s+학습\s+관리\s+질문|"
+    r"확인된\s+학교\s+정보에는[^.!?]{1,180}?등을\s+확인할\s+수\s+있습니다|"
+    r"이\s+보완\s+과정은\s+학원과\s+가정이|"
+    r"설명받는지가\s+놓치지\s+말아야\s+할\s+대목|"
+    r"문법\s+문제를\s+감으로\s+찍는\s+횟수가\s+많은\s+부분이\s+보여|"
+    r"학생이\s+혼자\s+다시\s+해낸\s+기록도\s+비교\s+기준입니다\.\s+"
+    r"학생이\s+혼자\s+다시\s+해낸\s+기록도\s+함께\s+남겨\s+두세요|"
+    r"학부모\s+관점에서는\s+(?:질문|수업\s+운영\s+기준|광고)(?:은|는|이|가|에는)|"
+    r"비교\s+기준\s+비교|가정\s+점검\s+내용을\s+점검|"
+    r"학생\s+중\s+(?:수학|영어|초등|고등학교|개념|집에서는|성실하지만)\s+학생을\s+위한\s+접근|"
+    r"(?:수학|영어|초등|고등학교|개념|집에서는|성실하지만)\s+학생을\s+위한\s+접근|"
+    r"(?:오답을|학년이|방학에는|기초가|영어)\s+학생의\s+주간\s+계획\s+예시|"
+    r"과정이\s+우선\s+살펴볼\s+기준|합니다입니다|다음\s+수업에서\s+상담에서|"
+    r"(?:학습설계|학습노트|입시준비|시험성적|학습목표설정|학습프로그램|학습반복|"
+    r"학습자율성|학습\s+성과\s+점검반|학습오답\s+관리|밀착학습관리|학습문제관리|내신과제관리)|"
+    r"(?:집중|자기주도|학습|입시|방학)\s*캠프|내신\s+과제\s+점검가|"
+    r"학년\s+확인이\s+필요한\s+학생|예비학년|학생학생|"
+    r"학생(?:학습|시험|학교|집|쉬운|수학|문제|풀이|상황|맞춤|과정)|"
+    r"(?:있는|분명한|이어지는|보는|작동하는)(?:가|이)입니다|으입니다|"
+    r"수업의\s+수업\s+내용을|(?:학습암기|학습심화|학습몰입도|학습부진|오답\s+반복)을?\s+잘\s+활용하려면|"
+    r"고등학교\s+1학년\s+학생에게\s+학습\s+성적이\s+필요하다면|"
+    r"(?:학습예습|학습실전|학습성장력|학습응용|학습암기|학습연습|학습복습|시험오답|학습정리|학습향상|학습이해|학습부진|학습심화|학습자립도|학습달성률|학습약점|학습요약|학습완성도|학습자극|학습보완)|"
+    r"영어\s+답안과\s+수학\s+풀이를\s+과목별\s+오답과\s+복습\s+일정을|"
+    r"서술형\s+교정과\s+가정\s+복습을\s+가정\s+복습과|"
+    r"영어\s+(?:수업|상담|학습\s+기준|학습\s+과정)\s+행에는\s+학교명이|"
+    r"학교명이\s+별도로\s+제공되지\s+않은|꾸며\s+쓰는\s+것이\s+아니라|"
+    r"차이를\s+구체적으로\s+설명하는\s+데\s+비교\s+기준을\s+세우기\s+수월합니다|"
+    r"(?:자녀|학생)의\s+두\s+과목의\s+최근\s+시험지|"
+    r"먼저\s+[^.!?]{1,90}?\s+먼저\s+정리하고|주소\s+항목에는|"
+    r"같은\s+운영\s+요소가\s+학습\s+지속성에\s+어떤\s+도움을|"
+    r"작은\s+항목처럼\s+보여도[^.!?]{0,120}?꾸준히\s+다닐\s+수\s+있는지|"
+    r"잘\s+활용하려면\s+강의\s+내용,\s*과제,\s*재확인\s+문제가|"
+    r"학생에게\s+[^.!?]{1,55}?(?:이|가)\s+필요하다면\s+먼저\s+최근\s+시험지"
+    r"|영어\s+학습\s+기준\s+(?:초등|중등|고등)\s+과정|영어\s+학습\s+기준\s+행|"
+    r"(?:영어|수학)\s+학습\s+기준\s+커리큘럼|수학\s+학습\s+기준\s+등록\s+전(?:에는)?|"
+    r"생활권의\s+(?:초등학교\s*[1-6]학년|중학교\s*[1-3]학년|고등학교\s*[1-3]학년|"
+    r"초[1-6]|중[1-3]|고[1-3]|예비[초중고])[^.!?]{3,150}?학생|"
+    r"기준으로\s+상담\s+질문으로|오답을\s+맞힌\s+문제처럼|문제집\s+안내\s+수|"
+    r"함께\s+살펴보는[^.!?]{0,100}?(?:한\s+번에|연결하는\s+방식)|"
+    r"별도\s+수업\s+가능\s+학교\s+정보가\s+제공되지\s+않았으므로|"
+    r"영어\s+(?:전문학원|전문\s+수업)\s+행에는\s+학교명이|"
+    r"[^.!?]{2,70}?(?:을|를)\s+먼저\s+안정시키는\s+접근|"
+    r"[^.!?]{2,75}?(?:을|를)\s+현재\s+수준을\s+판단하는\s+기준으로\s+삼으면|"
+    r"영어와\s+수학의\s+차이를\s+영어·수학으로\s+구분하면|"
+    r"어휘·문법·독해와\s+답의\s+근거와\s+서술형\s+교정|"
+    r"답의\s+근거를\s+설명하지\s+못하는\s+지점을\s+설명하고|"
+    r"학부모\s+관점에서\s+보면|학생에게는\s+[^,.!?]{0,80}?(?:질문은|영어·수학은|"
+    r"광고에는|등록\s+전에는|학습\s+공간은|이\s+보완은|상담\s+때는|상담\s+후에는|평일에는)"
+    r"|[^.!?]{1,100}?(?:이|가)\s+제공되는지보다\s+중요한\s+점은|"
+    r"학생이라는\s+가설을\s+세우고|목표는\s+작은\s+기록이\s+쌓일\s+때|"
+    r"(?:영어|수학)\s+학습\s+(?:과정|기준)을\s+찾는|학생의\s+시험을\s+준비할\s+때|"
+    r"학습\s+변화\s+확인을\s+보장한다는\s+표현|수학\s+(?:수업|상담|전문학원)의\s+확인된\s+주소|"
+    r"수학\s+학습\s+(?:과정|기준)\s+커리큘럼|커리큘럼은\s+빠른\s+선행표보다|"
+    r"먼저\s+[^.!?]{1,90}?\s+먼저\s+정리|다음\s+(?:영어|수학)\s+수업\s+전\s+실행\s+계획을\s+다음\s+점검|"
+    r"다음\s+계획을\s+다음\s+(?:학습|점검)|풀이\s+과정을\s+설명하게\s+해\s+보는\s+과정|"
+    r"영어\s+학생에게\s+맞는|영어\s+학습\s+(?:과정|기준)\s+안내에서|"
+    r"필요한\s+부분부터\s+살펴볼\s+부분은|최근\s+학교\s+교재\s+활용과\s+교재를|"
+    r"관리까지\s+확인하는\s+관리\s+포인트|수업의\s+수업\s+가능|수업에서\s+수업\s+가능한|"
+    r"서술형\s+답안의\s+식과\s+설명을\s+함께[^.!?]{2,100}?하는지를\s+점검|"
+    r"살펴볼\s+학생은|(?:에서는|으로는)\s+이\s+보완은|훈련이\s+비교\s+기준을\s+세우기|"
+    r"부분(?:이\s+생기는|에서\s+막히는)\s+부분은|영수\s+상담의\s+상담\s+기준|"
+    r"차이를\s+구체적으로\s+설명하는\s+데\s+비교\s+기준을\s+세우기\s+수월합니다|"
+    r"상담\s+자리에서\s+먼저\s+상담에서|"
+    r"문제\s+조건을\s+표시한\s+흔적에서\s+문제\s+조건을|"
+    r"(?:과목별|영어|수학)\s+현재\s+차이를\s+바탕으로\s+현재\s+수준|"
+    r"학교\s+일정과\s+함께\s+살펴보면,\s*학교\s+일정과|"
+    r"상담\s+과정에서는[^.!?]{1,160}?(?:확인된\s+수업\s+위치는|"
+    r"확인된\s+수업\s+가능\s+학교\s+정보에는|영어\s+전문\s+수업의\s+기본은)|"
+    r"학생에게는[^.!?]{0,110}?(?:시험\s+기간\s+수업은|영어·수학\s+학습은|"
+    r"문제집(?:\s+선택)?은|학생일수록)|"
+    r"함께\s+챙겨야\s+하는\s+준비\s+과정을\s+함께\s+겪는|"
+    r"함께\s+계산해야\s+하는\s+상황도\s+함께\s+고려|"
+    r"충청\s+새롬중앙로\s+(?:다정동|새롬동)|"
+    r"등록된\s+학교\s+정보가\s+없는\s+경우에는\s+최근\s+학교|"
+    r"어휘\s+누적\s+기록과\s+단어\s+시험을\s+시험\s+전후\s+기록으로|"
+    r"상담\s+과정에서는[^.!?]{1,160}?학생은"
+)
 
 
 def polish_manuscript(
@@ -561,7 +799,7 @@ def polish_manuscript(
     center: dict[str, object],
 ) -> dict[str, object]:
     verified_grades = [str(item) for item in center.get("verified_grades", [])]
-    schools = [str(item) for item in center.get("schools", [])]
+    schools = public_school_names([str(item) for item in center.get("schools", [])])
 
     source_reference = ""
     if str(config["slug"]) == "전문학원":
@@ -594,9 +832,51 @@ def polish_manuscript(
         raw = str(value or "")
         if source_reference:
             raw = raw.replace(source_reference, "학습 운영 기준")
+        raw = raw.replace("지역내 모든 고등학교 가능", "학교별 적용 여부는 상담에서 확인해야 합니다")
+        raw = raw.replace("지역 내 모든 고등학교 가능", "학교별 적용 여부는 상담에서 확인해야 합니다")
         first = site_polish(raw, local, config)
         grammar = content_engine.final_polish(first, local, config, verified_grades, schools)
-        return site_polish(grammar, local, config)
+        polished = site_polish(grammar, local, config)
+        return content_engine.collapse_stacked_conditionals(polished)
+
+    def clean_heading(value: object) -> str:
+        """Stabilize H2-only rewrites so a later variation cannot rejoin heads."""
+        result = clean(value)
+        for _ in range(3):
+            updated = clean(content_engine.polish_public_heading(result))
+            if updated == result:
+                break
+            result = updated
+        seen_priority = 0
+
+        def replace_priority(match: re.Match[str]) -> str:
+            nonlocal seen_priority
+            seen_priority += 1
+            return match.group(0) if seen_priority == 1 else "과목별 계획"
+
+        result = re.sub("우선순위", replace_priority, result)
+        result = result.replace("우선순위는 과목별 계획 비교에", "우선순위는 과목별 계획에")
+        result = result.replace("숙제 수행·오답과 오답", "숙제 수행과 오답")
+        result = re.sub(r"(학부모\s+질문[^:，,]{0,100}?)(?:안내|질문)\s*[:，,]\s*질문\s+기록", r"\1안내: 상담 기록", result)
+        result = re.sub(r"(?:확인하는|확인할|물어볼)\s+질문\s*[:，,]\s*질문", "확인할 항목: 질문", result)
+        result = re.sub(r"주간\s+실행\s+계획([^,.!?:]{0,100}?)다음\s+실행", r"주간 계획\1다음 실행", result)
+        result = re.sub(r"주간\s+실행\s+계획([^,.!?:]{0,100}?)주간\s+계획", r"주간 계획\1가정 일정", result)
+        result = re.sub(
+            r"최근\s+풀이\s+기록과\s+주간\s+계획을\s+함께\s+살펴보는\s+선행\s+학생의\s+주간\s+계획\s+예시",
+            "최근 풀이 기록을 함께 살펴보는 선행 학생의 주간 학습 예시",
+            result,
+        )
+        heading_residue = re.search(
+            r"숙제\s+수행·오답과\s+오답|질문\s+기록은\s+기록|질문\s+기록과\s+상담\s+질문|"
+            r"(?:상담\s+후|주간)\s+실행\s+계획과\s+다음\s+실행|물어볼\s+질문:\s*질문|"
+            r"복습(?:\s+간격)?과\s+복습\s+설계|오답은\s+오답\s+재확인|"
+            r"첫\s+달\s+점검을\s+확인한\s+뒤\s+첫\s+달\s+점검|"
+            r"함께\s+살펴보는\s+지역과\s+학년을\s+함께\s+봐야",
+            result,
+        )
+        if heading_residue:
+            raise ValueError(f"{config['slug']}/{local}: H2 의미 중복 {heading_residue.group(0)!r}")
+        return result
 
     manuscript["meta"] = clean(manuscript.get("meta"))
     if len(str(manuscript["meta"])) > 100:
@@ -613,7 +893,10 @@ def polish_manuscript(
         manuscript["meta"] = compact
     manuscript["intro"] = [clean(item) for item in manuscript.get("intro", [])]
     manuscript["sections"] = [
-        (clean(heading), [clean(paragraph) for paragraph in paragraphs])
+        (
+            clean_heading(heading),
+            [clean(paragraph) for paragraph in paragraphs],
+        )
         for heading, paragraphs in manuscript.get("sections", [])
     ]
     manuscript["faqs"] = [
@@ -642,13 +925,15 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
         )
     if len(manuscript.get("faqs", [])) < 4:
         raise ValueError(f"{slug}/{local}: FAQ가 4개 미만입니다")
-    visible = " ".join(
+    visible_parts = (
         [meta, *[str(item) for item in manuscript.get("intro", [])]]
         + [str(value) for pair in manuscript.get("sections", []) for value in (pair[0], *pair[1])]
         + [str(value) for item in manuscript.get("faqs", []) for value in (item["question"], item["answer"])]
         + [str(value) for item in manuscript.get("reviews", []) for value in (item["label"], item["content"])]
         + [str(manuscript.get("summary", "")), str(manuscript.get("answer_heading", "")), str(manuscript.get("answer_text", ""))]
+        + [str(item) for item in manuscript.get("answer_tags", [])]
     )
+    visible = " ".join(visible_parts)
     forbidden = re.compile(
         r"(?:\bSEO\b|\bAEO\b|\bGEO\b|(?<![가-힣])원고(?![가-힣])|(?<![가-힣])키워드(?![가-힣])|"
         r"후기형\s*예시|설정한\s*학생\s*유형|놓치는\s*편\s*학생|것이라는\s*목표|"
@@ -670,6 +955,70 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
     match = forbidden.search(visible)
     if match:
         raise ValueError(f"{slug}/{local}: 공개용 문장 금지 표현 {match.group(0)!r}")
+    for part in visible_parts:
+        malformed = MALFORMED_LANGUAGE_RE.search(part)
+        if malformed:
+            raise ValueError(f"{slug}/{local}: 공개용 문장 비문 {malformed.group(0)!r}")
+        residue = PUBLIC_COPY_RESIDUE_RE.search(part)
+        if residue:
+            raise ValueError(f"{slug}/{local}: 공개용 문장 잔여 {residue.group(0)!r}")
+    faq_leads: set[str] = set()
+    faq_answer_leads: set[str] = set()
+    faq_sentences: set[str] = set()
+    for faq in manuscript.get("faqs", []):
+        question = re.sub(r"\s+", " ", str(faq["question"])).strip()
+        lead = question.split(",", 1)[0].strip()
+        if 8 <= len(lead) <= 80 and lead.endswith(
+            ("면", "보면", "살펴보면", "정리하면", "대조하면", "때")
+        ):
+            if lead in faq_leads:
+                raise ValueError(f"{slug}/{local}: FAQ 조건 도입부 중복 {lead!r}")
+            faq_leads.add(lead)
+        for sentence in content_engine.shared.sentence_parts(str(faq["answer"])):
+            normalized = re.sub(r"\s+", " ", sentence).strip()
+            answer_lead = re.match(
+                rf"^([^,.!?]{{8,140}}?(?:{content_engine.FAQ_CONDITIONAL_ENDINGS})),",
+                normalized,
+            )
+            if answer_lead:
+                answer_lead_text = answer_lead.group(1).strip()
+                if answer_lead_text in faq_answer_leads:
+                    raise ValueError(
+                        f"{slug}/{local}: FAQ 답변 조건 도입부 중복 {answer_lead_text!r}"
+                    )
+                faq_answer_leads.add(answer_lead_text)
+            if re.search(
+                r"(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면|"
+                r"나란히\s+놓으면|놓고\s+보면|넣으면|바꾸면|이어\s+보면|"
+                r"구체화하면|연결하면|배열하면|삼으면|포함하면),\s+"
+                r"[^.!?]{2,190}?(?:하면|보면|살펴보면|맞춰\s+보면|대조하면|정리하면|"
+                r"나란히\s+놓으면|놓고\s+보면|넣으면|바꾸면|이어\s+보면|"
+                r"구체화하면|연결하면|배열하면|삼으면|포함하면)(?:,|\s)",
+                normalized,
+            ):
+                raise ValueError(f"{slug}/{local}: FAQ 조건문 중첩 {normalized!r}")
+            if normalized in faq_sentences:
+                raise ValueError(f"{slug}/{local}: FAQ 답변 문장 중복 {normalized!r}")
+            faq_sentences.add(normalized)
+    review_sentences: set[str] = set()
+    for review in manuscript.get("reviews", []):
+        for sentence in content_engine.shared.sentence_parts(str(review["content"])):
+            normalized = re.sub(r"\s+", " ", sentence).strip()
+            if normalized in review_sentences:
+                raise ValueError(f"{slug}/{local}: 상담 상황 문장 중복 {normalized!r}")
+            review_sentences.add(normalized)
+    heading_residue = re.compile(
+        r"방법.{0,100}방법$|확인과\s+연결해\s+확인하기|"
+        r"확인(?:한\s+뒤|하고).{0,40}확인|자료.{0,50}자료\s+확인|"
+        r"우선순위.{0,60}우선순위|살펴보기을|점검을\s+점검|"
+        r"(?P<head_repeat>기준|순서|학부모|현재).{0,100}\b(?P=head_repeat)\b|"
+        r"(?:확인|점검|살펴보기)을\s+정하는\s+(?:순서|방법)|"
+        r"(?:을|를)\s+[^,.!?:]{1,45}?(?:을|를)\s+연결하는\s+기준"
+    )
+    for heading, _paragraphs in manuscript.get("sections", []):
+        match = heading_residue.search(str(heading))
+        if match:
+            raise ValueError(f"{slug}/{local}: H2 반복 표현 {match.group(0)!r}")
     if slug == "전문학원":
         generic_source_residue = re.search(
             r"자료에\s*함께\s*제시된|추가\s*확인\s*항목|"
@@ -910,7 +1259,7 @@ def detail_schema(slug: str, local: str, manuscript: dict[str, object], center: 
     center_id = center_url + "#organization"
     image_url = SITE_URL + representative
     headings = [str(heading) for heading, _ in manuscript.get("sections", [])]
-    schools = [str(value) for value in center.get("schools", [])]
+    schools = public_school_names([str(value) for value in center.get("schools", [])])
     grades = [str(value) for value in center.get("verified_grades", [])]
     mentions = [{"@type": "Place", "name": local}, {"@type": "Thing", "name": config["label"]}, *[{"@type": "Organization", "name": school} for school in schools]]
     offer = None
