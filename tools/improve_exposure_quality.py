@@ -169,6 +169,7 @@ class CenterInfo:
     registration_name: str
     registration_number: str
     address: str
+    location_guide: str
     schools: dict[str, list[str]]
     grades: dict[str, list[str]]
 
@@ -207,13 +208,26 @@ def split_csv_values(value: str) -> list[str]:
 
 
 def is_specific_school(value: str) -> bool:
-    return bool(re.fullmatch(r"\S+(?:초|중|고)", value.strip()))
+    return bool(
+        re.fullmatch(
+            r"\S+(?:초등학교|중학교|고등학교|초|중|고)",
+            value.strip(),
+        )
+    )
 
 
 def split_school_values(value: str) -> list[str]:
     """Split comma-delimited cells and legacy whitespace-delimited school lists."""
     result: list[str] = []
-    for group in split_csv_values(value):
+    # A handful of source rows use slashes or full stops instead of commas.
+    # Treat those characters as separators only in the school fields; doing
+    # this here keeps the visible school pills and JSON-LD mentions aligned.
+    groups = [
+        part.strip()
+        for part in re.split(r"[,，/·.\r\n]+", value or "")
+        if part.strip()
+    ]
+    for group in groups:
         tokens = group.split()
         if len(tokens) > 1 and all(is_specific_school(token) for token in tokens):
             result.extend(tokens)
@@ -257,6 +271,9 @@ def load_center_info(root: Path) -> dict[str, CenterInfo]:
                 registration_name=str(row.get("교육지원청명칭", "")).strip(),
                 registration_number=str(row.get("교육지원청 등록번호", "")).strip(),
                 address=str(row.get("센터 주소", "")).strip(),
+                location_guide=" ".join(
+                    str(row.get("위치안내", "")).split()
+                ),
                 schools={
                     "초등": split_school_values(str(row.get("타깃학교\n(초)", ""))),
                     "중등": split_school_values(str(row.get("타깃학교\n(중)", ""))),
@@ -316,39 +333,54 @@ def org_key(org: dict[str, Any]) -> tuple[str, str, str]:
 
 
 def build_center_records(root: Path, local_pages: list[Path]) -> tuple[dict[tuple[str, str, str], CenterRecord], dict[str, tuple[str, str, str]]]:
+    """Build physical-centre identities from the authoritative CSV.
+
+    Older versions reconstructed this table from the JSON-LD already present
+    in the generated pages.  That made stale schema feed the next generation
+    and could preserve unsupported phone/contact fields indefinitely.  The
+    CSV row is now the only source for centre name, address and registration
+    identity; HTML is used solely to choose the existing canonical locality
+    URL for each physical centre.
+    """
+
+    center_info = load_center_info(root)
     raw: dict[tuple[str, str, str], dict[str, Any]] = {}
     locality_to_key: dict[str, tuple[str, str, str]] = {}
     for path in local_pages:
-        text = path.read_text(encoding="utf-8")
-        data, _ = parse_jsonld(text)
-        graph = data["@graph"]
-        org = find_node(graph, "EducationalOrganization")
-        if not org:
-            raise ValueError(f"Organization missing: {path}")
-        key = org_key(org)
         locality = path.parent.name
+        info = center_info.get(normalize_locality(locality))
+        if info is None:
+            raise ValueError(f"Center information missing: {locality}")
+        key = (
+            info.registration_number.strip(),
+            info.center_name.strip(),
+            info.address.strip(),
+        )
+        if not all(key):
+            raise ValueError(f"Incomplete physical centre identity: {locality}")
         locality_to_key[locality] = key
-        area = org.get("areaServed") if isinstance(org.get("areaServed"), dict) else {}
-        area_name = str(area.get("name", locality)).strip()
-        entry = raw.setdefault(key, {"paths": [], "areas": set(), "org": org})
+        entry = raw.setdefault(key, {"paths": [], "areas": set(), "info": info})
         entry["paths"].append(path)
-        entry["areas"].add(area_name)
+        entry["areas"].add(info.locality)
 
     records: dict[tuple[str, str, str], CenterRecord] = {}
     for key, entry in raw.items():
         paths = sorted(entry["paths"], key=lambda value: value.parent.name)
-        org = entry["org"]
-        address = org.get("address") if isinstance(org.get("address"), dict) else {}
+        info = entry["info"]
         primary = page_url(paths[0], root)
         records[key] = CenterRecord(
             key=key,
             primary_url=primary,
-            name=str(org.get("name", "와와학습코칭센터")),
-            address=str(address.get("streetAddress", "")),
-            telephone=str(org.get("telephone", "010-3957-8283")),
-            identifier=org.get("identifier") if isinstance(org.get("identifier"), dict) else None,
-            alternate_name=org.get("alternateName"),
-            contact_point=org.get("contactPoint"),
+            name=info.center_name,
+            address=info.address,
+            telephone="",
+            identifier={
+                "@type": "PropertyValue",
+                "propertyID": "교육지원청 등록번호",
+                "value": info.registration_number,
+            },
+            alternate_name=None,
+            contact_point=None,
             areas=sorted(entry["areas"]),
         )
     return records, locality_to_key
@@ -605,11 +637,11 @@ def hero_intro(ctx: PageContext) -> str:
 
 def hero_center_fact(ctx: PageContext) -> str:
     label = "상담권역의 실제 방문 센터" if is_service_area_page(ctx) else "확인된 상담 장소"
-    note = f"{ctx.locality} 상담권역" if is_service_area_page(ctx) else f"{ctx.locality} 센터 안내"
+    note = "생활권과 방문 위치는 아래 확인 정보에서 구분해 안내합니다" if is_service_area_page(ctx) else "등록 명칭과 주소는 아래 확인 정보에서 안내합니다"
     return f'''              <div class="hero-center-fact">
                 <span>{html.escape(label)}</span>
-                <strong>{html.escape(actual_center_name(ctx))}</strong>
-                <small>{html.escape(actual_address(ctx))} · {html.escape(note)}</small>
+                <strong>방문 정보 확인</strong>
+                <small>{html.escape(note)}</small>
               </div>'''
 
 
@@ -717,6 +749,7 @@ def build_verified_section(ctx: PageContext) -> str:
         school_values = list(dict.fromkeys(ctx.info.schools["초등"] + ctx.info.schools["중등"] + ctx.info.schools["고등"]))
     else:
         school_values = ctx.info.schools.get(ctx.config["stage"], [])
+    school_values = [school for school in school_values if is_specific_school(school)]
     school_markup = ("".join(f"<span>{html.escape(school)}</span>" for school in school_values)
                      if school_values else "<span>재학 학교 진도는 상담 시 확인</span>")
     tuition = (f'<a class="text-link" href="{html.escape(ctx.info.tuition_url, quote=True)}" target="_blank" rel="noopener noreferrer">센터 교습비 자료 확인</a>'
@@ -725,19 +758,19 @@ def build_verified_section(ctx: PageContext) -> str:
     if is_service_area_page(ctx):
         relationship_label = "연결 상담 센터 정보"
         relationship_note = (
-            f"{ctx.locality} 페이지는 제공된 상담권역 자료에 따라 {actual_center_name(ctx)}로 연결됩니다. "
+            f"{ctx.info.locality} 페이지는 제공 자료에 따라 {actual_center_name(ctx)}로 연결됩니다. "
             "페이지의 지역명과 실제 센터 위치가 다를 수 있으므로 방문 위치는 아래 센터명과 주소를 기준으로 확인해 주세요."
         )
     else:
         relationship_label = "확인된 센터 정보"
         if available_grade_items(ctx):
             relationship_note = (
-                f"{ctx.locality} 페이지에 연결된 실제 상담 센터입니다. 등록 전 {available_grade_text(ctx)} 개설 여부와 "
+                f"{ctx.info.locality} 페이지에 연결된 실제 상담 센터입니다. 등록 전 {available_grade_text(ctx)} 개설 여부와 "
                 "현재 시간표를 다시 확인해 주세요."
             )
         else:
             relationship_note = (
-                f"{ctx.locality} 페이지에 연결된 실제 상담 센터입니다. 제공 자료에 학년 범위가 따로 표시되지 않아 "
+                f"{ctx.info.locality} 페이지에 연결된 실제 상담 센터입니다. 제공 자료에 학년 범위가 따로 표시되지 않아 "
                 "학생의 현재 학년과 센터 시간표를 상담에서 확인해야 합니다."
             )
     school_context = actual_school_phrase(ctx)
@@ -748,10 +781,10 @@ def build_verified_section(ctx: PageContext) -> str:
     )
     verified_note = choose(ctx, [
         f"{school_statement} 실제 개설 여부는 학생의 학년·과목과 {actual_center_name(ctx)} 시간표를 함께 확인합니다.",
-        f"표시된 학교는 {ctx.locality} 상담 준비를 위한 참고 자료이며 수업 개설을 뜻하지 않습니다. 등록 전 {ctx.config['stage']} 학년과 {ctx.config['subject']} 개설 시간을 확인해 주세요.",
+        f"표시된 학교는 {ctx.info.locality} 상담 준비를 위한 참고 자료이며 수업 개설을 뜻하지 않습니다. 등록 전 {ctx.config['stage']} 학년과 {ctx.config['subject']} 개설 시간을 확인해 주세요.",
         f"참고 학교와 별개로 학생의 현재 진도를 {actual_center_name(ctx)} 시간표와 대조한 뒤 실제 수업 가능 여부를 안내합니다.",
         f"학교 정보는 {ctx.config['label']} 상담 준비를 위한 기준입니다. 수업 여부는 학년, 선택 과목, 센터의 현재 개설 시간을 확인한 후 결정됩니다.",
-        f"{ctx.locality} 학생은 재학 학교의 교재와 시험 일정을 준비하되, 수업 가능 여부는 {actual_center_name(ctx)}의 최신 시간표로 확인해야 합니다.",
+        f"{ctx.info.locality} 학생은 재학 학교의 교재와 시험 일정을 준비하되, 수업 가능 여부는 {actual_center_name(ctx)}의 최신 시간표로 확인해야 합니다.",
     ])
     source_notes = [
         f"{ctx.title} 확인 자료: {source_basis(ctx)} · 정리일 {TODAY}",
@@ -760,6 +793,10 @@ def build_verified_section(ctx: PageContext) -> str:
         f"{ctx.title} 작성 기준: {source_basis(ctx)} · 정보 정리 {TODAY}",
     ]
     source_note = keyed_choose(ctx, "source-note", source_notes)
+    location_row = (
+        f'<div><dt>위치 안내</dt><dd>{html.escape(ctx.info.location_guide)}</dd></div>'
+        if not ctx.category and ctx.info.location_guide else ""
+    )
     return f'''    <section id="verified-center" class="local-section verified-center-section">
       <div class="wrap verified-center-grid">
         <article class="verified-center-card">
@@ -769,7 +806,9 @@ def build_verified_section(ctx: PageContext) -> str:
           <dl class="verified-data-list">
             <div><dt>수업 가능 학년</dt><dd>{html.escape(available_grade_text(ctx))}</dd></div>
             <div><dt>주소</dt><dd>{html.escape(actual_address(ctx))}</dd></div>
+            <div><dt>등록 명칭</dt><dd>{html.escape(" ".join(ctx.info.registration_name.split()))}</dd></div>
             <div><dt>등록 정보</dt><dd>{html.escape(registration_value(ctx))}</dd></div>
+            {location_row}
           </dl>
 {tuition_block}          <div class="verified-school-list" role="group" aria-label="상담 참고 학교">{school_markup}</div>
           <p class="verified-note">{html.escape(verified_note)}</p>
@@ -777,7 +816,7 @@ def build_verified_section(ctx: PageContext) -> str:
         </article>
         <figure class="verified-map-card">
           {ctx.map_image}
-          <figcaption>{html.escape(ctx.locality)} 생활권에서 방문할 때 참고할 센터 위치 이미지입니다.</figcaption>
+          <figcaption>{html.escape(ctx.info.locality)} 생활권에서 방문할 때 참고할 센터 위치 이미지입니다.</figcaption>
         </figure>
       </div>
     </section>'''
@@ -1048,13 +1087,12 @@ def stable_org_node(ctx: PageContext, old: dict[str, Any]) -> dict[str, Any]:
         "name": actual_center_name(ctx),
         "branchOf": {"@id": BASE_URL + "/#organization"},
         "url": ctx.center.primary_url,
-        "telephone": ctx.center.telephone,
         "address": address,
         "areaServed": area_nodes if len(area_nodes) > 1 else area_nodes[0],
     }
     identifier = ({"@type": "PropertyValue", "propertyID": "교육지원청 등록번호", "value": ctx.info.registration_number}
                   if ctx.info.registration_number else ctx.center.identifier)
-    for key, value in (("alternateName", ctx.center.alternate_name), ("contactPoint", ctx.center.contact_point), ("identifier", identifier)):
+    for key, value in (("alternateName", ctx.center.alternate_name), ("identifier", identifier)):
         if value:
             node[key] = value
     return node
@@ -1111,6 +1149,8 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
             node["name"] = seo_title(ctx)
             node["description"] = description
             node["isPartOf"] = {"@id": BASE_URL + "/#website"}
+            node["author"] = {"@id": BASE_URL + "/#organization"}
+            node["publisher"] = {"@id": BASE_URL + "/#organization"}
             node["dateModified"] = TODAY
             node["about"] = [
                 {"@type": "Place", "name": ctx.region},
@@ -1175,8 +1215,8 @@ def update_jsonld(ctx: PageContext, faqs: list[dict[str, str]], description: str
         "inLanguage": "ko-KR",
         "articleSection": ctx.config["label"],
         "mainEntityOfPage": {"@id": ctx.page_url + "#webpage"},
-        "author": {"@id": stable_id},
-        "publisher": {"@id": stable_id},
+        "author": {"@id": BASE_URL + "/#organization"},
+        "publisher": {"@id": BASE_URL + "/#organization"},
         "about": [
             {"@type": "Place", "name": ctx.region},
             {"@type": "Thing", "name": ctx.config["label"]},
@@ -1310,14 +1350,15 @@ def validate_transformed(ctx: PageContext, text: str) -> list[str]:
     errors: list[str] = []
     if len(re.findall(r"<h1\b", text, re.I)) != 1:
         errors.append("H1 count")
-    for bad in ("수학는", "수학를", "관리을", "점는", "점와", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
+    for bad in ("수학는", "수학를", "관리을", "점는", "SEO GEO", "KEY SUMMARY", "ANSWER READY", "Local Search Guide", "친구와 함께 등록하면 할인", "parent-reviews"):
         if bad in text:
             errors.append(f"remaining token: {bad}")
     description = meta_description(ctx)
     if not 60 <= len(description) <= 80:
         errors.append(f"description length: {len(description)}")
-    title_tag = seo_title(ctx)
-    if not 24 <= len(title_tag) <= 30:
+    title_match = re.search(r"<title>(.*?)</title>", text, re.I | re.S)
+    title_tag = strip_tags(title_match.group(1)) if title_match else ""
+    if not 20 <= len(title_tag) <= 45:
         errors.append(f"title length: {len(title_tag)}")
     if ctx.image_block not in text:
         errors.append("image block changed")
@@ -1339,7 +1380,8 @@ def validate_transformed(ctx: PageContext, text: str) -> list[str]:
             article = articles[0]
             if article.get("mainEntityOfPage", {}).get("@id") != ctx.page_url + "#webpage":
                 errors.append("Article mainEntityOfPage")
-            if article.get("author", {}).get("@id") != stable_id or article.get("publisher", {}).get("@id") != stable_id:
+            root_organization_id = BASE_URL + "/#organization"
+            if article.get("author", {}).get("@id") != root_organization_id or article.get("publisher", {}).get("@id") != root_organization_id:
                 errors.append("Article entity reference")
         if len(services) != 1 or services[0].get("provider", {}).get("@id") != stable_id:
             errors.append("Service provider")

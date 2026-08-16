@@ -57,8 +57,16 @@ HUB_MARKER_START = "<!-- hub-content-refinement:start -->"
 HUB_MARKER_END = "<!-- hub-content-refinement:end -->"
 KNOWN_COPY_ERRORS = {
     "풀이 기록 기록": "풀이 기록",
+    "오답 기록 오류": "오답 기록에서 확인된 문제",
+    "시험 일정 상태": "시험 준비 상태",
 }
-PARTICLE_PAIRS = (("을", "를"), ("과", "와"), ("은", "는"), ("이", "가"))
+PARTICLE_PAIRS = (
+    ("을", "를"),
+    ("과", "와"),
+    ("은", "는"),
+    ("이", "가"),
+    ("으로", "로"),
+)
 COMMON_PARTICLE_TERMS = {
     "이해",
     "독해",
@@ -93,7 +101,28 @@ COMMON_PARTICLE_TERMS = {
     "재풀이",
     "자료",
 }
-REVISION_DATE = "2026-07-31"
+REVISION_DATE = "2026-08-17"
+ROOT_ORGANIZATION_ID = source.BASE_URL + "/#organization"
+
+OFFICIAL_REGION_PATTERNS: tuple[tuple[str, str], ...] = (
+    (r"^서울(?:특별시)?\b", "서울특별시"),
+    (r"^부산(?:광역시)?\b", "부산광역시"),
+    (r"^대구(?:광역시)?\b", "대구광역시"),
+    (r"^인천(?:광역시)?\b", "인천광역시"),
+    (r"^광주(?:광역시)?\b", "광주광역시"),
+    (r"^대전(?:광역시)?\b", "대전광역시"),
+    (r"^울산(?:광역시)?\b", "울산광역시"),
+    (r"^세종(?:특별자치시)?\b", "세종특별자치시"),
+    (r"^(?:경기|경기도)\b", "경기도"),
+    (r"^(?:강원|강원도|강원특별자치도)\b", "강원특별자치도"),
+    (r"^(?:충북|충청북도)\b", "충청북도"),
+    (r"^(?:충남|충청남도)\b", "충청남도"),
+    (r"^(?:전북|전라북도|전북특별자치도)\b", "전북특별자치도"),
+    (r"^(?:전남|전라남도)\b", "전라남도"),
+    (r"^(?:경북|경상북도)\b", "경상북도"),
+    (r"^(?:경남|경상남도)\b", "경상남도"),
+    (r"^(?:제주|제주도|제주특별자치도)\b", "제주특별자치도"),
+)
 
 
 @dataclass(frozen=True)
@@ -152,6 +181,73 @@ def clean(value: str) -> str:
     return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", value)).split())
 
 
+def avoid_label_body_overlap(label: str, body: str) -> str:
+    label_words = re.findall(r"[가-힣A-Za-z0-9]+", label)
+    body_words = re.findall(r"[가-힣A-Za-z0-9]+", body)
+    if label_words and body_words and label_words[-1] == body_words[0]:
+        return "이 단계에서는 " + body
+    return body
+
+
+def repair_visible_copy_splices(text: str, ctx: source.PageContext) -> str:
+    replacements = {
+        "생활권 이름과 나누어 확인": "생활권 이름과 구분해 확인",
+        "상담의 안내 센터": "상담을 안내하는 센터",
+        "상담의 방문 주소": "상담의 실제 방문 주소",
+        "상담 생활권": "상담 가능 지역",
+        "물리센터": "실제 센터",
+        " 관련 어떤": "과 관련해 어떤",
+        "두 항목은 학생이": "학생이",
+    }
+    for old, new in replacements.items():
+        text = replace_visible_text_nodes(text, old, new)
+    for lead in (
+        "이어서",
+        "이때",
+        "상담에서는",
+        "준비한",
+        "이후",
+        "같은",
+        "다음 확인에서는",
+    ):
+        text = replace_visible_text_nodes(text, f"니다, {lead}", f"니다. {lead}")
+    for focus in fact_bundle(ctx)["checks"]:
+        focus_replacements = {
+            f"{focus} 실행 기록": f"{focus} 수행 결과",
+            f"{focus} 기록": f"{focus} 관련 기록",
+            f"{focus} 실행 시간": f"{focus}에 쓴 시간",
+            f"현재 {focus}": focus if focus.startswith("현재 ") else f"현재 {focus}",
+            f"{focus} 과제 난도": f"{focus} 관련 과제의 난도",
+            f"{focus} 정답보다": f"{focus} 관련 문제의 정답만 보기보다",
+            f"{focus} 오답 원인": f"{focus} 관련 오답이 생긴 이유",
+            f"{focus} 최근 자료": f"최근 {focus} 자료",
+        }
+        for old, new in focus_replacements.items():
+            if old != new:
+                text = replace_visible_text_nodes(text, old, new)
+    return text
+
+
+def replace_visible_text_nodes(text: str, old: str, new: str) -> str:
+    """Replace display text without touching attributes, scripts or styles."""
+
+    if not old or old == new:
+        return text
+    result: list[str] = []
+    protected_depth = 0
+    for part in re.split(r"(<[^>]+>)", text):
+        if part.startswith("<"):
+            lowered = part.lower()
+            if re.match(r"<\s*/\s*(?:script|style)\b", lowered):
+                protected_depth = max(0, protected_depth - 1)
+            result.append(part)
+            if re.match(r"<\s*(?:script|style)\b", lowered):
+                protected_depth += 1
+        else:
+            result.append(part if protected_depth else part.replace(old, new))
+    return "".join(result)
+
+
 def has_final_consonant(value: str) -> bool:
     """Return whether the final Korean syllable has a jongseong."""
 
@@ -162,12 +258,41 @@ def has_final_consonant(value: str) -> bool:
     return False
 
 
+def final_jongseong(value: str) -> int:
+    for character in reversed(value.strip()):
+        codepoint = ord(character)
+        if 0xAC00 <= codepoint <= 0xD7A3:
+            return (codepoint - 0xAC00) % 28
+    return 0
+
+
+def correct_particle_pair(
+    term: str,
+    consonant_form: str,
+    vowel_form: str,
+) -> tuple[str, str]:
+    jong = final_jongseong(term)
+    # 로 is used after a vowel and after the ㄹ jongseong (index 8).
+    if (consonant_form, vowel_form) == ("으로", "로"):
+        correct = vowel_form if jong in {0, 8} else consonant_form
+    else:
+        correct = consonant_form if jong else vowel_form
+    wrong = vowel_form if correct == consonant_form else consonant_form
+    return correct, wrong
+
+
 def particle_terms(ctx: source.PageContext) -> set[str]:
     """Terms inserted into templates and therefore requiring particle checks."""
 
     terms = set(COMMON_PARTICLE_TERMS)
     terms.update(source.check_items(ctx))
     terms.update(label for label, _ in ctx.config["process"])
+    terms.update(
+        {
+            ctx.config["label"],
+            source.actual_center_name(ctx),
+        }
+    )
     schools = actual_schools(ctx)
     terms.update(schools)
     if schools:
@@ -176,7 +301,7 @@ def particle_terms(ctx: source.PageContext) -> set[str]:
         {
             "현재 교재와 최근 평가자료",
             "완료한 과제와 남은 오답",
-            "학생이 혼자 설명할 수 있는 풀이와 막힌 풀이",
+            "학생이 혼자 해결한 문제와 도움을 받은 문제",
             "학생이 정확히 해결한 문제와 도움을 받은 문제",
             "학교 진도와 실제 공부 가능한 시간",
             "과제 완료 시점과 다시 풀어 본 기록",
@@ -187,10 +312,12 @@ def particle_terms(ctx: source.PageContext) -> set[str]:
 
 def fix_particles_for_terms(text: str, terms: Iterable[str]) -> str:
     for term in sorted({value for value in terms if value}, key=len, reverse=True):
-        consonant = has_final_consonant(term)
         for consonant_form, vowel_form in PARTICLE_PAIRS:
-            correct = consonant_form if consonant else vowel_form
-            wrong = vowel_form if consonant else consonant_form
+            correct, wrong = correct_particle_pair(
+                term,
+                consonant_form,
+                vowel_form,
+            )
             text = text.replace(term + wrong, term + correct)
     return text
 
@@ -204,9 +331,12 @@ def fix_korean_particles(text: str, ctx: source.PageContext) -> str:
 def wrong_particle_tokens(ctx: source.PageContext) -> set[str]:
     result: set[str] = set()
     for term in particle_terms(ctx):
-        consonant = has_final_consonant(term)
         for consonant_form, vowel_form in PARTICLE_PAIRS:
-            wrong = vowel_form if consonant else consonant_form
+            _, wrong = correct_particle_pair(
+                term,
+                consonant_form,
+                vowel_form,
+            )
             result.add(term + wrong)
     return result
 
@@ -292,14 +422,239 @@ def fact_bundle(ctx: source.PageContext) -> dict[str, Any]:
     }
 
 
+def page_topic(ctx: source.PageContext) -> str:
+    """Return the stable reader-facing topic without reusing a mutated H1."""
+
+    labels = {
+        "": "학원",
+        "초등영어학원": "초등 영어학원",
+        "초등수학학원": "초등 수학학원",
+        "중등영어학원": "중등 영어학원",
+        "중등수학학원": "중등 수학학원",
+        "고등영어학원": "고등 영어학원",
+        "고등수학학원": "고등 수학학원",
+    }
+    locality = ctx.info.locality.strip() or ctx.locality
+    return f"{locality} {labels[ctx.category]}"
+
+
+def display_h1(ctx: source.PageContext) -> str:
+    """Use an accurate intent label when the locality is a service area."""
+
+    topic = page_topic(ctx)
+    if not source.is_service_area_page(ctx):
+        return topic
+    if ctx.category:
+        subject_label = topic.removeprefix(ctx.info.locality).strip()
+        return f"{ctx.info.locality}에서 상담 가능한 {subject_label} 안내"
+    return f"{ctx.info.locality}에서 상담 가능한 학원 안내"
+
+
+def display_title(ctx: source.PageContext) -> str:
+    current = match_one(ctx.text, r"<title>(.*?)</title>")
+    return current.replace(ctx.title, display_h1(ctx), 1)
+
+
+def official_address_region(ctx: source.PageContext) -> str:
+    """Derive an official province-level name from the authoritative address."""
+
+    address = source.actual_address(ctx).strip()
+    for pattern, region in OFFICIAL_REGION_PATTERNS:
+        if re.search(pattern, address):
+            return region
+    # The aggregate navigation labels (충청/경상/전라) are intentionally not
+    # used as PostalAddress regions.  If an old address cannot disambiguate
+    # them, omitting the optional value is safer than publishing a false one.
+    fallback = {
+        "서울": "서울특별시",
+        "부산": "부산광역시",
+        "대구": "대구광역시",
+        "인천": "인천광역시",
+        "광주": "광주광역시",
+        "대전": "대전광역시",
+        "울산": "울산광역시",
+        "경기": "경기도",
+        "강원": "강원특별자치도",
+        "제주": "제주특별자치도",
+    }
+    return fallback.get(ctx.info.region, "")
+
+
+def official_address_locality(ctx: source.PageContext) -> str:
+    if official_address_region(ctx) == "세종특별자치시":
+        # The legacy navigation field contains the road name 새롬중앙로.  The
+        # physical centre represented by the shared registration identity is
+        # in 새롬동; 다정동 remains a Service.areaServed value only.
+        return "새롬동"
+    address_parts = source.actual_address(ctx).strip().split()
+    if len(address_parts) > 1:
+        value = address_parts[1]
+        if re.search(r"(?:특별자치시|특별시|광역시|시|군|구)$", value):
+            return value
+    return ""
+
+
+def relationship_sentence(ctx: source.PageContext) -> str:
+    facts = fact_bundle(ctx)
+    picker = detail_picker(ctx)
+    checks = picker.order("relationship-checks", facts["checks"])
+    focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
+    variants = [
+        f"{focus_a}과 {focus_b} 상담의 실제 방문 센터는 {facts['center']}입니다. {focus_a} 상담 주소는 {facts['address']}이며 생활권 이름과 방문 위치를 구분해 확인해 주세요.",
+        f"{focus_b} 관련 자료와 {focus_c} 계획 상담은 {facts['center']}에서 안내하며 실제 방문 주소는 {facts['address']}입니다. {focus_c} 상담에서 페이지의 동네명은 서비스 생활권을 뜻합니다.",
+        f"{focus_c}과 {focus_a} 점검을 준비할 때 확인할 실제 방문 센터는 {facts['center']}입니다. {focus_c} 상담 주소는 {facts['address']}이며 생활권 표시와 센터 위치는 서로 구분합니다.",
+        f"이 페이지의 {focus_a}·{focus_c} 상담 가능 지역과 실제 방문 위치는 구분해야 합니다. {focus_c} 상담의 실제 방문 센터는 {facts['center']}입니다. {focus_c} 상담 주소는 {facts['address']}입니다. {focus_a} 자료를 상담하기 전에 센터명과 주소를 따로 확인해 주세요.",
+        f"{focus_b}과 {focus_a} 자료를 상담할 실제 센터는 {facts['center']}입니다. {focus_b} 상담의 실제 방문 주소는 {facts['address']}이며 동네명만 보고 센터 위치를 추정하지 않습니다.",
+        f"{focus_c} 수행 자료를 점검하는 상담을 안내하는 센터는 {facts['center']}입니다. {focus_c} 상담의 실제 방문 주소는 {facts['address']}이며 페이지의 생활권 이름과 구분해 확인해 주세요.",
+        f"이 지역의 {focus_a}·{focus_b} 상담은 {facts['center']}에서 안내합니다. {focus_a} 상담 방문지는 {facts['address']}이며 안내 지역과 실제 센터 주소가 다를 수 있습니다.",
+        f"{focus_b} 우선순위와 {focus_c} 재확인의 실제 방문 센터는 {facts['center']}입니다. {focus_b} 상담 주소는 {facts['address']}이며 지역 안내명과 별도로 확인합니다.",
+    ]
+    sentence = picker.pick("relationship-frame-v4", variants)
+    return sentence
+
+
+def display_location_guide(value: str) -> str:
+    value = re.sub(r"https?://\S+", " ", value or "")
+    value = re.sub(r"학원\s*위치\s*안내드립니다[\^~!\s]*", " ", value)
+    return re.sub(r"\s+", " ", value).strip(" ·,;:-")
+
+
+def build_hero_center_fact(ctx: source.PageContext) -> str:
+    picker = detail_picker(ctx)
+    facts = fact_bundle(ctx)
+    checks = picker.order("hero-center-fact-checks", facts["checks"])
+    focus_a, focus_b = checks[0], checks[1]
+    label = picker.pick(
+        "hero-center-fact-label",
+        [
+            f"{focus_a} 상담 방문 정보",
+            f"{focus_b} 점검 센터 정보",
+            f"{focus_a}·{focus_b} 상담 장소",
+            f"{focus_b} 계획 방문 기준",
+        ],
+    )
+    strong = picker.pick(
+        "hero-center-fact-strong",
+        [
+            f"{focus_a} 상담 센터 확인",
+            f"{focus_b} 상담 장소 확인",
+            "등록 센터 정보 확인",
+            f"{focus_a} 방문 기준 확인",
+        ],
+    )
+    if facts["service_area"]:
+        notes = [
+            f"{focus_a} 상담 가능 지역과 실제 방문 위치는 아래 정보에서 구분합니다.",
+            f"{focus_b} 상담을 안내하는 센터명과 주소는 아래 확인 정보에 표시했습니다.",
+            f"{focus_a}·{focus_b} 상담권역과 방문 센터는 서로 다를 수 있어 아래에서 함께 확인합니다.",
+            f"{focus_b} 계획을 상담할 실제 센터명과 주소는 아래 사실 영역에서 확인합니다.",
+        ]
+    else:
+        notes = [
+            f"{focus_a} 상담의 등록 명칭과 주소는 아래 확인 정보에서 안내합니다.",
+            f"{focus_b} 점검을 상담할 센터명과 실제 주소는 아래 사실 영역에 표시했습니다.",
+            f"{focus_a}·{focus_b} 상담 장소는 아래 센터 정보에서 확인합니다.",
+            f"{focus_b} 계획을 상담하기 전에 아래 등록 정보와 주소를 함께 확인합니다.",
+        ]
+    note = picker.pick("hero-center-fact-note", notes)
+    return f'''              <div class="hero-center-fact">
+                <span>{html.escape(label)}</span>
+                <strong>{html.escape(strong)}</strong>
+                <small>{html.escape(note)}</small>
+              </div>'''
+
+
+def build_refined_verified_section(ctx: source.PageContext) -> str:
+    """Render source-backed centre facts with page-specific explanatory copy."""
+
+    picker = detail_picker(ctx)
+    facts = fact_bundle(ctx)
+    checks = picker.order("verified-checks", facts["checks"])
+    focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
+    schools = facts["schools"]
+    school_markup = (
+        "".join(f"<span>{html.escape(school)}</span>" for school in schools)
+        if schools
+        else "<span>재학 학교 진도는 상담 시 확인</span>"
+    )
+    if ctx.info.tuition_url:
+        tuition_block = (
+            '          <a class="text-link" href="'
+            + html.escape(ctx.info.tuition_url, quote=True)
+            + '" target="_blank" rel="noopener noreferrer">센터 교습비 자료 확인</a>\n'
+        )
+    else:
+        tuition_block = (
+            '          <p class="verified-note fee-source-note">'
+            + html.escape(f"{focus_a}·{focus_b} 상담의 센터 제공 교습비 자료가 없어 금액과 횟수는 상담 시 확인해야 합니다.")
+            + "</p>\n"
+        )
+    location_guide = display_location_guide(ctx.info.location_guide)
+    location_row = (
+        f'            <div><dt>위치 안내</dt><dd>{html.escape(location_guide)}</dd></div>'
+        if not ctx.category and location_guide
+        else ""
+    )
+    relationship_label = (
+        "연결 상담 센터 정보" if facts["service_area"] else "실제 방문 센터 정보"
+    )
+    relationship_note = picker.pick(
+        "verified-relationship-v4",
+        [
+            f"이 페이지의 {focus_a}·{focus_b} 상담 안내 센터는 {facts['center']}입니다. {focus_b} 상담의 실제 방문 주소는 {facts['address']}이며 생활권 이름과 구분해 확인해 주세요.",
+            f"이 페이지는 {focus_b}과 {focus_c} 상담 가능 지역을 안내합니다. {focus_b} 상담의 방문 센터는 {facts['center']}입니다. {focus_c} 확인을 위한 실제 주소는 {facts['address']}입니다.",
+            f"{focus_c}과 {focus_a} 자료를 상담할 곳은 {facts['center']}입니다. {focus_c} 상담 주소는 {facts['address']}이며 이를 방문 기준으로 삼고 동네명만으로 위치를 추정하지 않습니다.",
+            f"학생의 {focus_a} 상담은 {facts['center']}에서 안내합니다. {focus_a} 상담의 실제 방문지는 {facts['address']}이며 센터명과 주소를 함께 확인해야 합니다.",
+            f"{focus_b} 수행 결과와 {focus_c} 재확인은 {facts['center']}에서 상담합니다. {focus_c} 상담의 실제 방문 주소는 {facts['address']}이고 지역 표시는 상담 가능 범위를 뜻합니다.",
+            f"제공 자료에서 {focus_c}·{focus_b} 상담 센터는 {facts['center']}입니다. {focus_b} 상담의 실제 방문 주소는 {facts['address']}이며 생활권과 별도로 확인해 주세요.",
+        ],
+    )
+    if schools:
+        school_basis = f"제공된 참고 학교 목록은 {focus_a} 관련 교재·진도를 확인하는 상담 자료로만 사용합니다."
+    else:
+        school_basis = f"제공 자료에 구체적인 학교명이 없어 임의로 추가하지 않았으며 {focus_a} 관련 재학 학교의 교재·진도를 상담에서 확인합니다."
+    verified_note = (
+        school_basis
+        + " "
+        + contextual_learning_sentence(ctx, picker, "verified-context")
+    )
+    return f'''    <section id="verified-center" class="local-section verified-center-section">
+      <div class="wrap verified-center-grid">
+        <article class="verified-center-card">
+          <p class="eyebrow">{html.escape(relationship_label)}</p>
+          <h2>{html.escape(facts["center"])}</h2>
+          <p class="verified-note">{html.escape(relationship_note)}</p>
+          <dl class="verified-data-list">
+            <div><dt>수업 가능 학년</dt><dd>{html.escape(facts["grade_text"])}</dd></div>
+            <div><dt>주소</dt><dd>{html.escape(facts["address"])}</dd></div>
+            <div><dt>등록 명칭</dt><dd>{html.escape(" ".join(ctx.info.registration_name.split()))}</dd></div>
+            <div><dt>등록 정보</dt><dd>{html.escape(source.registration_value(ctx))}</dd></div>
+{location_row}
+          </dl>
+{tuition_block}          <div class="verified-school-list" role="group" aria-label="상담 참고 학교">{school_markup}</div>
+          <p class="verified-note">{html.escape(verified_note)}</p>
+          <p class="verified-note source-note">{html.escape(build_source_note(ctx))}</p>
+        </article>
+        <figure class="verified-map-card">
+          {ctx.map_image}
+          <figcaption>실제 방문 센터 위치를 확인하는 지도 이미지입니다.</figcaption>
+        </figure>
+      </div>
+    </section>'''
+
+
 def build_source_note(ctx: source.PageContext) -> str:
     picker = detail_picker(ctx)
     basis = source.source_basis(ctx)
+    checks = picker.order("source-note-checks", fact_bundle(ctx)["checks"])
+    focus_a, focus_b = checks[0], checks[1]
+    registration = source.registration_value(ctx)
+    label = ctx.config["label"]
     variants = [
-        f"{ctx.title} 확인 자료: {basis} · 정리일 {REVISION_DATE}",
-        f"{ctx.title} 안내 근거: {basis} · 최종 확인 {REVISION_DATE}",
-        f"{ctx.title} 센터 정보 출처: {basis} · 페이지 확인일 {REVISION_DATE}",
-        f"{ctx.title} 작성 기준: {basis} · 정보 정리 {REVISION_DATE}",
+        f"{label} 확인 자료: {basis} · 등록 정보 {registration} · 점검 기준 {focus_a}·{focus_b} · 정리일 {REVISION_DATE}",
+        f"{label} 안내 근거: {basis} · 등록 정보 {registration} · 확인 항목 {focus_b}·{focus_a} · 최종 확인 {REVISION_DATE}",
+        f"{label} 센터 정보 출처: {basis} · 등록 정보 {registration} · 상담 자료 {focus_a}·{focus_b} · 페이지 확인일 {REVISION_DATE}",
+        f"{label} 작성 기준: {basis} · 등록 정보 {registration} · 학습 기록 {focus_b}·{focus_a} · 정보 정리 {REVISION_DATE}",
     ]
     return picker.pick("source-note-v2", variants)
 
@@ -317,6 +672,110 @@ def selected_process(
     return label, picker.pick(namespace + "-action", variants)
 
 
+def contextual_learning_sentence(
+    ctx: source.PageContext,
+    picker: StableChoice,
+    namespace: str,
+) -> str:
+    """Return a deterministic, page-specific sentence without repeating locality SEO terms."""
+
+    checks = picker.order(namespace + "-checks", fact_bundle(ctx)["checks"])
+    focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
+    student = picker.pick(namespace + "-student", ctx.config["students"])
+    process_label, _process_action = selected_process(ctx, picker, namespace + "-process")
+    frames = [
+        f"{focus_a}에서 확인된 어려움과 {focus_b} 관련 수행 결과를 나누고 {process_label} 단계에서 {focus_c}을 다시 살핍니다.",
+        f"{student}의 경우 {focus_b} 관련 자료를 먼저 준비하고 {focus_a}과 {focus_c}의 확인 순서를 정합니다.",
+        f"{process_label} 결과는 {focus_c} 자료와 비교하고 {focus_a}에서 달라진 부분을 다음 점검에 남깁니다.",
+        f"{focus_a}과 {focus_b}을 동시에 늘리지 않고 {focus_c}을 확인할 날짜와 {process_label} 분량을 따로 정합니다.",
+        f"{student}에게는 {focus_c} 상태를 확인하고 {focus_b}과 {focus_a} 중 먼저 바꿀 항목을 정합니다.",
+        f"최근 자료에서 {focus_b}과 {focus_c}을 구분하고 {process_label} 결과로 {focus_a}의 변화를 확인합니다.",
+        f"{focus_c} 관련 어려움이 반복되는 문제를 표시하고 {focus_a} 자료와 {focus_b}에 쓴 시간을 함께 비교합니다.",
+        f"{process_label} 단계에서는 {focus_b}을 완료한 시점과 {focus_c}을 다시 확인한 결과로 {focus_a} 범위를 조정합니다.",
+    ]
+    return picker.pick(namespace + "-frame", frames)
+
+
+def contextualize_statement(
+    ctx: source.PageContext,
+    picker: StableChoice,
+    namespace: str,
+    statement: str,
+) -> str:
+    """Add a page-specific, grammatical lead-in to shared factual copy."""
+
+    checks = picker.order(namespace + "-checks", fact_bundle(ctx)["checks"])
+    focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
+    label, _ = selected_process(ctx, picker, namespace + "-process")
+    lead_ins = [
+        f"{focus_a}과 {focus_b} 자료를 함께 볼 때",
+        f"{label} 순서를 정하는 과정에서",
+        f"{focus_b} 수행 결과와 {focus_c} 확인 날짜를 비교할 때",
+        f"{focus_a}·{focus_c} 상태를 다시 확인하면서",
+        f"{focus_b}에서 달라져야 할 부분을 정리할 때",
+        f"{focus_c} 관련 어려움과 {focus_b}에 쓴 시간을 함께 살필 때",
+        f"{focus_a} 결과와 {focus_b} 관련 자료를 대조할 때",
+        f"{label} 단계의 {focus_c} 자료를 준비하면서",
+    ]
+    lead_in = picker.pick(namespace + "-lead-in", lead_ins)
+    return f"{lead_in} {statement.strip()}"
+
+
+def build_meta_description(ctx: source.PageContext) -> str:
+    picker = detail_picker(ctx)
+    checks = picker.order("meta-description-checks", fact_bundle(ctx)["checks"])
+    focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
+    process_label, _ = selected_process(ctx, picker, "meta-description-process")
+    locality = ctx.info.locality
+    label = ctx.config["label"]
+    candidates = [
+        f"{locality} {label}: {focus_a}과 {focus_b} 관련 자료를 살피고 {process_label} 순서, 실제 센터 주소와 가능 학년을 안내합니다.",
+        f"{locality} {label}: {focus_b}·{focus_c} 상태를 나누어 보고 {focus_a} 점검 자료, 방문 센터와 상담 범위를 정리했습니다.",
+        f"{locality} {label}: {process_label} 전 {focus_c}과 {focus_a}을 확인하고 실제 방문 주소, 학교 참고자료와 가능 학년을 안내합니다.",
+        f"{locality} {label}: {focus_a} 어려움과 {focus_c} 수행 결과를 구분해 {process_label} 계획과 센터 확인 정보를 안내합니다.",
+        f"{locality} {label}: 최근 자료에서 {focus_b}과 {focus_a}을 점검하고 학생 일정에 맞춘 {process_label} 순서와 방문 정보를 정리했습니다.",
+        f"{locality} {label}: {focus_c} 재확인 자료와 {focus_b}에 쓴 시간을 살피고 가능 학년, 실제 센터 주소와 상담 기준을 안내합니다.",
+        f"{locality} {label}: {process_label} 결과로 {focus_a}과 {focus_c}의 우선순위를 정하고 학교·학년·방문 정보를 확인합니다.",
+        f"{locality} {label}: {focus_b}에서 막힌 부분과 {focus_c} 완료 결과를 나누어 {focus_a} 점검 순서와 실제 상담 정보를 안내합니다.",
+    ]
+    eligible = [candidate for candidate in candidates if 60 <= len(candidate) <= 80]
+    if not eligible:
+        raise ValueError(f"No 60-80 character description: {ctx.path}")
+    return picker.pick("meta-description-frame", eligible)
+
+
+def service_area_name_from_info(info: source.CenterInfo) -> str:
+    raw_region = info.region.strip()
+    explicit_regions = {
+        "서울": "서울특별시",
+        "부산": "부산광역시",
+        "대구": "대구광역시",
+        "인천": "인천광역시",
+        "광주": "광주광역시",
+        "대전": "대전광역시",
+        "울산": "울산광역시",
+        "경기": "경기도",
+        "강원": "강원특별자치도",
+        "제주": "제주특별자치도",
+    }
+    address_region = ""
+    for pattern, candidate in OFFICIAL_REGION_PATTERNS:
+        if re.search(pattern, info.address.strip()):
+            address_region = candidate
+            break
+    if address_region == "세종특별자치시":
+        return f"세종특별자치시 {info.locality}"
+    region = explicit_regions.get(raw_region, address_region or raw_region)
+    locality = source.locality_without_district_prefix(info)
+    return " ".join(
+        part for part in (region, info.district.strip(), locality) if part
+    )
+
+
+def service_area_name(ctx: source.PageContext) -> str:
+    return service_area_name_from_info(ctx.info)
+
+
 def build_hero_answer(ctx: source.PageContext) -> str:
     picker = detail_picker(ctx)
     facts = fact_bundle(ctx)
@@ -330,7 +789,7 @@ def build_hero_answer(ctx: source.PageContext) -> str:
             "현재 교재와 최근 평가자료",
             "완료한 과제와 남은 오답",
             "최근 시험지와 주간 학습기록",
-            "학생이 혼자 설명할 수 있는 풀이와 막힌 풀이",
+            "학생이 혼자 해결한 문제와 도움을 받은 문제",
             "학교 진도와 실제 공부 가능한 시간",
             "교재 진도와 반복해서 틀린 문제",
             "과제 완료 시점과 다시 풀어 본 기록",
@@ -339,63 +798,44 @@ def build_hero_answer(ctx: source.PageContext) -> str:
     )
     frames = [
         (
-            f"{ctx.title}을 알아볼 때는 먼저 {student}인지 살펴보고, "
-            f"{focus_a}와 {focus_b} 중 어디에서 어려움이 시작되는지 구분해야 합니다. "
-            f"{evidence}을 기준으로 {process_action} 이후 {process_label} 결과를 "
-            f"{facts['center']}의 실제 개설 정보와 대조합니다."
+            f"학생 상담은 성적표 한 장보다 {evidence}에서 시작합니다. "
+            f"{focus_a}와 {focus_b}을 각각 살펴보고 {process_action} "
+            f"{process_label} 단계의 실제 분량은 학생 일정에 맞춰 정합니다."
         ),
         (
-            f"{ctx.title} 상담의 시작점은 성적표 한 장이 아니라 {evidence}입니다. "
-            f"{student}이라면 {focus_a} 상태를 먼저 확인하고, {focus_b}까지 한꺼번에 "
-            f"넓히지 않은 채 {process_action} 가능한 범위를 {facts['center']}에서 확인합니다."
+            f"{student}이라면 문제 수를 늘리기 전에 {focus_a}에서 막힌 부분과 "
+            f"{focus_b} 관련 자료를 구분해야 합니다. {evidence}을 준비하면 "
+            f"{process_action} {focus_a}을 다시 볼 날짜도 함께 정할 수 있습니다."
         ),
         (
-            f"{ctx.title}을 찾는 학생에게 필요한 것은 문제 수를 바로 늘리는 일이 아니라 "
-            f"{focus_a}와 {focus_b}의 막힘을 나누는 일입니다. {evidence}을 가져오면 "
-            f"{process_label} 단계의 실행 결과와 학생 일정, {facts['center']} 시간표가 "
-            "서로 맞는지 확인할 수 있습니다."
+            f"{ctx.config['label']} 상담에서는 {evidence}을 바탕으로 {focus_a}에서 막힌 부분과 "
+            f"{focus_b} 관련 계획이 실제로 이어졌는지를 나누어 봅니다. {process_action} "
+            f"학생이 한 주 안에 이어갈 {focus_a}·{focus_b} 범위부터 계획합니다."
         ),
         (
-            f"{ctx.title} 페이지에서는 {student}의 상담 기준을 {focus_a}, {focus_b}, "
-            f"{process_label} 순서로 정리합니다. {evidence}에서 확인된 내용만 사용하고, "
-            f"실제 수업 가능 범위는 {facts['center']}의 학년·시간표와 다시 맞춥니다."
+            f"현재 점수만으로 {focus_a}·{focus_b} 시작 범위를 정하지 않습니다. {focus_a}을 혼자 해결할 수 있는지, "
+            f"{focus_b}을 계획대로 이어 갔는지 {evidence}에서 확인하고 "
+            f"{process_label} 순서를 조정합니다."
         ),
         (
-            f"{ctx.title} 상담 전에는 {evidence}에서 {focus_a}의 막힘이 드러나는 지점을 표시해 두는 것이 좋습니다. "
-            f"{student}의 경우 {focus_b}까지 확인한 뒤 {process_action} 결과로 다음 범위를 정합니다."
+            f"상담을 준비한다면 {evidence}에 {focus_a} 관련 어려움이 "
+            f"나타난 부분을 표시해 주세요. {focus_b}까지 한꺼번에 넓히지 않고 "
+            f"{process_action} 실행 결과로 다음 범위를 정합니다."
         ),
         (
-            f"{ctx.title} 선택 기준은 현재 점수보다 {focus_a}을 혼자 해결할 수 있는지, "
-            f"{focus_b}을 계획대로 이어갈 수 있는지에 가깝습니다. {evidence}을 검토하고 "
-            f"{facts['center']}에서 안내하는 가능 학년도 확인해 시작 범위를 정합니다."
+            f"{student}의 학습 계획은 {focus_a}과 {focus_b}을 같은 문제로 묶지 않는 데서 시작합니다. "
+            f"{evidence}을 검토하고 {process_action} {focus_a}·{focus_b} 개설 학년과 시간은 센터 자료로 확인합니다."
         ),
         (
-            f"{ctx.title}을 비교할 때는 {student}의 최근 기록에서 {focus_a}과 {focus_b}을 "
-            f"따로 봐야 합니다. {process_action} 결과가 실제로 남는지 확인한 뒤 "
-            f"{facts['center']}에서 가능한 일정과 연결합니다."
+            f"최근 기록에서 {focus_a}이 어려웠던 문제와 {focus_b}을 마치지 못한 시점을 따로 봅니다. "
+            f"{process_action} {focus_a}과 {focus_b}을 같은 기준으로 다시 확인할 문제와 날짜를 정합니다."
         ),
         (
-            f"{ctx.title} 상담은 {evidence}을 바탕으로 {focus_a}에서 막힌 원인과 {focus_b} 기록의 변화를 "
-            f"구분하는 과정입니다. {process_label} 단계에서는 {process_action} "
-            f"실제 개설 학년과 시간은 {facts['center']} 자료로 최종 확인합니다."
-        ),
-        (
-            f"{ctx.title}을 찾는다면 {focus_a}만 보완할지, {focus_b}까지 함께 관리할지를 먼저 정해야 합니다. "
-            f"{student}에게는 {evidence}을 살핀 뒤 {process_action} 순서가 실제 일정에 맞는지 확인합니다."
-        ),
-        (
-            f"{ctx.title} 페이지는 {focus_a}, {focus_b}, {process_label}을 같은 문제로 묶지 않습니다. "
-            f"{evidence}에서 각 항목의 시작점을 찾고 {process_action} 결과를 "
-            f"{facts['center']} 상담에서 다시 조정합니다."
+            f"{ctx.config['label']}의 첫 단계는 {evidence}에서 학생이 스스로 해결한 범위를 찾는 일입니다. "
+            f"{focus_a}과 {focus_b} 중 우선할 항목을 정하고 {process_action}"
         ),
     ]
-    answer = picker.pick("hero-frame", frames)
-    if facts["service_area"]:
-        answer += (
-            f" {ctx.locality} 페이지의 실제 상담 장소는 "
-            f"{facts['center']}({facts['address']})입니다."
-        )
-    return answer
+    return picker.pick("hero-frame-v3", frames) + " " + relationship_sentence(ctx)
 
 
 def process_body(
@@ -411,16 +851,16 @@ def process_body(
     focus_b = checks[(index + 1) % len(checks)]
     action = picker.pick(f"process-{index}-action", variants).rstrip(".。 ")
     frames = [
-        f"{focus_a}에서 막힌 지점을 표시한 뒤 {action}. 결과는 {focus_b} 기록과 함께 다음 점검에서 비교합니다.",
-        f"{ctx.locality} 학생의 {focus_a} 상태를 먼저 확인하고 {action}. 완료 여부는 {focus_b}까지 이어졌는지로 살펴봅니다.",
-        f"{focus_a}과 {focus_b}을 동시에 늘리지 않고 우선순위를 정해 {action}. 학생이 설명할 수 있는 범위만 다음 단계로 옮깁니다.",
-        f"최근 자료에서 {focus_a} 오류가 시작된 부분을 찾고 {action}. 같은 어려움이 남았는지는 다른 문제에서 다시 확인합니다.",
-        f"{ctx.config['label']}의 {label} 단계에서는 {focus_b}을 기준으로 {action}. 실제 실행 분량은 학생의 주중·주말 시간에 맞춥니다.",
-        f"{focus_a}의 원인이 개념·실수·시간 중 무엇인지 나눈 다음 {action}. {focus_b} 결과를 보고 다음 분량을 조정합니다.",
-        f"학교 진도와 별개로 학생이 현재 해결할 수 있는 {focus_a} 범위를 확인하고 {action}. 이후 {focus_b}의 변화도 함께 기록합니다.",
-        f"{focus_a}을 혼자 설명할 수 있는지 확인한 뒤 {action}. {focus_b}이 반복되면 앞 단계로 돌아가 다시 점검합니다.",
+        f"{focus_a} 관련 어려움이 나타난 문제를 표시하고 {action}. 다음 점검에서는 {label} 결과를 {focus_b} 관련 자료와 비교합니다.",
+        f"학생의 최근 자료에서 {focus_a}을 먼저 살피고 {action}. 완료한 {label} 범위는 {focus_b} 자료로 재확인합니다.",
+        f"{focus_a}과 {focus_b}을 동시에 늘리지 않고 우선순위를 정해 {action}. {label} 단계에서는 학생이 설명할 수 있는 범위만 다음 단계로 옮깁니다.",
+        f"최근 자료에서 {focus_a} 관련 어려움이 드러난 부분을 찾고 {action}. 다른 문제에서도 어려움이 남는지 확인하고 {label}의 다음 범위를 정합니다.",
+        f"{label} 단계에서는 {focus_b}을 기준으로 {action}. 학생의 주중·주말 학습 시간에 맞춰 {label} 일정을 조정합니다.",
+        f"{focus_a}에서 확인된 어려움을 개념·실수·시간으로 구분한 다음 {action}. {focus_b} 자료를 보고 다음 {label} 단계의 분량을 조정합니다.",
+        f"학교 진도와 별개로 학생의 현재 {focus_a} 상태를 살펴보고 {action}. 이후 {label} 과정에서 {focus_b}의 달라진 점도 기록합니다.",
+        f"학생이 {focus_a} 상태를 직접 설명할 수 있는지 살펴보고 {action}. {label}을 진행한 뒤에도 같은 어려움이 반복되면 앞 단계를 다시 살펴봅니다.",
     ]
-    return picker.pick(f"process-{index}-frame", frames)
+    return picker.pick(f"process-{index}-frame-v3", frames)
 
 
 def build_primary_section(ctx: source.PageContext) -> str:
@@ -430,66 +870,72 @@ def build_primary_section(ctx: source.PageContext) -> str:
     focus_a, focus_b, focus_c = checks[0], checks[1], checks[2]
     student = picker.pick("primary-student", ctx.config["students"])
     heading = picker.pick(
-        "primary-heading",
+        "primary-heading-v3",
         [
-            f"{ctx.title}, 상담에서 구분해야 할 세 가지",
-            f"{ctx.title} 학습 순서를 정하는 기준",
-            f"{ctx.title} 시작 범위를 좁히는 방법",
-            f"{ctx.title} 상담 전 확인할 학습 기록",
-            f"{ctx.title}에서 우선순위를 정하는 과정",
-            f"{ctx.title} 계획을 실행 가능한 범위로 바꾸는 법",
-            f"{ctx.title} 오답과 진도를 함께 보는 이유",
-            f"{ctx.title} 상담이 현재 자료에서 시작되는 이유",
+            "학생의 학습 신호를 나누는 기준",
+            f"{ctx.config['label']} 시작 범위를 정하는 방법",
+            f"최근 자료에서 우선순위를 찾는 과정",
+            "상담 전에 확인할 학습 기록",
+            f"학생 일정에 맞는 실행 순서를 만드는 법",
+            f"오답과 진도를 함께 살펴야 하는 이유",
+            f"첫 상담이 현재 교재에서 시작되는 이유",
+            f"{ctx.config['subject']} 학습 계획을 구체화하는 순서",
         ],
     )
     paragraph1 = picker.pick(
         "primary-intro",
         [
-            f"{ctx.locality} {ctx.config['label']} 상담에서는 {focus_a}, {focus_b}, {focus_c}을 같은 문제로 묶지 않습니다. {student}이라면 최근 자료에서 각 어려움이 시작된 시점을 나누어야 실행 가능한 순서를 정할 수 있습니다.",
-            f"{student}에게는 학습량을 바로 늘리기보다 {focus_a}과 {focus_b}의 원인을 먼저 구분하는 과정이 필요합니다. {focus_c} 결과까지 확인하면 학생이 혼자 이어갈 범위와 도움이 필요한 범위가 분명해집니다.",
-            f"{ctx.title}의 첫 확인 항목은 {focus_a}입니다. 다만 {focus_b}과 {focus_c}이 함께 흔들리는 경우에는 최근 교재·시험지·과제 기록을 나누어 보고 한 주 안에 실행할 순서를 정합니다.",
-            f"{ctx.locality} 학생의 현재 점수가 같아도 {focus_a}에서 막힌 학생과 {focus_b}에서 막힌 학생의 계획은 달라야 합니다. 상담에서는 {focus_c}까지 살핀 뒤 다음 확인 시점을 정합니다.",
-            f"{ctx.title} 상담은 결과만 설명하는 자리가 아니라 {focus_a}의 원인, {focus_b}의 실행 가능성, {focus_c}의 재확인 방법을 정하는 과정입니다. 학생이 실제로 완료할 수 있는 분량부터 시작합니다.",
-            f"{student}이라면 최근 단원에서 {focus_a}을 혼자 설명할 수 있는지 먼저 봅니다. 이후 {focus_b}과 {focus_c}을 순서대로 확인해 반복되는 어려움과 일시적인 실수를 나눕니다.",
+            f"학생 상담에서는 {focus_a}, {focus_b}, {focus_c}을 같은 문제로 묶지 않습니다. {student}이라면 최근 자료에서 각 어려움이 나타난 시점을 구분해야 실행 가능한 순서를 정할 수 있습니다.",
+            f"{student}에게는 학습량을 바로 늘리기보다 {focus_a}과 {focus_b}에서 확인된 문제를 먼저 구분하는 과정이 필요합니다. {focus_c} 결과까지 확인하면 학생이 혼자 이어갈 범위와 도움이 필요한 범위가 분명해집니다.",
+            f"첫 확인 항목은 {focus_a}입니다. {focus_b}과 {focus_c}이 함께 흔들리는 경우에는 최근 교재·시험지·과제 기록을 나누어 보고 한 주 안에 실행할 순서를 정합니다.",
+            f"현재 점수가 같아도 {focus_a}에서 어려움을 겪는 학생과 {focus_b}에서 어려움을 겪는 학생의 계획은 달라야 합니다. 상담에서는 {focus_c}까지 살핀 뒤 다음 확인 시점을 정합니다.",
+            f"상담에서는 {focus_a} 관련 어려움, {focus_b}의 실행 가능성, {focus_c}의 재확인 방법을 따로 정리합니다. 학생이 실제로 완료할 {focus_a}·{focus_c} 분량부터 시작합니다.",
+            f"{student}이라면 최근 단원에서 {focus_a} 상태를 직접 설명할 수 있는지 먼저 봅니다. 이후 {focus_b}과 {focus_c}을 순서대로 확인해 반복되는 어려움과 일시적인 실수를 나눕니다.",
         ],
     )
-    if facts["schools"]:
-        school_context = (
-            f"제공 자료에는 {'·'.join(facts['schools'][:4])}이 참고 학교로 표시되어 있습니다. "
-            "학교명만으로 수업을 확정하지 않고 실제 교재·진도·시험 일정과 센터 시간표를 상담에서 대조합니다."
-        )
-    else:
-        school_context = (
-            "제공 자료에 구체적인 학교명이 없어 임의로 추가하지 않았습니다. "
-            "재학 학교의 교재·현재 진도·시험 일정을 준비하면 상담 범위를 구체적으로 정할 수 있습니다."
-        )
-    location_context = (
-        f"실제 안내 센터는 {facts['center']}이며 주소는 {facts['address']}입니다. "
-        f"확인된 학년 범위는 {facts['grade_text']}이고 등록 전 최신 시간표를 다시 확인해야 합니다."
+    school_clause = (
+        f"제공된 참고 학교 목록의 {focus_a} 관련 교재·진도는 상담에서 확인합니다"
+        if facts["schools"]
+        else f"제공 자료에 구체적인 학교명이 없어 {focus_a} 관련 재학 학교 정보는 상담에서 확인합니다"
     )
-    paragraph2 = (
-        f"{school_context} {location_context}"
-        if picker.number("primary-fact-order") % 2 == 0
-        else f"{location_context} {school_context}"
+    grade_clause = (
+        f"센터 자료의 가능 학년은 {facts['grade_text']}이며 {focus_b} 개설 시간은 등록 전에 다시 확인합니다"
+        if facts["grades"]
+        else f"가능 학년 자료가 없어 {focus_b} 개설 여부와 시간을 상담에서 확인합니다"
+    )
+    paragraph2 = picker.pick(
+        "primary-facts-v4",
+        [
+            f"{school_clause}. {grade_clause}. {focus_c} 자료와 실제 방문 센터 정보도 함께 대조합니다.",
+            f"{focus_c} 범위를 정할 때 {school_clause}. 실제 방문 센터와 주소는 아래 사실 영역에서 확인하며 {grade_clause}.",
+            f"{focus_c} 상담의 실제 방문 센터와 주소는 사실 영역에서 확인합니다. {school_clause}. {grade_clause}.",
+            f"{school_clause}. {grade_clause}. 방문 전 센터 주소와 {focus_c} 상담 일정을 따로 확인합니다.",
+            f"{focus_b} 상담 전에 센터 자료의 방문 정보를 확인합니다. {school_clause}. {grade_clause}.",
+            f"{focus_c} 자료를 준비할 때 {school_clause}. {grade_clause}. {focus_a} 상담 장소는 센터 정보에서 확인합니다.",
+        ],
     )
     items = []
     for index, (label, variants) in enumerate(ctx.config["process"]):
         body = process_body(ctx, picker, index, label, variants)
+        body = avoid_label_body_overlap(label, body)
         items.append(
-            f"            <li><strong>{html.escape(label)}</strong>{html.escape(body)}</li>"
+            f"            <li><strong>{html.escape(label)}</strong>: {html.escape(body)}</li>"
         )
     summary_items = [
         (
             "우선 확인",
-            f"{focus_a}이 막히는 시점과 {focus_b}으로 이어지는 과정",
+            f"{focus_a} 관련 어려움이 나타난 시점과 {focus_b} 자료",
         ),
         (
             "학생 상황",
             f"{student}에게 필요한 {focus_c} 점검",
         ),
         ("가능 학년", facts["grade_text"]),
-        ("학교 참고", facts["school_text"]),
-        ("실제 안내 센터", facts["center"]),
+        (
+            "학교 참고",
+            f"제공 목록 {len(facts['schools'])}곳" if facts["schools"] else source.SCHOOL_FALLBACK,
+        ),
+        ("실제 안내 센터", "아래 센터 정보에서 확인"),
         (
             "상담에서 결정",
             picker.pick(
@@ -544,18 +990,18 @@ def student_card_answer(
         ctx, picker, f"student-{index}"
     )
     frames = [
-        f"{student}이라면 최근 자료에서 {focus_a}의 막힘이 드러나는 지점을 표시합니다. {process_action} 이후 {focus_b} 결과를 확인해 {process_label} 범위를 조정합니다.",
-        f"{focus_a}과 {focus_b}을 한꺼번에 늘리지 않고 학생이 혼자 설명할 수 있는 부분부터 구분합니다. {process_action} 완료 기록은 다음 상담에서 다시 비교합니다.",
-        f"현재 교재에서 {focus_a} 오류의 첫 지점을 찾고 {process_action} {focus_b}이 같은 방식으로 막히는지는 다른 문제로 확인합니다.",
-        f"{student}의 계획은 {focus_a} 진단 뒤 {focus_b}을 실행 가능한 분량으로 나누어 세웁니다. {process_label} 결과는 학생의 실제 공부 시간과 함께 살펴봅니다.",
-        f"{facts['grade_text']} 범위가 제공 자료에 표시되어 있어도 학생의 실제 진도는 다를 수 있습니다. {focus_a}과 {focus_b}을 확인한 뒤 {process_action}",
-        f"{student}의 어려움을 성적만으로 판단하지 않습니다. {focus_a}에서 막힌 원인과 {focus_b} 기록의 변화를 구분하고 {process_action}",
-        f"{focus_a}에서 도움이 필요한 부분과 혼자 해결한 부분을 나눈 뒤 {process_action} 다음 점검에서는 {focus_b}의 변화가 남았는지 확인합니다.",
-        f"{student}이라면 {focus_b}의 미완료 원인을 분량·난도·시간으로 나눕니다. {focus_a}부터 다시 확인한 뒤 {process_action}",
+        f"최근 자료에서 {focus_a} 관련 어려움이 나타난 문제를 표시합니다. {process_action} 이후 {focus_b} 자료를 확인해 {process_label} 범위를 조정합니다.",
+        f"{focus_a}과 {focus_b}을 한꺼번에 늘리지 않고 학생이 혼자 설명할 수 있는 부분부터 구분합니다. {process_action} {focus_b} 완료 결과는 {focus_a} 자료와 다음 상담에서 다시 비교합니다.",
+        f"현재 교재에서 {focus_a} 관련 어려움이 처음 드러난 부분을 찾습니다. {process_action} 다른 문제에서는 {focus_b} 관련 어려움이 반복되는지 확인합니다.",
+        f"학습 계획은 {focus_a}을 진단한 뒤 {focus_b}을 실행 가능한 분량으로 나누어 세웁니다. {process_label} 단계의 기록은 학생의 실제 공부 시간과 함께 살펴봅니다.",
+        f"{facts['grade_text']} 범위가 제공 자료에 표시되어 있어도 {focus_a}과 {focus_b}의 실제 진도는 학생마다 다를 수 있습니다. 두 항목의 차이를 정리하고 {process_action}",
+        f"{focus_a}과 {focus_b}을 살필 때 이 학생의 어려움을 성적만으로 판단하지 않습니다. 두 항목에서 확인된 문제와 달라진 점을 구분하고 {process_action}",
+        f"{focus_a}에서 도움이 필요한 부분과 혼자 해결한 부분을 나눈 다음 {process_action} 다음 점검에서는 {focus_b}의 변화가 남았는지 확인합니다.",
+        f"{focus_b}의 미완료 원인을 분량·난도·시간으로 나눕니다. {focus_a}부터 다시 살펴보고 {process_action}",
     ]
-    answer = picker.pick(f"student-{index}-frame", frames)
+    answer = picker.pick(f"student-{index}-frame-v3", frames)
     if index == 0:
-        answer += f" 실제 개설 여부는 {facts['center']} 시간표와 대조합니다."
+        answer += f" {focus_a}과 {focus_b}의 실제 개설 여부는 센터 시간표와 대조합니다."
     return answer
 
 
@@ -575,35 +1021,38 @@ def build_quality_section(ctx: source.PageContext) -> str:
             </article>'''
         )
     fit_intro = picker.pick(
-        "quality-intro",
+        "quality-intro-v3",
         [
-            f"{ctx.title} 상담에서는 {focus_a}과 {focus_b}의 원인을 먼저 나눈 뒤 {focus_c} 실행 여부를 확인합니다. 아래 학생 상황은 진단을 위한 예시이며 실제 범위는 최근 자료로 결정합니다.",
-            f"같은 학년이라도 {focus_a}, {focus_b}, {focus_c} 상태는 서로 다를 수 있습니다. {ctx.locality} 학생이 어떤 상황에 가까운지 확인한 뒤 한 가지 목표부터 정합니다.",
-            f"{ctx.config['label']} 계획은 학생 유형을 정답처럼 분류하는 일이 아닙니다. {focus_a}과 {focus_d} 기록을 바탕으로 우선 확인할 항목을 좁히는 과정입니다.",
-            f"{ctx.title}을 알아보는 학생은 최근 자료에서 {focus_b}이 반복되는지, {focus_c}을 계획대로 실행했는지 따로 살펴야 합니다.",
-            f"아래 항목은 {ctx.locality} 학생의 상담 준비를 돕기 위한 점검 기준입니다. 실제 시작 범위는 {focus_a}과 {focus_d} 기록을 확인한 뒤 정합니다.",
-            f"{facts['center']} 상담에서는 현재 결과보다 {focus_a}의 막힘과 {focus_b}의 실행 습관을 먼저 구분합니다. 해당되는 상황부터 확인해 보세요.",
+            f"상담에서는 {focus_a}과 {focus_b}에서 확인된 어려움을 먼저 나눈 뒤 {focus_c}이 계획대로 이어졌는지 확인합니다. 아래 예시는 {focus_a}과 {focus_c} 상태를 살피기 위한 기준이며 실제 범위는 최근 자료로 결정합니다.",
+            f"같은 학년이라도 {focus_a}, {focus_b}, {focus_c} 상태는 서로 다를 수 있습니다. 학생의 {focus_c} 상태를 확인한 뒤 한 가지 목표부터 정합니다.",
+            f"{ctx.config['label']} 계획은 학생 유형을 정답처럼 분류하는 일이 아닙니다. {focus_a}과 {focus_d} 관련 자료를 바탕으로 우선 확인할 항목을 좁히는 과정입니다.",
+            f"학생은 최근 자료에서 {focus_b} 관련 어려움이 반복되는지, {focus_c}을 계획대로 실행했는지 따로 살펴야 합니다.",
+            f"아래 {focus_a}·{focus_d} 항목은 상담 준비를 돕기 위한 점검 기준입니다. 실제 시작 범위는 {focus_a}과 {focus_d} 기록을 확인한 뒤 정합니다.",
+            f"센터 상담에서는 현재 결과보다 {focus_a}의 막힘과 {focus_b}의 실행 습관을 먼저 구분합니다. {focus_a}과 {focus_b} 중 해당되는 상황부터 확인해 보세요.",
         ],
+    )
+    fit_intro = contextualize_statement(
+        ctx, picker, "quality-intro-context", fit_intro
     )
     recent = picker.pick(
         "check-recent",
         [
             f"최근 교재·시험지·과제에서 {focus_a}과 {focus_b}이 드러나는 부분을 각각 표시합니다.",
-            f"{focus_a} 오류가 시작된 문제와 {focus_c}을 완료하지 못한 기록을 함께 준비합니다.",
+            f"{focus_a} 관련 어려움이 나타난 자료와 {focus_c} 관련 미완료 기록을 함께 준비합니다.",
             f"혼자 해결한 문제, 설명을 듣고 푼 문제, 다시 틀린 문제를 나누어 {focus_b} 상태를 확인합니다.",
-            f"최근 단원의 정답률보다 {focus_a}의 첫 오류 지점과 {focus_d} 재확인 결과를 챙깁니다.",
+            f"최근 단원의 정답률보다 {focus_a}에서 처음 어려웠던 문제와 {focus_d} 재확인 기록을 챙깁니다.",
             f"사용 중인 교재와 평가자료에서 {focus_c}이 반복되는 날짜와 문제 범위를 적습니다.",
-            f"{students[0]} 상황을 확인할 수 있도록 최근 과제 완료 기록과 {focus_a} 오답을 준비합니다.",
+            f"{students[0]} 상황을 확인할 수 있도록 최근 과제 완료 기록과 {focus_a} 점검 자료를 준비합니다.",
         ],
     )
     if facts["schools"]:
         school = picker.pick(
             "check-school",
             [
-                f"{'·'.join(facts['schools'][:4])} 중 재학 학교의 실제 교재·진도·시험 일정을 상담에서 확인합니다.",
-                f"제공된 참고 학교 {'·'.join(facts['schools'][:3])} 정보와 별개로 학생이 사용하는 교재와 시험 범위를 준비합니다.",
-                f"{'·'.join(facts['schools'][:4])}의 학교명만으로 수업을 정하지 않고 현재 진도와 센터 시간표를 대조합니다.",
-                f"재학 학교가 {'·'.join(facts['schools'][:4])}에 포함되더라도 실제 시험 범위와 일정은 상담 때 다시 확인합니다.",
+                "제공된 참고 학교 목록과 별개로 재학 학교의 실제 교재·진도·시험 일정을 상담에서 확인합니다.",
+                "참고 학교 정보만 따르지 않고 학생이 사용하는 교재와 시험 범위를 직접 준비합니다.",
+                "제공된 학교 목록만으로 수업을 정하지 않고 현재 진도와 센터 시간표를 대조합니다.",
+                "재학 학교가 참고 목록에 포함되더라도 실제 시험 범위와 일정은 상담 때 다시 확인합니다.",
             ],
         )
     else:
@@ -620,10 +1069,10 @@ def build_quality_section(ctx: source.PageContext) -> str:
         "check-time",
         [
             f"{students[1]}의 경우 평일과 주말에 {focus_b}을 실제로 이어갈 수 있는 시간을 따로 계산합니다.",
-            f"{focus_c} 과제와 {focus_d} 복습에 사용할 요일별 시간을 학교·다른 일정과 함께 적습니다.",
-            f"계획한 분량이 무너지지 않도록 {focus_a} 확인 시간과 {focus_b} 실행 시간을 구분합니다.",
+            f"{focus_c}과 {focus_d}에 사용할 요일별 시간을 학교·다른 일정과 함께 적습니다.",
+            f"계획한 분량이 무너지지 않도록 {focus_a} 확인 시간과 {focus_b}에 쓸 시간을 구분합니다.",
             f"한 주에 사용할 수 있는 시간을 먼저 적고 {focus_c}과 {focus_d} 중 한 가지를 우선 배치합니다.",
-            f"{facts['center']} 시간표와 학생 일정을 대조해 이동·수업·복습에 필요한 시간을 현실적으로 나눕니다.",
+            f"센터 시간표와 학생 일정을 대조해 {focus_a} 확인, 수업, {focus_b} 복습에 필요한 시간을 현실적으로 나눕니다.",
             f"{students[2]}에게 무리한 분량을 정하지 않도록 최근 완료 기록을 기준으로 시간을 계산합니다.",
         ],
     )
@@ -633,18 +1082,22 @@ def build_quality_section(ctx: source.PageContext) -> str:
         [
             f"{focus_a}을 먼저 바꿀지 {focus_b}을 함께 관리할지 정하고, {goal_action}",
             f"{goal_label} 단계에서 확인할 목표를 한 가지로 좁혀 {goal_action}",
-            f"{focus_c}의 단기 목표와 {focus_d}의 누적 목표를 나눈 뒤 {goal_action}",
+            f"{focus_c}의 단기 목표와 {focus_d}의 누적 목표를 구분하고 {goal_action}",
             f"다음 상담에서 다시 확인할 {focus_a} 기준을 정하고 {goal_action}",
             f"학생이 설명할 수 있는 {focus_b} 범위를 목표로 정해 {goal_action}",
             f"이번 주에 완료할 {focus_c} 분량과 재확인할 {focus_d} 범위를 정합니다.",
         ],
     )
+    recent = contextualize_statement(ctx, picker, "check-recent-context", recent)
+    school = contextualize_statement(ctx, picker, "check-school-context", school)
+    time = contextualize_statement(ctx, picker, "check-time-context", time)
+    goal = contextualize_statement(ctx, picker, "check-goal-context", goal)
     return f'''    {DETAIL_MARKER_START}
-    <section class="local-section seo-geo-section" aria-label="{html.escape(ctx.title)} 학습 및 상담 안내">
+    <section class="local-section seo-geo-section" aria-label="{html.escape(ctx.info.locality)} 학생 학습 및 상담 안내">
       <div class="wrap seo-geo-enhancement">
         <article id="student-fit" class="geo-answer-panel">
           <p class="eyebrow">학습 점검</p>
-          <h2>{html.escape(ctx.title)} 상담이 필요한 학생 상황</h2>
+          <h2>학생 상황별 학습 점검</h2>
           <p>{html.escape(fit_intro)}</p>
           <div class="geo-answer-grid">
 {chr(10).join(cards)}
@@ -653,7 +1106,7 @@ def build_quality_section(ctx: source.PageContext) -> str:
 
         <article id="consult-checklist" class="geo-checklist-panel">
           <p class="eyebrow">상담 준비</p>
-          <h2>{html.escape(ctx.title)} 상담 전 체크리스트</h2>
+          <h2>상담 전에 준비할 자료</h2>
           <div class="geo-checklist-grid">
             <article class="geo-check-card"><b>01</b><strong>최근 학습 자료</strong><p>{html.escape(recent)}</p></article>
             <article class="geo-check-card"><b>02</b><strong>학교 일정</strong><p>{html.escape(school)}</p></article>
@@ -671,55 +1124,55 @@ def diagnostic_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
     checks = picker.order("faq-diagnostic-checks", facts["checks"])
     focus_a, focus_b = checks[0], checks[1]
     process_label, process_action = selected_process(ctx, picker, "faq-diagnostic")
+    recent_focus_b = focus_b if focus_b.startswith("현재 ") else f"최근 {focus_b}"
     questions = [
-        f"{ctx.title} 상담에서 {focus_a}과 {focus_b} 중 무엇을 먼저 확인하나요?",
-        f"{ctx.title}의 시작 범위는 어떤 학습 기록으로 정하나요?",
-        f"{ctx.title} 상담은 현재 점수 외에 무엇을 살펴보나요?",
-        f"{ctx.title}에서 {process_label} 순서를 정하는 기준은 무엇인가요?",
-        f"{ctx.title} 상담 전에 어떤 문제를 표시해 두면 좋나요?",
-        f"{ctx.title} 학습 계획은 왜 최근 자료부터 확인하나요?",
+        f"{ctx.info.locality} 학생은 {focus_a}과 {focus_b} 중 무엇을 먼저 확인하나요?",
+        f"{focus_a} 시작 범위와 {focus_b}을 실제로 이어 갔는지는 어떤 기록으로 확인하나요?",
+        f"첫 상담에서 {focus_b}과 {focus_a}을 구분하려면 무엇을 살펴보나요?",
+        f"{process_label} 순서를 정할 때 {focus_a}과 {focus_b} 중 어떤 자료가 필요한가요?",
+        f"{focus_b} 상담 전에 {focus_a}과 관련해 어떤 문제를 표시해 두면 좋나요?",
+        f"{focus_a} 계획을 세울 때 {recent_focus_b} 자료를 함께 보는 이유는 무엇인가요?",
     ]
     answers = [
-        f"최근 교재와 평가자료에서 {focus_a} 오류가 시작된 부분을 찾고 {focus_b}이 계획대로 이어졌는지 확인합니다. {process_action}",
-        f"성적만으로 시작 범위를 정하지 않습니다. 혼자 해결한 문제와 도움이 필요했던 문제를 나눈 뒤 {focus_a}과 {focus_b}의 우선순위를 정합니다.",
-        f"현재 진도, 오답 원인, 과제 완료 시점, 실제 공부 가능 시간을 함께 봅니다. {process_label} 단계에서는 {process_action}",
-        f"최근 자료에서 {focus_a}과 {focus_b}의 막힘이 드러나는 지점을 구분합니다. 학생이 한 주 안에 실행할 수 있는 범위부터 정합니다.",
-        f"정답보다 풀이 중 처음 막힌 지점을 표시해 주세요. 그 기록으로 {focus_a}의 원인을 나누고 {process_action}",
-        f"학생이 현재 사용하는 자료가 실제 어려움을 가장 직접적으로 보여 주기 때문입니다. {focus_b} 결과까지 확인해 다음 점검 범위를 정합니다.",
+        f"최근 교재와 평가자료에서 {focus_a} 관련 어려움이 드러난 부분을 찾고 {focus_b}이 계획대로 이어졌는지 확인합니다. {process_action}",
+        f"{focus_a}과 {focus_b} 시작 범위를 성적만으로 정하지 않습니다. 혼자 해결한 문제와 도움이 필요했던 문제를 나눈 뒤 {focus_a}·{focus_b} 우선순위를 정합니다.",
+        f"현재 진도, {focus_a} 관련 오답이 생긴 이유, {focus_b}을 마친 시점, 실제 공부 가능 시간을 함께 봅니다. {process_label} 단계에서는 {process_action}",
+        f"최근 자료에서 {focus_a}과 {focus_b} 관련 어려움이 나타난 문제를 구분합니다. 학생이 한 주 안에 실행할 {focus_a}·{focus_b} 범위를 먼저 정합니다.",
+        f"{focus_a} 관련 문제의 정답만 보기보다 풀이 중 처음 어려웠던 부분을 표시해 주세요. 그 기록으로 {focus_b} 관련 문제를 구분하고 {process_action}",
+        f"학생이 현재 사용하는 자료가 {focus_a}·{focus_b} 상태를 가장 직접적으로 보여 주기 때문입니다. 두 자료로 {focus_a}·{focus_b}의 다음 점검 범위를 정합니다.",
     ]
     answer = picker.pick("faq-diagnostic-a", answers)
-    answer += (
-        f" {ctx.locality} {ctx.config['label']} 상담에서는 이 기록과 "
-        "학생의 실제 공부 시간을 함께 대조합니다."
-    )
+    answer += f" 상담에서는 {focus_a} 자료와 {focus_b}에 쓴 시간을 함께 대조합니다."
+    answer += " " + contextual_learning_sentence(ctx, picker, "faq-diagnostic-context")
     return QA(picker.pick("faq-diagnostic-q", questions), answer)
 
 
 def grade_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
     facts = fact_bundle(ctx)
+    checks = picker.order("faq-grade-checks", facts["checks"])
+    focus_a, focus_b = checks[0], checks[1]
     questions = [
-        f"{ctx.locality} {ctx.config['label']}에서 확인되는 수업 가능 학년은 어떻게 되나요?",
-        f"{ctx.title} 등록 전에 어떤 학년 정보를 다시 확인해야 하나요?",
-        f"{facts['center']}의 {ctx.config['label']} 가능 학년은 어디까지인가요?",
-        f"{ctx.locality} 학생의 학년에 맞는 {ctx.config['subject']} 수업은 어떻게 확인하나요?",
+        f"{focus_a}과 {focus_b} 상담이 가능한 학년은 자료에서 어떻게 확인하나요?",
+        f"{focus_b} 계획과 {focus_a} 점검을 등록하기 전에 어떤 학년 정보를 다시 확인해야 하나요?",
+        f"{facts['center']}에서 {focus_a}과 {focus_b}을 상담할 수 있는 학년은 어디까지인가요?",
+        f"학생 학년에 맞는 {focus_b} 수업과 {focus_a} 점검은 어떻게 확인하나요?",
     ]
     if facts["grades"]:
         answers = [
-            f"{ctx.title}에 연결된 센터정보에는 {facts['grade_text']} 범위가 표시되어 있습니다. 같은 학년이라도 과목·진도·시간이 다르므로 {facts['center']}의 최신 시간표를 등록 전에 다시 확인해 주세요.",
-            f"{ctx.title}에서 현재 확인되는 범위는 {facts['grade_text']}입니다. 이는 수업 확정 정보가 아니며 학생 일정과 {facts['center']} 개설 시간을 대조해야 합니다.",
-            f"{ctx.title} 페이지에는 {facts['grade_text']} 학년 정보가 제공되어 있습니다. 실제 상담에서는 현재 교재와 진도를 확인한 뒤 가능한 반과 시간을 안내합니다.",
-            f"{ctx.title}의 제공 자료 기준 가능 학년은 {facts['grade_text']}입니다. 방문 전 {facts['center']}에 선택 과목과 현재 학년의 개설 여부를 문의해 주세요.",
+            f"센터 자료의 {focus_a}·{focus_b} 가능 범위는 {facts['grade_text']}입니다. 두 항목의 진도와 실행 시간이 학생마다 다르므로 {focus_a}·{focus_b} 최신 개설 정보를 등록 전에 확인해 주세요.",
+            f"센터 자료에서 {focus_a}·{focus_b} 상담으로 확인되는 범위는 {facts['grade_text']}입니다. 이 {focus_b} 계획을 수업 확정 정보로 보지 않고 {focus_a} 자료와 센터 개설 시간을 대조합니다.",
+            f"제공 자료에는 {focus_a}·{focus_b} 기준 {facts['grade_text']} 학년 정보가 있습니다. 상담에서는 {focus_a} 교재와 {focus_b} 진도를 확인한 뒤 가능한 반과 시간을 안내합니다.",
+            f"제공 자료 기준 {focus_a}·{focus_b} 가능 학년은 {facts['grade_text']}입니다. 방문 전 현재 학년과 {focus_a}·{focus_b} 개설 여부를 문의해 주세요.",
         ]
     else:
         answers = [
-            f"{ctx.title}에 연결된 {facts['center']} 자료에는 해당 학년 범위가 따로 표시되지 않아 임의로 안내하지 않습니다. 방문 전 학생 학년과 선택 과목의 현재 개설 여부를 확인해 주세요.",
-            f"현재 자료만으로 {ctx.title} 개설 학년을 확정하기 어렵습니다. {facts['center']}의 최신 시간표를 기준으로 상담해야 합니다.",
-            f"{ctx.title}에는 학년 정보가 따로 제공되지 않았습니다. 학생의 현재 학년·교재·진도를 알려주고 {facts['center']}의 가능 시간을 확인해 주세요.",
+            f"{facts['center']} 자료에는 해당 학년 범위가 따로 표시되지 않아 임의로 안내하지 않습니다. 학생 학년과 {focus_a}·{focus_b} 개설 여부를 확인해 주세요.",
+            f"현재 자료만으로 {focus_a} 개설 학년을 확정하기 어렵습니다. {focus_b} 계획은 {facts['center']}의 최신 시간표를 기준으로 상담해야 합니다.",
+            f"가능 학년 정보가 따로 제공되지 않았습니다. 학생의 현재 학년과 {focus_a} 교재·{focus_b} 진도를 알려주고 센터의 가능 시간을 확인해 주세요.",
         ]
-    return QA(
-        picker.pick("faq-grade-q", questions),
-        picker.pick("faq-grade-a", answers),
-    )
+    answer = picker.pick("faq-grade-a", answers)
+    answer += " " + contextual_learning_sentence(ctx, picker, "faq-grade-context")
+    return QA(picker.pick("faq-grade-q", questions), answer)
 
 
 def school_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
@@ -727,7 +1180,7 @@ def school_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
     schools = "·".join(facts["schools"][:4])
     if facts["schools"]:
         questions = [
-            f"{schools} 등 학교 진도는 {ctx.title} 상담에 어떻게 반영하나요?",
+            f"{schools} 등 학교 진도는 상담에 어떻게 반영하나요?",
             f"{schools} 등 재학 학교의 교재와 시험 일정도 확인하나요?",
             f"{schools} 등 학교별 진도 차이는 어떤 자료로 확인하나요?",
         ]
@@ -738,9 +1191,9 @@ def school_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
         ]
     else:
         questions = [
-            f"{ctx.title} 상담에서 재학 학교의 진도도 확인하나요?",
+            "상담에서 재학 학교의 진도도 확인하나요?",
             "학교명이 페이지에 없으면 어떤 자료로 상담하나요?",
-            f"{ctx.locality} 학생의 학교별 시험 범위는 어떻게 확인하나요?",
+            f"{ctx.info.locality} 학생의 학교별 시험 범위는 어떻게 확인하나요?",
         ]
         answers = [
             f"제공 자료에 구체적인 학교명이 없어 임의로 추가하지 않았습니다. 학생이 사용하는 교재·현재 진도·시험 일정을 준비하면 {facts['center']} 상담에서 범위를 정할 수 있습니다.",
@@ -748,36 +1201,26 @@ def school_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
             f"재학 학교의 시험 범위는 상담에서 직접 확인합니다. 제공되지 않은 학교 정보는 추정하지 않고 {facts['center']}의 현재 시간표와 대조합니다.",
         ]
     answer = picker.pick("faq-school-a", answers)
-    answer += (
-        f" {ctx.title}에서는 이 학교 자료를 수업 확정 정보가 아닌 "
-        "상담 참고 기준으로 사용합니다."
-    )
+    answer += " 이 학교 자료는 수업 확정 정보가 아닌 상담 참고 기준으로 사용합니다."
     return QA(picker.pick("faq-school-q", questions), answer)
 
 
 def location_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
     facts = fact_bundle(ctx)
+    checks = picker.order("faq-location-checks", facts["checks"])
+    focus_a, focus_b = checks[0], checks[1]
     questions = [
-        f"{ctx.locality} 페이지에서 안내하는 실제 상담 센터는 어디인가요?",
-        f"{ctx.title} 상담 장소와 페이지의 동네명이 다를 수 있나요?",
-        f"{ctx.locality}에서 상담받을 때 어느 주소를 확인해야 하나요?",
+        f"{focus_a}과 {focus_b} 상담을 안내하는 실제 방문 센터는 어디인가요?",
+        f"{focus_b} 계획과 {focus_a} 점검을 상담할 생활권과 실제 방문 센터 위치가 다를 수 있나요?",
+        f"{focus_a} 점검과 {focus_b} 계획을 상담하려면 어떤 실제 방문 주소를 확인해야 하나요?",
     ]
-    if facts["service_area"]:
-        answers = [
-            f"이 페이지는 {ctx.locality} 상담권역을 안내하며 실제 상담 센터는 {facts['center']}, 주소는 {facts['address']}입니다. 방문 전 센터명·주소·시간표를 다시 확인해 주세요.",
-            f"제공된 상담권역 자료에 따라 {ctx.locality} 페이지가 {facts['center']}로 연결됩니다. 실제 방문 주소는 {facts['address']}이므로 동네명과 구분해 확인해야 합니다.",
-            f"{ctx.locality} 안의 독립 센터를 뜻하는 페이지가 아닐 수 있습니다. 이 페이지의 실제 안내 장소는 {facts['center']}({facts['address']})입니다.",
-        ]
-    else:
-        answers = [
-            f"실제 상담 센터는 {facts['center']}이며 주소는 {facts['address']}입니다. 방문 전 현재 상담 시간과 개설 학년을 확인해 주세요.",
-            f"{ctx.locality} 페이지에 연결된 상담 장소는 {facts['center']}({facts['address']})입니다. 페이지의 주소를 기준으로 방문 위치를 확인해 주세요.",
-            f"센터명은 {facts['center']}, 방문 주소는 {facts['address']}입니다. 학생 학년과 선택 과목의 시간표도 함께 문의해 주세요.",
-        ]
+    answers = [
+        f"이 페이지의 {focus_a}·{focus_b} 상담에서 확인할 실제 방문 센터는 {facts['center']}입니다. {focus_b} 계획을 상담할 실제 방문 주소는 {facts['address']}입니다.",
+        f"{focus_a}·{focus_b} 상담 가능 지역과 실제 방문 위치는 다를 수 있습니다. {focus_a}·{focus_b} 상담의 실제 방문 센터는 {facts['center']}입니다. {focus_a} 상담의 실제 방문 주소는 {facts['address']}이며 페이지 지역명과 구분해 확인해야 합니다.",
+        f"{focus_a} 점검을 안내하는 실제 방문 센터는 {facts['center']}입니다. {focus_a} 상담 주소는 {facts['address']}입니다. {focus_b} 계획은 동네명만으로 실제 센터 위치를 추정하지 않고 이 주소를 기준으로 상담합니다.",
+    ]
     answer = picker.pick("faq-location-a", answers)
-    answer += (
-        f" {ctx.locality} {ctx.config['label']} 상담 장소는 이 주소를 기준으로 확인합니다."
-    )
+    answer += " " + contextual_learning_sentence(ctx, picker, "faq-location-context")
     return QA(picker.pick("faq-location-q", questions), answer)
 
 
@@ -787,17 +1230,17 @@ def fee_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
         picker.pick(
             "faq-fee-q",
             [
-                f"{ctx.title} 교습비 자료는 어디에서 확인할 수 있나요?",
+                f"{ctx.info.locality} 상담의 교습비 자료는 어디에서 확인할 수 있나요?",
                 f"{facts['center']}의 교습비는 페이지에서 확인할 수 있나요?",
-                f"{ctx.locality} {ctx.config['label']} 수강료는 어떻게 확인하나요?",
+                f"{ctx.info.locality} {ctx.config['label']} 수강료는 어떻게 확인하나요?",
             ],
         ),
         picker.pick(
             "faq-fee-a",
             [
-                f"{ctx.title} 페이지의 ‘센터 교습비 자료 확인’ 링크에서 {facts['center']}의 연결 공개자료를 볼 수 있습니다. 실제 금액은 과목·학년·수업 시간에 따라 달라질 수 있어 등록 전 다시 확인해야 합니다.",
-                f"{ctx.title}에 연결된 {facts['center']}의 교습비 자료를 페이지에서 안내합니다. 학생이 선택할 과목과 시간에 맞는 최종 금액은 상담에서 확인해 주세요.",
-                f"{ctx.title}에 연결된 공개자료 링크에서 센터 교습비를 확인할 수 있습니다. 현재 수강 가능 여부와 실제 적용 금액은 등록 전에 다시 확인해야 합니다.",
+                f"‘센터 교습비 자료 확인’ 링크에서 {facts['center']}의 연결 공개자료를 볼 수 있습니다. 실제 금액은 과목·학년·수업 시간에 따라 달라질 수 있어 등록 전 다시 확인해야 합니다.",
+                f"페이지에 연결된 {facts['center']}의 교습비 자료를 안내합니다. 학생이 선택할 과목과 시간에 맞는 최종 금액은 상담에서 확인해 주세요.",
+                "연결된 공개자료 링크에서 센터 교습비를 확인할 수 있습니다. 현재 수강 가능 여부와 실제 적용 금액은 등록 전에 다시 확인해야 합니다.",
             ],
         ),
     )
@@ -809,21 +1252,20 @@ def management_qa(ctx: source.PageContext, picker: StableChoice) -> QA:
     focus_a, focus_b = checks[0], checks[1]
     label, action = selected_process(ctx, picker, "faq-management")
     questions = [
-        f"{ctx.title}에서 {focus_a} 어려움이 반복되면 어떻게 점검하나요?",
-        f"{ctx.locality} 학생의 {focus_a}과 {focus_b} 우선순위는 어떻게 정하나요?",
-        f"{ctx.config['label']}의 {label} 결과는 언제 다시 확인하나요?",
-        f"{ctx.title} 상담 후 계획이 실행되지 않으면 무엇을 바꾸나요?",
+        f"{focus_a} 관련 어려움이 반복될 때 {focus_b} 관련 기록은 어떻게 점검하나요?",
+        f"{focus_a}과 {focus_b} 우선순위는 어떤 학습 기록으로 정하나요?",
+        f"{label} 뒤 {focus_b} 결과와 {focus_a} 변화는 언제 다시 확인하나요?",
+        f"상담 후 {focus_a} 계획이 실행되지 않으면 {focus_b}에서 무엇을 바꾸나요?",
     ]
     answers = [
-        f"최근 자료에서 {focus_a} 오류의 첫 지점을 찾고 원인을 개념·실수·시간으로 나눕니다. {action} 이후 {focus_b}이 같은 방식으로 막히는지 다시 확인합니다.",
-        f"{focus_a}과 {focus_b}을 한꺼번에 늘리지 않고 학생이 혼자 해결할 수 있는 항목부터 정합니다. 완료 기록을 보고 다음 범위를 조정합니다.",
-        f"{label} 결과는 정한 분량을 실행한 뒤 같은 유형의 문제에서 다시 확인합니다. 어려움이 남으면 분량·난도·시간 중 무엇을 바꿀지 정합니다.",
-        f"계획을 지키지 못한 이유를 의지 문제로 단정하지 않습니다. 실제 공부 시간과 과제 난도를 확인해 {focus_a} 분량을 다시 조정합니다.",
+        f"최근 자료에서 {focus_a} 관련 어려움이 처음 드러난 부분을 찾고 개념·실수·시간 요인을 구분합니다. {action} 이후 다른 문제에서도 {focus_b} 관련 어려움이 반복되는지 확인합니다.",
+        f"{focus_a}과 {focus_b}을 한꺼번에 늘리지 않고 학생이 혼자 해결할 수 있는 항목부터 정합니다. {focus_a} 완료 결과를 {focus_b} 자료와 비교해 다음 범위를 조정합니다.",
+        f"{label} 단계의 기록은 정한 분량을 실행한 뒤 {focus_a} 유형의 문제에서 다시 확인합니다. {focus_b} 관련 어려움이 남으면 분량·난도·시간 중 무엇을 바꿀지 정합니다.",
+        f"{focus_a} 계획을 지키지 못한 이유를 의지 문제로 단정하지 않습니다. 실제 공부 시간과 {focus_b} 관련 과제의 난도를 확인해 분량을 다시 조정합니다.",
     ]
     answer = picker.pick("faq-management-a", answers)
-    answer += (
-        f" {ctx.locality} {ctx.config['label']} 계획은 이 재확인 결과에 맞춰 조정합니다."
-    )
+    answer += f" {focus_a}과 {focus_b} 계획은 이 재확인 결과에 맞춰 조정합니다."
+    answer += " " + contextual_learning_sentence(ctx, picker, "faq-management-context")
     return QA(picker.pick("faq-management-q", questions), answer)
 
 
@@ -831,14 +1273,7 @@ def build_faqs(ctx: source.PageContext) -> list[QA]:
     picker = detail_picker(ctx)
     facts = fact_bundle(ctx)
     result = [diagnostic_qa(ctx, picker), grade_qa(ctx, picker)]
-    fact_candidates = [location_qa(ctx, picker), school_qa(ctx, picker)]
-    if ctx.info.tuition_url:
-        fact_candidates.append(fee_qa(ctx, picker))
-    if facts["service_area"]:
-        third = location_qa(ctx, picker)
-    else:
-        third = picker.pick("faq-third", fact_candidates)
-    result.extend([third, management_qa(ctx, picker)])
+    result.extend([location_qa(ctx, picker), management_qa(ctx, picker)])
     if len({item.question for item in result}) != 4:
         raise ValueError(f"Duplicate FAQ question: {ctx.path}")
     return result
@@ -860,6 +1295,95 @@ def faq_html(title: str, faqs: Sequence[QA], section_id: str = "faq-section") ->
 </section>'''
 
 
+def deduplicate_visible_paragraph_sentences(
+    text: str,
+    ctx: source.PageContext,
+) -> str:
+    """Contextualize a repeated prose sentence on its later occurrence.
+
+    The generated prose occasionally selects the same useful process sentence
+    for two different cards.  Keeping both verbatim adds no value, so the later
+    occurrence is tied to a different source-backed learning signal.  Markup
+    containing child elements is intentionally left untouched.
+    """
+
+    seen: set[str] = set()
+    duplicate_index = 0
+    pattern = re.compile(r"(<p\b[^>]*>)(.*?)(</p>)", re.I | re.S)
+
+    checks = list(fact_bundle(ctx)["checks"])
+    process_labels = [label for label, _variants in ctx.config["process"]]
+
+    def contextualized_duplicate(sentence: str) -> str:
+        nonlocal duplicate_index
+        base = re.sub(
+            r"^(?:이후|다음\s+점검에서는|다음\s+확인에서는)\s*",
+            "",
+            sentence,
+        )
+        attempts = max(1, len(checks) * 2)
+        for offset in range(attempts):
+            index = duplicate_index + offset
+            focus = checks[index % len(checks)]
+            if index < len(checks):
+                prefix = f"{focus} 점검에서는 "
+            else:
+                label = process_labels[index % len(process_labels)]
+                prefix = f"{label} 단계의 {focus} 점검에서는 "
+            candidate = prefix + base
+            if candidate not in seen:
+                duplicate_index = index + 1
+                return candidate
+        duplicate_index += attempts
+        return f"이번 {checks[duplicate_index % len(checks)]} 점검에서는 {base}"
+
+    def replace_paragraph(match: re.Match[str]) -> str:
+        nonlocal duplicate_index
+        inner = match.group(2)
+        if "<" in inner or ">" in inner:
+            return match.group(0)
+        decoded = html.unescape(inner)
+        chunks = re.split(r"((?<=[.!?])\s+)", decoded)
+        changed = False
+        for index in range(0, len(chunks), 2):
+            sentence = re.sub(r"\s+", " ", chunks[index]).strip()
+            if len(sentence) < 20:
+                continue
+            if sentence in seen:
+                replacement = contextualized_duplicate(sentence)
+                chunks[index] = replacement
+                seen.add(replacement)
+                changed = True
+            else:
+                seen.add(sentence)
+        if not changed:
+            return match.group(0)
+        rebuilt = "".join(chunks).strip()
+        return match.group(1) + html.escape(rebuilt) + match.group(3)
+
+    return pattern.sub(replace_paragraph, text)
+
+
+def contextualize_comparison_copy(text: str, ctx: source.PageContext) -> str:
+    pattern = re.compile(
+        r"(<p>)([^<>]{2,80} 안에서 함께 비교해볼 수 있는 동네 페이지입니다\.)(</p>)"
+    )
+    counter = 0
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal counter
+        statement = contextualize_statement(
+            ctx,
+            detail_picker(ctx),
+            f"comparison-copy-{counter}",
+            html.unescape(match.group(2)),
+        )
+        counter += 1
+        return match.group(1) + html.escape(statement) + match.group(3)
+
+    return pattern.sub(replace, text)
+
+
 def faq_entities(faqs: Sequence[QA]) -> list[dict[str, Any]]:
     return [
         {
@@ -871,30 +1395,169 @@ def faq_entities(faqs: Sequence[QA]) -> list[dict[str, Any]]:
     ]
 
 
+def school_mentions(ctx: source.PageContext) -> list[dict[str, str]]:
+    return [
+        {"@type": "Organization", "name": school}
+        for school in actual_schools(ctx)
+    ]
+
+
+def sync_detail_schema(
+    text: str,
+    ctx: source.PageContext,
+    faqs: Sequence[QA],
+) -> str:
+    """Synchronize visible facts with schema while preserving every URL."""
+
+    data, match = source.parse_jsonld(text)
+
+    def normalize_semantic(value: Any, key: str = "") -> Any:
+        if isinstance(value, list):
+            return [normalize_semantic(item, key) for item in value]
+        if isinstance(value, dict):
+            return {
+                child_key: normalize_semantic(child, child_key)
+                for child_key, child in value.items()
+            }
+        if isinstance(value, str) and key not in {
+            "@id",
+            "url",
+            "item",
+            "contentUrl",
+        }:
+            return value.replace(ctx.locality, ctx.info.locality)
+        return value
+
+    data = normalize_semantic(data)
+    graph = data["@graph"]
+    stable_id = ctx.center.primary_url + "#organization"
+    mentions: list[dict[str, str]] = [{"@id": stable_id}, *school_mentions(ctx)]
+
+    faq = find_node(graph, "FAQPage")
+    if faq is None:
+        faq = {"@type": "FAQPage", "@id": ctx.page_url + "#faq"}
+        graph.append(faq)
+    faq["@type"] = "FAQPage"
+    faq["@id"] = ctx.page_url + "#faq"
+    faq["mainEntity"] = faq_entities(faqs)
+
+    organization = find_node(graph, "EducationalOrganization")
+    if organization is not None:
+        organization["@id"] = stable_id
+        organization["name"] = source.actual_center_name(ctx)
+        organization["url"] = ctx.center.primary_url
+        organization["branchOf"] = {"@id": ROOT_ORGANIZATION_ID}
+        for unsupported in ("telephone", "contactPoint", "openingHours"):
+            organization.pop(unsupported, None)
+        address: dict[str, str] = {
+            "@type": "PostalAddress",
+            "streetAddress": source.actual_address(ctx),
+            "addressCountry": "KR",
+        }
+        region = official_address_region(ctx)
+        locality = official_address_locality(ctx)
+        if region:
+            address["addressRegion"] = region
+        if locality:
+            address["addressLocality"] = locality
+        organization["address"] = address
+        served_names = list(ctx.center.areas)
+        served_nodes = [
+            {"@type": "Place", "name": name}
+            for name in dict.fromkeys(served_names)
+            if name
+        ]
+        if served_nodes:
+            organization["areaServed"] = (
+                served_nodes[0] if len(served_nodes) == 1 else served_nodes
+            )
+        if ctx.info.registration_number:
+            organization["identifier"] = {
+                "@type": "PropertyValue",
+                "propertyID": "교육지원청 등록번호",
+                "value": ctx.info.registration_number,
+            }
+
+    webpage = find_node(graph, "WebPage")
+    if webpage is not None:
+        webpage["name"] = display_title(ctx)
+        webpage["description"] = build_meta_description(ctx)
+        webpage["author"] = {"@id": ROOT_ORGANIZATION_ID}
+        webpage["publisher"] = {"@id": ROOT_ORGANIZATION_ID}
+        webpage["mentions"] = mentions
+        webpage["about"] = [
+            {"@type": "Place", "name": ctx.info.locality},
+            {"@type": "Thing", "name": ctx.config["label"]},
+        ]
+
+    article = find_node(graph, "Article")
+    if article is not None:
+        article["headline"] = display_h1(ctx)
+        article["description"] = build_meta_description(ctx)
+        article["author"] = {"@id": ROOT_ORGANIZATION_ID}
+        article["publisher"] = {"@id": ROOT_ORGANIZATION_ID}
+        article["mentions"] = mentions
+        article["about"] = [
+            {"@type": "Place", "name": ctx.info.locality},
+            {"@type": "Thing", "name": ctx.config["label"]},
+        ]
+
+    service = find_node(graph, "Service")
+    if service is not None:
+        service["name"] = display_h1(ctx) + " 학습코칭"
+        service["description"] = build_meta_description(ctx)
+        service["provider"] = {"@id": stable_id}
+        service["areaServed"] = {
+            "@type": "Place",
+            "name": service_area_name(ctx),
+        }
+
+    breadcrumb = find_node(graph, "BreadcrumbList")
+    if breadcrumb is not None:
+        elements = breadcrumb.get("itemListElement", [])
+        if isinstance(elements, list) and elements:
+            last = elements[-1]
+            if isinstance(last, dict) and last.get("item") == ctx.page_url:
+                last["name"] = display_h1(ctx)
+
+    stamp_modified(graph, "WebPage", "Article")
+    return replace_jsonld(text, data, match)
+
+
 def replace_jsonld(text: str, data: dict[str, Any], match: re.Match[str]) -> str:
     compact = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     return text[: match.start(1)] + compact + text[match.end(1) :]
 
 
-def sync_detail_faq(text: str, ctx: source.PageContext, faqs: Sequence[QA]) -> str:
-    data, match = source.parse_jsonld(text)
-    graph = data["@graph"]
-    faq = find_node(graph, "FAQPage")
-    if faq is None:
-        faq = {
-            "@type": "FAQPage",
-            "@id": ctx.page_url + "#faq",
-        }
-        graph.append(faq)
-    faq["@type"] = "FAQPage"
-    faq["@id"] = ctx.page_url + "#faq"
-    faq["mainEntity"] = faq_entities(faqs)
-    stamp_modified(graph, "WebPage", "Article")
-    return replace_jsonld(text, data, match)
-
-
 def transform_detail(ctx: source.PageContext) -> str:
-    text = ctx.text
+    text = re.sub(
+        r"&((?:amp|nbsp|quot|apos|lt|gt|#[0-9]+|#x[0-9A-Fa-f]+))\.",
+        r"&\1;",
+        ctx.text,
+        flags=re.I,
+    )
+    heading = display_h1(ctx)
+    description = build_meta_description(ctx)
+    if heading != ctx.title:
+        text = replace_visible_text_nodes(text, ctx.title, heading)
+        text = source.replace_meta(
+            text,
+            key="og:title",
+            value=display_title(ctx),
+            attr_name="property",
+        )
+    text = source.replace_meta(
+        text,
+        key="description",
+        value=description,
+        attr_name="name",
+    )
+    text = source.replace_meta(
+        text,
+        key="og:description",
+        value=description,
+        attr_name="property",
+    )
     faqs = build_faqs(ctx)
     hero_pattern = re.compile(
         r'(<section class="local-hero">.*?<h1\b[^>]*>.*?</h1>)\s*<p\b[^>]*>.*?</p>',
@@ -911,6 +1574,16 @@ def transform_detail(ctx: source.PageContext) -> str:
         ),
         f"hero {ctx.path}",
     )
+    hero_fact_pattern = re.compile(
+        r'<div class="hero-center-fact">.*?</div>',
+        re.S,
+    )
+    text = replace_once(
+        text,
+        hero_fact_pattern,
+        build_hero_center_fact(ctx).strip(),
+        f"hero center fact {ctx.path}",
+    )
     primary_pattern = re.compile(
         r'\s*<section id="learning-plan" class="local-section">.*?</section>',
         re.S,
@@ -920,6 +1593,17 @@ def transform_detail(ctx: source.PageContext) -> str:
         primary_pattern,
         "\n\n" + build_primary_section(ctx),
         f"learning-plan {ctx.path}",
+    )
+    verified_pattern = re.compile(
+        r'\s*<section id="verified-center" class="local-section verified-center-section">'
+        r".*?</section>",
+        re.S,
+    )
+    text = replace_once(
+        text,
+        verified_pattern,
+        "\n\n" + build_refined_verified_section(ctx),
+        f"verified center {ctx.path}",
     )
     quality_pattern = re.compile(
         r'\s*<!-- (?:seo-geo-enhancement|quality-content):start -->.*?'
@@ -940,7 +1624,11 @@ def transform_detail(ctx: source.PageContext) -> str:
     text = replace_once(
         text,
         faq_pattern,
-        faq_html(ctx.title, faqs) + "\n",
+        faq_html(
+            f"{ctx.config['subject']} 학습 상담",
+            faqs,
+        )
+        + "\n",
         f"FAQ {ctx.path}",
     )
     source_note_pattern = re.compile(
@@ -961,10 +1649,38 @@ def transform_detail(ctx: source.PageContext) -> str:
         r"참고 학교와 별개로 학생의 현재 진도를 \1 시간표와 대조한 뒤",
         text,
     )
+    text = re.sub(
+        rf'\s*<p>{re.escape(ctx.info.locality)} 종합 안내와 학년·과목별 상세 페이지를 함께 확인할 수 있습니다\.</p>',
+        "",
+        text,
+        count=1,
+    )
+    text = text.replace(
+        f"<h2>{html.escape(ctx.info.locality)} 학습 페이지 이동</h2>",
+        "<h2>관련 학습 페이지 이동</h2>",
+    )
     for old, new in KNOWN_COPY_ERRORS.items():
         text = text.replace(old, new)
-    text = sync_detail_faq(text, ctx, faqs)
-    return fix_korean_particles(text, ctx)
+    text = replace_visible_text_nodes(
+        text,
+        ctx.locality,
+        ctx.info.locality,
+    )
+    text = contextualize_comparison_copy(text, ctx)
+    text = repair_visible_copy_splices(text, ctx)
+    text = fix_korean_particles(text, ctx)
+    text = deduplicate_visible_paragraph_sentences(text, ctx)
+    faqs = visible_faq(text, "faq-section")
+    text = sync_detail_schema(text, ctx, faqs)
+    text = fix_korean_particles(text, ctx)
+    text = deduplicate_visible_paragraph_sentences(text, ctx)
+    faqs = visible_faq(text, "faq-section")
+    text = sync_detail_schema(text, ctx, faqs)
+    text = fix_korean_particles(text, ctx)
+    for old, new in KNOWN_COPY_ERRORS.items():
+        text = text.replace(old, new)
+    text = re.sub(r"(?m)^[ \t]+$", "", text)
+    return text
 
 
 def visible_faq(text: str, section_id: str) -> list[QA]:
@@ -1013,9 +1729,8 @@ def meta_value(text: str, key: str, attr: str) -> str:
 
 def validate_detail(ctx: source.PageContext, text: str) -> list[str]:
     errors: list[str] = []
-    before_title = match_one(ctx.text, r"<title>(.*?)</title>")
+    visible_text = clean(text)
     after_title = match_one(text, r"<title>(.*?)</title>")
-    before_h1 = clean(match_one(ctx.text, r"<h1\b[^>]*>(.*?)</h1>"))
     after_h1 = clean(match_one(text, r"<h1\b[^>]*>(.*?)</h1>"))
     before_canonical = match_one(
         ctx.text,
@@ -1027,10 +1742,10 @@ def validate_detail(ctx: source.PageContext, text: str) -> list[str]:
         r'<link\b(?=[^>]*rel=["\']canonical["\'])'
         r'[^>]*href=["\']([^"\']*)["\']',
     )
-    if before_title != after_title:
-        errors.append("title changed")
-    if before_h1 != after_h1 or len(re.findall(r"<h1\b", text, re.I)) != 1:
-        errors.append("H1 changed/count")
+    if display_title(ctx) != after_title:
+        errors.append("title accuracy")
+    if display_h1(ctx) != after_h1 or len(re.findall(r"<h1\b", text, re.I)) != 1:
+        errors.append("H1 accuracy/count")
     if before_canonical != after_canonical:
         errors.append("canonical changed")
     if Counter(re.findall(r"<img\b[^>]*>", ctx.text, re.I | re.S)) != Counter(
@@ -1051,6 +1766,55 @@ def validate_detail(ctx: source.PageContext, text: str) -> list[str]:
     for bad in KNOWN_COPY_ERRORS:
         if bad in text:
             errors.append(f"remaining copy error: {bad}")
+    copy_regressions = {
+        "점로 연결": r"점로\s+연결",
+        "오류의 첫 지점": r"오류의\s+첫\s+지점",
+        "same-way block": r"같은\s+방식으로\s+막히는지",
+        "range-centre splice": r"가능한\s+범위를\s+와와",
+        "cause split splice": r"(?:시험\s+일정|\S+)의\s+원인을\s+나누",
+        "adjacent role duplication": r"(?:기록\s+(?:실행\s+)?기록|실행\s+실행|현재\s+현재|구문\s+구문|누적\s+누적|기초\s+기초|오답\s+오답)",
+        "bad topic grammar": r"(?:두\s+항목은\s+학생이|상담의\s+안내\s+센터|생활권\s+이름과\s+나누어|관련\s+어떤|\S+\s+과제\s+난도)",
+        "legacy location jargon": r"(?:물리센터|상담의\s+방문\s+주소|상담\s+생활권|https?://(?:www\.)?naver\.me|\^\^)",
+        "particle/copy remnants": r"(?:층라고|점\(모두\)가며|센터정보에는)",
+        "diagnostic noun splice": r"두\s+자료로\s+[^.!?]+(?<!의)\s+다음\s+점검",
+        "recent-current splice": r"최근\s+현재",
+        "generic signal as solvable object": r"(?:현재\s+진도|시험\s+일정|오답\s+기록|과제\s+실행)(?:을|를)?\s+(?:해결하지|해결할\s+수)",
+        "generic signal as student type": r"학생이\s+[^.!?]{1,40}\s+상황에\s+가까운지",
+        "process label as difficulty": r"(?:학습\s+진단|주간\s+계획|실행\s+확인|오답\s+재학습)\s+(?:관련\s+어려움|실행\s+분량)",
+        "signal treated as execution": r"의\s+어려움과\s+[^.!?]{1,40}의\s+실행\s+여부",
+        "finished sentence comma splice": r"(?:니다|합니다),\s*(?:이어서|이때|상담에서는|준비한|이후|같은|다음)",
+        "authored semicolon splice": r";",
+        "legacy date": r"2026-07-31",
+    }
+    for label, pattern in copy_regressions.items():
+        if re.search(pattern, visible_text):
+            errors.append(f"copy regression: {label}")
+    for focus in fact_bundle(ctx)["checks"]:
+        if re.search(
+            rf"{re.escape(focus)}\s+(?:정답보다|오답\s+원인|최근\s+자료|과제\s+난도)",
+            visible_text,
+        ):
+            errors.append(f"copy regression: signal noun splice ({focus})")
+    repeated_behind = False
+    repeated_confirmation = False
+    for _tag, inner in re.findall(
+        r"<(p|li)\b[^>]*>(.*?)</\1>", text, re.I | re.S
+    ):
+        for sentence in re.split(r"(?<=[.!?])\s+", clean(inner)):
+            if len(re.findall(r"\b뒤\b", sentence)) >= 2:
+                repeated_behind = True
+                break
+            if sentence.count("확인하고") >= 2:
+                repeated_confirmation = True
+                break
+        if repeated_behind or repeated_confirmation:
+            break
+    if repeated_behind:
+        errors.append("copy regression: repeated 뒤 in one sentence")
+    if repeated_confirmation:
+        errors.append("copy regression: repeated 확인하고 in one sentence")
+    if ctx.info.locality != ctx.locality and ctx.locality in visible_text:
+        errors.append("compact URL locality leaked into visible copy")
     remaining_particles = sorted(
         token for token in wrong_particle_tokens(ctx) if token in text
     )
@@ -1096,6 +1860,50 @@ def validate_detail(ctx: source.PageContext, text: str) -> list[str]:
             node = find_node(graph, kind)
             if node is not None and node.get("dateModified") != REVISION_DATE:
                 errors.append(f"{kind} dateModified")
+            if node is not None:
+                if node.get("author") != {"@id": ROOT_ORGANIZATION_ID}:
+                    errors.append(f"{kind} author")
+                if node.get("publisher") != {"@id": ROOT_ORGANIZATION_ID}:
+                    errors.append(f"{kind} publisher")
+                mentioned = {
+                    str(item.get("name", ""))
+                    for item in node.get("mentions", [])
+                    if isinstance(item, dict) and item.get("name")
+                }
+                if mentioned != set(actual_schools(ctx)):
+                    errors.append(f"{kind} school mentions")
+        organization = find_node(graph, "EducationalOrganization")
+        if organization is not None:
+            if organization.get("@id") != ctx.center.primary_url + "#organization":
+                errors.append("physical organization id")
+            if any(
+                key in organization
+                for key in ("telephone", "contactPoint", "openingHours")
+            ):
+                errors.append("unsupported physical organization contact")
+            address = organization.get("address", {})
+            if not isinstance(address, dict):
+                errors.append("physical organization address")
+            else:
+                if address.get("streetAddress") != source.actual_address(ctx):
+                    errors.append("physical organization streetAddress")
+                if address.get("addressRegion") != official_address_region(ctx):
+                    errors.append("physical organization addressRegion")
+                expected_locality = official_address_locality(ctx)
+                if expected_locality:
+                    if address.get("addressLocality") != expected_locality:
+                        errors.append("physical organization addressLocality")
+                elif "addressLocality" in address:
+                    errors.append("unsupported addressLocality")
+        service = find_node(graph, "Service")
+        if service is not None:
+            if service.get("provider") != {
+                "@id": ctx.center.primary_url + "#organization"
+            }:
+                errors.append("Service provider")
+            area = service.get("areaServed", {})
+            if not isinstance(area, dict) or area.get("name") != service_area_name(ctx):
+                errors.append("Service areaServed")
     except Exception as exc:  # noqa: BLE001
         errors.append(f"JSON-LD invalid: {exc}")
     return errors
@@ -1241,7 +2049,7 @@ def hub_content(ctx: HubContext, faqs: Sequence[QA]) -> str:
         cards = [
             (
                 "동네 페이지",
-                "동네명은 상담 생활권을 찾기 위한 기준이며 실제 방문 장소는 상세페이지의 센터 정보로 구분합니다.",
+                "동네명은 상담 가능 지역을 찾기 위한 기준이며 실제 방문 장소는 상세페이지의 센터 정보로 구분합니다.",
             ),
             (
                 "학년·과목",
@@ -1405,9 +2213,12 @@ def validate_hub(ctx: HubContext, text: str) -> list[str]:
     if len(clean(guide)) < 350:
         errors.append("hub guide too thin")
     for term in hub_particle_terms(ctx):
-        consonant = has_final_consonant(term)
         for consonant_form, vowel_form in PARTICLE_PAIRS:
-            wrong = vowel_form if consonant else consonant_form
+            _, wrong = correct_particle_pair(
+                term,
+                consonant_form,
+                vowel_form,
+            )
             if term + wrong in text:
                 errors.append(f"hub particle error: {term + wrong}")
                 break
@@ -1433,6 +2244,8 @@ def normalized_signature(ctx: source.PageContext, value: str) -> str:
     replacements = {
         ctx.title,
         ctx.locality,
+        ctx.info.locality,
+        display_h1(ctx),
         ctx.config["label"],
         ctx.category,
         facts["center"],
@@ -1531,7 +2344,7 @@ def prepare_detail_contexts(root: Path) -> list[source.PageContext]:
     for locality, key in locality_to_key.items():
         info = center_info.get(source.normalize_locality(locality))
         if info:
-            area = source.full_region(info)
+            area = service_area_name_from_info(info)
             if area and area not in records[key].areas:
                 records[key].areas.append(area)
     for record in records.values():
