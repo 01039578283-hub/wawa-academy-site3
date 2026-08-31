@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
-TODAY = "2026-08-12"
+TODAY = "2026-09-01"
 KST = timezone(timedelta(hours=9))
 RSS_HUB_SLUGS = (
     "초등영어학원",
@@ -25,6 +25,7 @@ RSS_SUBJECT_HUB_SLUGS = (
     "영어전문학원",
     "수학전문학원",
     "전문학원",
+    "고등학생학원",
 )
 
 

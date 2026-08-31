@@ -275,18 +275,22 @@ def main() -> int:
     for path in pages:
         original = path.read_bytes().decode("utf-8")
         relative = path.relative_to(ROOT)
-        if "\r" in original:
-            failures.append(f"{relative}: non-LF line ending found")
-            continue
+        newline = "\r\n" if "\r\n" in original else "\n"
+        normalized = original.replace("\r\n", "\n").replace("\r", "\n")
         try:
-            rendered, link_count = render_page(original)
+            rendered_normalized, link_count = render_page(normalized)
         except Exception as exc:
             failures.append(f"{relative}: {exc}")
             continue
-        validation_errors = validate_page(rendered)
+        validation_errors = validate_page(rendered_normalized)
         if validation_errors:
             failures.append(f"{relative}: " + "; ".join(validation_errors))
             continue
+        rendered = (
+            rendered_normalized
+            if newline == "\n"
+            else rendered_normalized.replace("\n", "\r\n")
+        )
 
         counts[link_count] += 1
         category_counts[relative.parts[1]] += 1

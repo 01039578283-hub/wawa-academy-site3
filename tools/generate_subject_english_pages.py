@@ -155,7 +155,10 @@ def load_manuscripts() -> dict[str, dict[str, object]]:
                 "intro": intro,
                 "sections": body_sections,
                 "faqs": parse_faqs(sections.get("FAQ", "")),
-                "reviews": parse_reviews(sections.get("학부모후기", "")),
+                "reviews": parse_reviews(
+                    sections.get("학부모후기", "")
+                    or sections.get("상담 상황 예시", "")
+                ),
                 "summary": sections.get("JSON-LD 요약", "").strip(),
             }
     return result

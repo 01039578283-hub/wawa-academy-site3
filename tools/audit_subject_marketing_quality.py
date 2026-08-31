@@ -1,4 +1,4 @@
-"""Read-only marketing-content audit for the four subject page collections.
+"""Read-only marketing-content audit for the five subject page collections.
 
 This audit measures the reader-facing improvements that are intentionally not
 covered by the release/technical audit:
@@ -36,6 +36,7 @@ CATEGORIES: dict[str, str] = {
     "영어전문학원": "영어 전문학원",
     "수학전문학원": "수학 전문학원",
     "전문학원": "전문학원",
+    "고등학생학원": "고등학생학원",
 }
 EXPECTED_DETAILS_PER_CATEGORY = 371
 
@@ -58,11 +59,11 @@ H2_MAX_CHARS = 78
 
 GRADE_PATTERN = re.compile(
     r"(?:초등(?:학교)?\s*[1-6]\s*학년|중(?:학교)?\s*[1-3]\s*학년|"
-    r"고등(?:학교)?\s*[1-3]\s*학년|초[1-6]|중[1-3]|고[1-3])"
+    r"고등(?:학교)?\s*[1-3]\s*학년|고등학생|초[1-6]|중[1-3]|고[1-3])"
 )
 READER_PATTERN = re.compile(r"학생|자녀|아이|학부모|보호자|가정")
 PROBLEM_PATTERN = re.compile(
-    r"어렵|부족|막히|막힌|멈추|실수|오답|부담|고민|놓치|밀리|공백|"
+    r"어렵|어려워|부족|막히|막힌|멈추|실수|오답|부담|고민|놓치|밀리|공백|"
     r"약하|약한|망설|끊기|따라가지만|못하|늦어|흐트러|불안|반복해|"
     r"헷갈|취약|부진|안\s*되|틀리|잃는|누적된|시간이\s*부족|재풀이|남지"
 )
@@ -468,7 +469,7 @@ def print_report(
     failures: list[str],
 ) -> None:
     print("SUBJECT MARKETING QUALITY AUDIT")
-    print("scope: 4 professional-academy categories; detail pages only")
+    print("scope: 5 academy categories; detail pages only")
     print("excluded: body-image distribution, public evidence links, low-priority technical checks")
     print()
     print(

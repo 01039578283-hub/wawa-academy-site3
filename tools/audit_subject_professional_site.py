@@ -1,7 +1,7 @@
 """Read-only release audit for the subject-professional page collection.
 
-The generator creates one subject directory, four category hubs, and
-4 x 371 locality detail pages.  This audit deliberately does not import the
+The generator creates one subject directory, five category hubs, and
+5 x 371 locality detail pages.  This audit deliberately does not import the
 generator: it checks the files that would actually be deployed against the
 independent centre-information source and the site's existing map mapping.
 
@@ -53,6 +53,12 @@ CATEGORIES: dict[str, dict[str, Any]] = {
     "전문학원": {
         "label": "전문학원",
         "focus": "combined",
+        "subjects": ("영어", "수학"),
+    },
+    "고등학생학원": {
+        "label": "고등학생학원",
+        "focus": "combined",
+        "grade_prefix": "고",
         "subjects": ("영어", "수학"),
     },
 }
@@ -491,21 +497,30 @@ def load_centres(audit: Audit) -> tuple[list[str], dict[str, dict[str, str]], di
     return order, rows, displays
 
 
-def expected_grades(row: dict[str, str], focus: str) -> list[str]:
+def expected_grades(row: dict[str, str], category: dict[str, Any]) -> list[str]:
     english = split_grades(row.get("가능학년\n(영어)", ""))
     math = split_grades(row.get("가능학년\n(수학)", ""))
+    focus = str(category["focus"])
     if focus == "english":
-        return english
-    if focus == "math":
-        return math
-    math_set = set(math)
-    return [grade for grade in english if grade in math_set]
+        grades = english
+    elif focus == "math":
+        grades = math
+    else:
+        math_set = set(math)
+        grades = [grade for grade in english if grade in math_set]
+    prefix = str(category.get("grade_prefix", ""))
+    return [grade for grade in grades if not prefix or grade.startswith(prefix)]
 
 
-def expected_schools(row: dict[str, str]) -> list[str]:
+def expected_schools(row: dict[str, str], category: dict[str, Any] | None = None) -> list[str]:
+    keys = (
+        ("타깃학교\n(고)",)
+        if category and str(category.get("grade_prefix", "")) == "고"
+        else ("타깃학교\n(초)", "타깃학교\n(중)", "타깃학교\n(고)")
+    )
     return unique(
         school
-        for key in ("타깃학교\n(초)", "타깃학교\n(중)", "타깃학교\n(고)")
+        for key in keys
         for school in split_schools(row.get(key, ""))
         if school not in {"초등학교", "중학교", "고등학교"}
         and re.search(r"(?:초|중|고|초등학교|중학교|고등학교)$", school)
@@ -871,19 +886,17 @@ def known_school_mentions(value: str) -> set[str]:
     matches prevents the shorter school from being reported as a foreign
     entity when the visible text contains the verified longer name.
     """
-    locality_spans = [
-        (match.start(), match.end())
-        for locality in ALL_LOCAL_NAMES
-        for match in re.finditer(re.escape(locality), value)
-    ]
+    locality_spans = (
+        [(match.start(), match.end()) for match in ALL_LOCAL_TOKEN_RE.finditer(value)]
+        if ALL_LOCAL_TOKEN_RE is not None
+        else []
+    )
     candidates: list[tuple[int, int, str]] = []
-    for school in ALL_SCHOOL_NAMES:
-        if len(school) < 3:
-            continue
-        for match in re.finditer(re.escape(school), value):
+    if ALL_SCHOOL_TOKEN_RE is not None:
+        for match in ALL_SCHOOL_TOKEN_RE.finditer(value):
             if any(start <= match.start() and match.end() <= end for start, end in locality_spans):
                 continue
-            candidates.append((match.start(), match.end(), school))
+            candidates.append((match.start(), match.end(), match.group("school")))
     return {
         school
         for start, end, school in candidates
@@ -992,8 +1005,8 @@ def mask_facts(
         str(row.get("교육지원청명칭", "")),
         str(row.get("교육지원청 등록번호", "")),
         str(row.get("센터 주소", "")),
-        *expected_grades(row, str(category["focus"])),
-        *expected_schools(row),
+        *expected_grades(row, category),
+        *expected_schools(row, category),
     ]
     result = unicodedata.normalize("NFKC", value)
     for fact in sorted(set(filter(None, facts)), key=len, reverse=True):
@@ -1055,8 +1068,8 @@ def audit_detail(
     for kind in DETAIL_SCHEMA_TYPES - present_types:
         audit.fail("detail_missing_schema_type", page, kind)
 
-    expected_grade_list = expected_grades(row, str(category["focus"]))
-    expected_school_list = expected_schools(row)
+    expected_grade_list = expected_grades(row, category)
+    expected_school_list = expected_schools(row, category)
     expected_school_set = set(expected_school_list)
     expected_school_alias_set = school_aliases(expected_school_set)
     centre_url = encoded_url("전국센터", local)
@@ -1186,7 +1199,14 @@ def audit_detail(
         items = item_list.get("itemListElement", [])
         if isinstance(items, list):
             item_urls = [str(item.get("url", "")) for item in items if isinstance(item, dict)]
-    sibling_urls = [encoded_url("과목별학원", other, local) for other in CATEGORIES if other != slug]
+    # Existing four collections are intentionally preserved byte-for-byte.
+    # The new high-school collection links to all established siblings, while
+    # legacy pages continue to expose their original three sibling links.
+    sibling_urls = [
+        encoded_url("과목별학원", other, local)
+        for other in CATEGORIES
+        if other != slug and (slug == "고등학생학원" or other != "고등학생학원")
+    ]
     previous_local = order[index - 1] if index else order[-1]
     next_local = order[index + 1] if index + 1 < len(order) else order[0]
     expected_related = [
@@ -1293,6 +1313,8 @@ def audit_detail(
 
 ALL_SCHOOL_NAMES: set[str] = set()
 ALL_LOCAL_NAMES: set[str] = set()
+ALL_SCHOOL_TOKEN_RE: re.Pattern[str] | None = None
+ALL_LOCAL_TOKEN_RE: re.Pattern[str] | None = None
 
 
 def audit_nav(audit: Audit) -> dict[str, int]:
@@ -1461,13 +1483,24 @@ def category_similarity(
 def main() -> int:
     audit = Audit()
     order, rows, displays = load_centres(audit)
-    global ALL_LOCAL_NAMES, ALL_SCHOOL_NAMES
+    global ALL_LOCAL_NAMES, ALL_SCHOOL_NAMES, ALL_LOCAL_TOKEN_RE, ALL_SCHOOL_TOKEN_RE
     ALL_SCHOOL_NAMES = school_aliases({
         school
         for row in rows.values()
         for school in expected_schools(row)
     })
     ALL_LOCAL_NAMES = set(order) | set(displays.values())
+    school_alternation = "|".join(
+        re.escape(value)
+        for value in sorted((name for name in ALL_SCHOOL_NAMES if len(name) >= 3), key=len, reverse=True)
+    )
+    locality_alternation = "|".join(
+        re.escape(value) for value in sorted(ALL_LOCAL_NAMES, key=len, reverse=True)
+    )
+    ALL_SCHOOL_TOKEN_RE = re.compile(
+        rf"(?<![가-힣A-Za-z0-9])(?P<school>{school_alternation})(?![가-힣A-Za-z0-9])"
+    )
+    ALL_LOCAL_TOKEN_RE = re.compile(locality_alternation)
 
     expected_urls: set[str] = {encoded_url("과목별학원")}
     metadata_titles: list[str] = []
