@@ -1,7 +1,7 @@
 """Read-only release audit for the subject-professional page collection.
 
-The generator creates one subject directory, five category hubs, and
-5 x 371 locality detail pages.  This audit deliberately does not import the
+The generator creates one subject directory, six category hubs, and
+6 x 371 locality detail pages.  This audit deliberately does not import the
 generator: it checks the files that would actually be deployed against the
 independent centre-information source and the site's existing map mapping.
 
@@ -53,6 +53,12 @@ CATEGORIES: dict[str, dict[str, Any]] = {
     "전문학원": {
         "label": "전문학원",
         "focus": "combined",
+        "subjects": ("영어", "수학"),
+    },
+    "중학생학원": {
+        "label": "중학생학원",
+        "focus": "combined",
+        "grade_prefix": "중",
         "subjects": ("영어", "수학"),
     },
     "고등학생학원": {
@@ -513,16 +519,19 @@ def expected_grades(row: dict[str, str], category: dict[str, Any]) -> list[str]:
 
 
 def expected_schools(row: dict[str, str], category: dict[str, Any] | None = None) -> list[str]:
-    keys = (
-        ("타깃학교\n(고)",)
-        if category and str(category.get("grade_prefix", "")) == "고"
-        else ("타깃학교\n(초)", "타깃학교\n(중)", "타깃학교\n(고)")
-    )
+    prefix = str(category.get("grade_prefix", "")) if category else ""
+    if prefix == "중":
+        keys = ("타깃학교\n(중)",)
+    elif prefix == "고":
+        keys = ("타깃학교\n(고)",)
+    else:
+        keys = ("타깃학교\n(초)", "타깃학교\n(중)", "타깃학교\n(고)")
     return unique(
         school
         for key in keys
         for school in split_schools(row.get(key, ""))
         if school not in {"초등학교", "중학교", "고등학교"}
+        and (prefix != "중" or school != "오현초호매실중")
         and re.search(r"(?:초|중|고|초등학교|중학교|고등학교)$", school)
     )
 
@@ -1199,13 +1208,19 @@ def audit_detail(
         items = item_list.get("itemListElement", [])
         if isinstance(items, list):
             item_urls = [str(item.get("url", "")) for item in items if isinstance(item, dict)]
-    # Existing four collections are intentionally preserved byte-for-byte.
-    # The new high-school collection links to all established siblings, while
-    # legacy pages continue to expose their original three sibling links.
+    # Existing collections are preserved byte-for-byte. The new middle-school
+    # collection links to all five established siblings; legacy and high-school
+    # pages retain their prior sibling-link sets.
+    legacy_slugs = {"영수전문학원", "영어전문학원", "수학전문학원", "전문학원"}
+    if slug == "중학생학원":
+        sibling_slugs = [other for other in CATEGORIES if other != slug]
+    elif slug == "고등학생학원":
+        sibling_slugs = [other for other in CATEGORIES if other in legacy_slugs]
+    else:
+        sibling_slugs = [other for other in CATEGORIES if other in legacy_slugs and other != slug]
     sibling_urls = [
         encoded_url("과목별학원", other, local)
-        for other in CATEGORIES
-        if other != slug and (slug == "고등학생학원" or other != "고등학생학원")
+        for other in sibling_slugs
     ]
     previous_local = order[index - 1] if index else order[-1]
     next_local = order[index + 1] if index + 1 < len(order) else order[0]

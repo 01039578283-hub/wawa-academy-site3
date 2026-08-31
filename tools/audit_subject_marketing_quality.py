@@ -1,4 +1,4 @@
-"""Read-only marketing-content audit for the five subject page collections.
+"""Read-only marketing-content audit for the six subject page collections.
 
 This audit measures the reader-facing improvements that are intentionally not
 covered by the release/technical audit:
@@ -36,6 +36,7 @@ CATEGORIES: dict[str, str] = {
     "영어전문학원": "영어 전문학원",
     "수학전문학원": "수학 전문학원",
     "전문학원": "전문학원",
+    "중학생학원": "중학생학원",
     "고등학생학원": "고등학생학원",
 }
 EXPECTED_DETAILS_PER_CATEGORY = 371
@@ -469,7 +470,7 @@ def print_report(
     failures: list[str],
 ) -> None:
     print("SUBJECT MARKETING QUALITY AUDIT")
-    print("scope: 5 academy categories; detail pages only")
+    print(f"scope: {len(CATEGORIES)} academy categories; detail pages only")
     print("excluded: body-image distribution, public evidence links, low-priority technical checks")
     print()
     print(

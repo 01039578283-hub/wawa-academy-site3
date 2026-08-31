@@ -587,8 +587,16 @@ SCHOOL_FIELDS = {
 }
 
 SCHOOL_SCOPE_VALUES = {
+    "지역내 모든 중학교 가능",
+    "지역 내 모든 중학교 가능",
     "지역내 모든 고등학교 가능",
     "지역 내 모든 고등학교 가능",
+}
+
+MALFORMED_SCHOOL_VALUES = {
+    # Two source school names were accidentally concatenated without a
+    # delimiter. Omit the malformed token rather than publishing a new name.
+    "오현초호매실중",
 }
 
 
@@ -597,7 +605,7 @@ def schools_for_level(row: dict[str, str], prefix: str) -> list[str]:
         [
             school
             for school in split_school_values(row.get(SCHOOL_FIELDS.get(prefix, ""), ""))
-            if school not in SCHOOL_SCOPE_VALUES
+            if school not in SCHOOL_SCOPE_VALUES and school not in MALFORMED_SCHOOL_VALUES
         ]
     )
 
