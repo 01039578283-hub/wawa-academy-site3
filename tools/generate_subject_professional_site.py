@@ -9,7 +9,9 @@ import random
 import re
 import shutil
 import unicodedata
+import zipfile
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from urllib.parse import quote
 
@@ -31,12 +33,13 @@ SMS_URL = "https://blogsms.net/01039578283"
 
 REGION_ORDER = ["서울", "경기", "인천", "충청", "대전", "대구", "울산", "부산", "경상", "광주", "전라", "강원", "제주"]
 LEGACY_SLUGS = ("영수전문학원", "영어전문학원", "수학전문학원", "전문학원")
-TARGET_SLUGS = (*LEGACY_SLUGS, "중학생학원", "고등학생학원")
+TARGET_SLUGS = (*LEGACY_SLUGS, "초등학생학원", "중학생학원", "고등학생학원")
 EXPECTED_REVIEW_COUNTS = {
     "전문학원": 1,
     "영수전문학원": 2,
     "영어전문학원": 3,
     "수학전문학원": 3,
+    "초등학생학원": 1,
     "중학생학원": 1,
     "고등학생학원": 1,
 }
@@ -75,6 +78,34 @@ GENERAL_CONFIG.update(
     }
 )
 ENGINE_CONFIGS["전문학원"] = GENERAL_CONFIG
+
+ELEMENTARY_STUDENT_CONFIG = dict(
+    next(config for config in content_engine.CATEGORIES if str(config["slug"]) == "초등전문학원")
+)
+ELEMENTARY_STUDENT_CONFIG.update(
+    {
+        "slug": "초등학생학원",
+        "label": "초등학생학원",
+        "zip": "초등학생학원.zip",
+        "eyebrow": "ELEMENTARY SCHOOL ACADEMY GUIDE",
+        "directory": "ELEMENTARY SCHOOL ACADEMY DIRECTORY",
+        "card_id": "elementary-school-academy",
+        "card_number": "17",
+        "card_small": "ELEMENTARY SCHOOL ACADEMY",
+        "representative_seed": "coaching-elementary-school-academy-v1",
+        "card_copy": "초등 영어 읽기·어휘와 수학 개념·연산을 현재 교재, 과제 습관, 설명 과정과 짧은 복습 기록으로 살펴봅니다.",
+        "related_pages": (
+            ("영수전문학원", "영수 전문학원"),
+            ("영어전문학원", "영어 전문학원"),
+            ("수학전문학원", "수학 전문학원"),
+            ("전문학원", "전문학원"),
+        ),
+        "base_page": ("영수전문학원", "영수 전문학원"),
+        "hero_copy": "최근 초등 영어·수학 교재와 과제 기록을 바탕으로 읽기·어휘, 개념·연산, 질문 습관과 짧은 복습 순서를 점검합니다.",
+        "hub_lead": "초등학생의 영어·수학을 문제 수나 선행 진도로만 비교하지 않고 읽기·어휘, 개념·연산, 과제 습관과 짧은 복습의 연결 과정을 살펴보도록 371개 동네 안내를 정리했습니다.",
+    }
+)
+ENGINE_CONFIGS["초등학생학원"] = ELEMENTARY_STUDENT_CONFIG
 
 MIDDLE_STUDENT_CONFIG = dict(
     next(config for config in content_engine.CATEGORIES if str(config["slug"]) == "중등전문학원")
@@ -160,6 +191,13 @@ CATEGORY_COPY = {
         "lead": "문제 수나 선행 진도만 비교하지 않고 학생이 개념을 설명하고 풀이를 끝까지 이어 가는 과정, 오답을 다시 확인하는 간격까지 살펴보도록 371개 동네 안내를 정리했습니다.",
         "summary": "최근 수학 시험지와 풀이 흔적에서 개념 이해, 계산 과정, 문제 조건 해석, 서술형 표현과 오답 재도전 순서를 구분합니다.",
         "tags": ("개념 진단", "풀이 과정", "오답 재학습"),
+    },
+    "초등학생학원": {
+        "label": "초등학생학원",
+        "eyebrow": "ELEMENTARY SCHOOL ACADEMY DIRECTORY",
+        "lead": "초등학생의 영어·수학을 문제 수나 선행 진도로만 비교하지 않고 읽기·어휘, 개념·연산, 과제 습관과 짧은 복습의 연결 과정을 살펴보도록 371개 동네 안내를 정리했습니다.",
+        "summary": "최근 초등 영어·수학 교재와 과제 기록에서 읽기·어휘, 개념·연산, 질문 습관과 짧은 복습 순서를 구분합니다.",
+        "tags": ("읽기·어휘", "개념·연산", "과제·짧은 복습"),
     },
     "중학생학원": {
         "label": "중학생학원",
@@ -407,16 +445,22 @@ def category_center_data(local: str, config: dict[str, object]) -> dict[str, obj
     """
     center = dict(base_center_data(local))
     prefix = str(config.get("grade_prefix", ""))
-    if prefix not in {"중", "고"}:
+    grade_ranges = {"초": "1-6", "중": "1-3", "고": "1-3"}
+    school_suffixes = {
+        "초": r"(?:초등학교|초)$",
+        "중": r"(?:중학교|중)$",
+        "고": r"(?:고등학교|고)$",
+    }
+    if prefix not in grade_ranges:
         return center
 
     row = row_for(local)
     focus = str(config.get("focus", "combined"))
     center["grades"] = [
         grade for grade in grades_for(row, focus)
-        if re.fullmatch(rf"{re.escape(prefix)}[1-3]", str(grade))
+        if re.fullmatch(rf"{re.escape(prefix)}[{grade_ranges[prefix]}]", str(grade))
     ]
-    school_suffix = r"(?:중학교|중)$" if prefix == "중" else r"(?:고등학교|고)$"
+    school_suffix = school_suffixes[prefix]
     center["schools"] = [
         school for school in public_school_names([str(value) for value in center.get("schools", [])])
         if re.search(school_suffix, school) and school != "오현초호매실중"
@@ -445,6 +489,8 @@ def parse_site_reviews(value: str) -> list[dict[str, str]]:
     for index, raw_line in enumerate(value.splitlines(), start=1):
         line = re.sub(r"\s+", " ", raw_line).strip()
         if not line:
+            continue
+        if line.startswith("※"):
             continue
         if re.search(r"실제\s*수강생의?\s*후기|실제\s*(?:수강\s*)?후기가\s*아니", line):
             continue
@@ -1035,6 +1081,731 @@ def polish_manuscript(
     return manuscript
 
 
+ELEMENTARY_REFERENCE_HEADING_PATTERNS = (
+    re.compile(r"^(.+?)(?:을|를) 과장 없이 해석하는 법$"),
+    re.compile(r"^(.+?)(?:이|가) 수업 안에서 작동하는 방식$"),
+    re.compile(r"^(.+?) 관점의 세부 (?:확인|점검) 항목$"),
+    re.compile(r"^(.+?)(?:과|와) 연결한 개인별 관리 포인트$"),
+    re.compile(r"^(.+?)(?:을|를) 실제 관리로 (?:확인|점검)하는 질문$"),
+)
+
+
+@lru_cache(maxsize=1)
+def elementary_reference_map() -> dict[str, tuple[int, str]]:
+    """Read the unmodified archive so shared cleaners cannot hide the marker."""
+    archive = SOURCE_DIR / "초등학생학원.zip"
+    result: dict[str, tuple[int, str]] = {}
+    with zipfile.ZipFile(archive) as bundle:
+        for name in bundle.namelist():
+            if name.endswith("/") or not name.lower().endswith(".txt"):
+                continue
+            raw = bundle.read(name).decode("utf-8")
+            stem = Path(name).stem
+            source_local = re.sub(r"\s+초등학생학원$", "", stem).strip()
+            local = actual_local(source_local)
+            matches: list[tuple[int, str]] = []
+            headings = re.findall(r"^##\s+(.+?)\s*$", raw, flags=re.MULTILINE)
+            for section_index, heading in enumerate(headings):
+                for pattern in ELEMENTARY_REFERENCE_HEADING_PATTERNS:
+                    match = pattern.fullmatch(heading.strip())
+                    if match:
+                        matches.append((section_index, match.group(1).strip()))
+                        break
+            if len(matches) != 1:
+                raise ValueError(f"초등학생학원/{local}: 원본 참고 항목 식별 {len(matches)}개")
+            result[local] = matches[0]
+    if len(result) != 371:
+        raise ValueError(f"초등학생학원 원본 참고 항목 매핑 {len(result)}개")
+    return result
+
+
+def normalize_elementary_source_reference(
+    manuscript: dict[str, object],
+    local: str,
+    center: dict[str, object],
+) -> tuple[str, ...]:
+    """Remove the one arbitrary reference term supplied with each source.
+
+    Every elementary source contains exactly one prompt-side reference term in
+    a recognisable H2.  Some terms name unsupported facilities, programmes or
+    outcomes.  Extracting the term from the heading lets us remove the whole
+    class deterministically instead of maintaining an incomplete blacklist.
+    The identified section is replaced with a verified, reader-facing learning
+    record section before the shared language and fact scrub runs.
+    """
+    sections = [
+        (str(heading), [str(value) for value in paragraphs])
+        for heading, paragraphs in manuscript.get("sections", [])
+    ]
+    raw_reference_index, raw_reference_term = elementary_reference_map()[local]
+    processed_matches: list[tuple[int, str]] = []
+    for section_index, (heading, _paragraphs) in enumerate(sections):
+        for pattern in ELEMENTARY_REFERENCE_HEADING_PATTERNS:
+            match = pattern.fullmatch(heading.strip())
+            if match:
+                processed_matches.append((section_index, match.group(1).strip()))
+                break
+    if len(processed_matches) != 1:
+        raise ValueError(
+            f"초등학생학원/{local}: 변환된 참고 항목 식별 {len(processed_matches)}개"
+        )
+    reference_index, processed_reference_term = processed_matches[0]
+    if reference_index >= len(sections):
+        raise ValueError(f"초등학생학원/{local}: 참고 구획 위치 오류")
+    if raw_reference_index >= len(sections):
+        raise ValueError(f"초등학생학원/{local}: 원본 참고 구획 위치 오류")
+    reference_terms = tuple(unique([raw_reference_term, processed_reference_term]))
+    verified_grades = [
+        str(value)
+        for value in center.get("verified_grades", center.get("grades", []))
+    ]
+    heading_options = (
+        f"{local} 초등 학습 기록에서 먼저 볼 순서",
+        "영어 읽기·어휘와 수학 개념·연산을 나눠 보는 법",
+        "정답 수보다 설명과 오답 재도전을 확인하는 법",
+        "과제 시작과 짧은 복습을 기록으로 이어 보기",
+        f"{local} 상담 뒤 다음 학습 계획을 정하는 기준",
+    )
+    controlled_heading = heading_options[ORDER.index(local) % len(heading_options)]
+    controlled_paragraphs = [
+        (
+            f"{local} 상담에서는 최근 영어 읽기·어휘 활동과 수학 개념·연산 풀이를 "
+            "나란히 놓고, 아이가 혼자 시작한 부분과 도움이 필요했던 지점을 표시해 보세요. "
+            "정답 수보다 설명할 수 있는 과정과 다시 풀 수 있는 문제를 구분하면 "
+            "첫 학습 목표를 더 구체적으로 정하기 쉽습니다."
+        ),
+        (
+            f"확인된 초등 영어·수학 공통 가능 학년은 {'·'.join(verified_grades)}입니다. "
+            "실제 교재·단원과 주간 분량은 자녀의 최근 기록을 바탕으로 상담에서 다시 확인해야 합니다."
+            if verified_grades
+            else
+            "제공된 센터 자료에서 초등 영어·수학 공통 가능 학년이 확인되지 않습니다. "
+            "자녀의 학년과 현재 교재를 알려 주고 수업 가능 여부와 시작 단원을 상담에서 먼저 확인해야 합니다."
+        ),
+    ]
+    sections[reference_index] = (controlled_heading, controlled_paragraphs)
+    manuscript["sections"] = sections
+
+    def scrub(value: object) -> str:
+        text = str(value or "")
+        text = text.replace(
+            "‘우리 아이의 영어와 수학에서 각각 첫 번째로 고칠 한 가지는 무엇이며, 그 이유를 어떤 자료로 판단했나요?’",
+            "우리 아이의 영어와 수학에서 각각 먼저 고칠 한 가지와 그 판단 자료를 함께 물어보세요.",
+        )
+        text = text.replace(
+            "‘누가, 언제, 무엇을 기록하고 다음 수업에서 어떻게 조정하나요?’",
+            "누가 언제 무엇을 기록하고 다음 수업에서 어떻게 조정하는지 물어보세요.",
+        )
+        text = re.sub(
+            r"아이와 함께 수업을 결정할 때는\s*‘좋았어\?’라고만 묻지 말고\s*"
+            r"이해한 내용을 하나 설명해 보기,\s*모를 때 질문하기 쉬웠는지 말해 보기,\s*"
+            r"과제를 혼자 시작할 수 있을지 예상해 보기를 권합니다(?=[.!?—–;]|$)",
+            "아이와 함께 수업을 결정할 때는 수업이 어땠는지만 묻지 말고, "
+            "이해한 내용 한 가지와 질문하기 쉬웠던 점, 과제를 혼자 시작할 수 있을지를 함께 확인해 보세요",
+            text,
+        )
+        for reference_term in reference_terms:
+            text = text.replace(reference_term, "학습 기록")
+        text = text.replace("수업 가능 학교 항목에 기재된", "확인된 학교 정보에 포함된")
+        text = text.replace("수업 학교 항목에 기재된", "확인된 학교 정보에 포함된")
+        text = text.replace("학교 항목에 기재된", "확인된 학교 정보에 포함된")
+        text = re.sub(
+            r"이 행에는 수업 가능 학교명이 (?:따로 )?제공되지 않았으므로",
+            "확인된 학교 정보가 없으므로",
+            text,
+        )
+        text = re.sub(r"상담\s+첫\s+상담", "첫 상담", text)
+        return text
+
+    manuscript["meta"] = scrub(manuscript.get("meta"))
+    manuscript["intro"] = [scrub(value) for value in manuscript.get("intro", [])]
+    manuscript["sections"] = [
+        (scrub(heading), [scrub(value) for value in paragraphs])
+        for heading, paragraphs in manuscript.get("sections", [])
+    ]
+    manuscript["faqs"] = [
+        {"question": scrub(item["question"]), "answer": scrub(item["answer"])}
+        for item in manuscript.get("faqs", [])
+    ]
+    manuscript["reviews"] = [
+        {"label": scrub(item.get("label", "")), "content": scrub(item["content"])}
+        for item in manuscript.get("reviews", [])
+    ]
+    manuscript["summary"] = scrub(manuscript.get("summary"))
+    manuscript["answer_heading"] = scrub(manuscript.get("answer_heading"))
+    manuscript["answer_text"] = scrub(manuscript.get("answer_text"))
+    manuscript["answer_tags"] = [scrub(value) for value in manuscript.get("answer_tags", [])]
+    return reference_terms
+
+
+def improve_elementary_student_manuscript(
+    manuscript: dict[str, object],
+    local: str,
+    center: dict[str, object],
+) -> dict[str, object]:
+    """Give the elementary collection a direct, reader-first edit.
+
+    The supplied manuscripts remain the source for the substantive sections.
+    Seven-section variants are folded into six sections without discarding
+    their paragraphs, while search-facing text, FAQ answers and the disclosed
+    consultation example are normalized to the site's release contracts.
+    """
+    title = f"{local} 초등학생학원"
+    meta = str(manuscript.get("meta", ""))
+    if not meta.startswith(title):
+        marker = "초등학생학원"
+        marker_at = meta.find(marker)
+        suffix = meta[marker_at + len(marker):] if marker_at >= 0 else " 상담 전 초등 영어·수학 교재와 과제·복습 기록을 확인하세요."
+        meta = title + suffix
+    if len(meta) > 100:
+        meta = meta[:99].rsplit(" ", 1)[0].rstrip(" ,·.?!") + "."
+    if len(meta) < 70:
+        meta = meta.rstrip(" ,·.?!") + ". 최근 교재와 과제·오답 기록도 함께 확인하세요."
+    manuscript["meta"] = meta
+
+    verified_grades = [str(value) for value in center.get("verified_grades", center.get("grades", []))]
+    grade_label = "·".join(verified_grades) if verified_grades else "초등학생"
+    opening = (
+        f"{local}에서 {grade_label}인 자녀가 영어 읽기·어휘와 수학 개념·연산의 시작점을 정하기 어려워하나요? "
+        "최근 교재와 과제·오답 기록을 먼저 확인하고 과목별 작은 목표와 복습 순서를 구분하세요."
+    )
+    existing_intro = [str(value) for value in manuscript.get("intro", [])]
+    manuscript["intro"] = [opening, *existing_intro[1:]]
+
+    summary = str(manuscript.get("summary", "")).strip()
+    direct_summary = f"{local}에서는 최근 초등 영어·수학 교재와 과제·복습 기록을 먼저 확인하세요."
+    manuscript["summary"] = f"{direct_summary} {summary}".strip()
+
+    fallback_headings = (
+        f"{local} 초등 학습의 현재 어려움은 어디에서 시작될까요?",
+        "영어 읽기·어휘와 수학 개념·연산을 어떻게 나눌까요?",
+        "과제 습관과 질문 과정을 어떤 기록으로 확인할까요?",
+        "짧은 복습과 오답 재도전 간격은 어떻게 정할까요?",
+        "학교·주소 정보는 상담에서 어디까지 확인할까요?",
+        "첫 상담 뒤 실행 기록은 어떻게 비교할까요?",
+    )
+    source_sections = [
+        (str(heading), [str(value) for value in paragraphs])
+        for heading, paragraphs in manuscript.get("sections", [])
+    ]
+    if len(source_sections) > 6:
+        merged_heading, merged_paragraphs = source_sections[5]
+        for _extra_heading, extra_paragraphs in source_sections[6:]:
+            merged_paragraphs.extend(extra_paragraphs)
+        source_sections = [*source_sections[:5], (merged_heading, merged_paragraphs)]
+
+    normalized_sections: list[tuple[str, list[str]]] = []
+    used_headings: set[str] = set()
+    for index, (heading, paragraphs) in enumerate(source_sections):
+        natural = re.split(r"\s+[·/|—]\s+", heading, maxsplit=1)[0].strip()
+        if (
+            len(natural) < 8
+            or len(natural) > 78
+            or natural in used_headings
+            or re.search(r"[‘’\"']|운영\s*사실|관련\s*질문", natural)
+            or re.search(r"^(?:이|해당)\s+초등|초등\s+(?:학습\s+과정|단계\s+관리\s+방식)", natural)
+        ):
+            natural = fallback_headings[min(index, len(fallback_headings) - 1)]
+        used_headings.add(natural)
+        normalized_sections.append((natural, paragraphs))
+    manuscript["sections"] = normalized_sections
+
+    schools = public_school_names([str(value) for value in center.get("schools", [])])
+
+    def faq_lead(_question: str, index: int) -> str:
+        if index == 0:
+            return "최근 교재·과제·오답 기록과 아이가 혼자 설명한 내용을 먼저 준비하세요."
+        if index == 1:
+            return "영어 읽기·어휘와 수학 개념·연산에서 막힌 지점을 따로 나누어 점검하세요."
+        if index == 2:
+            if schools:
+                return (
+                    f"센터 자료에는 {'·'.join(schools)}가 초등학교 정보로 기재되어 있으며, "
+                    "실제 수업 적용 여부는 자녀 학교의 현재 교재와 범위를 기준으로 상담에서 확인하세요."
+                )
+            return "특정 초등학교의 적용 여부는 상담에서 먼저 확인해야 합니다."
+        if verified_grades:
+            return f"확인된 수업 가능 학년은 {'·'.join(verified_grades)}이며 시작 교재와 단원은 상담에서 점검해야 합니다."
+        return "수업 가능 학년과 시작 교재·단원은 상담에서 먼저 확인해야 합니다."
+
+    direct_faqs: list[dict[str, str]] = []
+    for index, item in enumerate(manuscript.get("faqs", [])[:4]):
+        question = str(item["question"])
+        lead = faq_lead(question, index)
+        original_sentences = [
+            part.strip()
+            for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", str(item["answer"]))
+            if part.strip()
+        ]
+        answer_parts = [lead]
+        for sentence in original_sentences[1:]:
+            candidate = " ".join([*answer_parts, sentence])
+            if len(answer_parts) >= 3 or len(candidate) > 235 or len(sentence) > 120:
+                continue
+            answer_parts.append(sentence)
+        direct_faqs.append({"question": question, "answer": " ".join(answer_parts)})
+    manuscript["faqs"] = direct_faqs
+
+    concise_reviews: list[dict[str, str]] = []
+    for item in manuscript.get("reviews", []):
+        # The card already labels this as a reconstructed consultation
+        # scenario.  Removing outer quotation marks before sentence-length
+        # trimming prevents a closing quote from being stranded in a later
+        # token and dropped when the concise excerpt is selected.
+        content = str(item["content"]).strip().replace("‘", "").replace("’", "")
+        content = content.replace("“", "").replace("”", "")
+        pieces = [part.strip() for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", content) if part.strip()]
+        selected: list[str] = []
+        for sentence in pieces:
+            candidate = " ".join([*selected, sentence])
+            if selected and len(candidate) > 430:
+                break
+            if not selected and len(sentence) > 430:
+                sentence = sentence[:429].rsplit(" ", 1)[0].rstrip(" ,·") + "."
+            selected.append(sentence)
+        concise_reviews.append({"label": str(item["label"]), "content": " ".join(selected)})
+    manuscript["reviews"] = concise_reviews
+    return manuscript
+
+
+def scrub_elementary_cross_level_facts(
+    manuscript: dict[str, object],
+    local: str,
+    center: dict[str, object],
+) -> dict[str, object]:
+    """Remove any known middle/high school name left in elementary prose."""
+    allowed = public_school_names([str(value) for value in center.get("schools", [])])
+    all_verified = public_school_names(schools_for(row_for(local)))
+    disallowed = [
+        school for school in all_verified
+        if school not in allowed and re.search(r"(?:중학교|고등학교|중|고)$", school)
+    ]
+    safe_sentence = (
+        f"확인된 초등학교 정보는 {'·'.join(allowed)}이며, 실제 적용 범위는 상담에서 "
+        "자녀 학교와 최근 교재를 기준으로 다시 확인해야 합니다."
+        if allowed
+        else
+        "제공된 센터 자료에는 초등학교 정보가 확인되지 않아, 자녀 학교와 최근 교재를 "
+        "기준으로 수업 적용 범위를 상담에서 확인해야 합니다."
+    )
+
+    def contains_school(text: str, school: str) -> bool:
+        """Match a school name without mistaking it for part of a locality.
+
+        For example, the verified middle-school name ``해운대중`` must not
+        match the locality ``해운대중동``.  Korean particles and punctuation
+        are accepted immediately after the school name.
+        """
+        suffix = r"(?=$|[\s,·.!?;:'\"“”‘’()\[\]<>]|은|는|이|가|을|를|의|과|와|에서|으로|까지)"
+        return re.search(re.escape(school) + suffix, text) is not None
+
+    def replace_school(text: str, school: str) -> str:
+        suffix = r"(?=$|[\s,·.!?;:'\"“”‘’()\[\]<>]|은|는|이|가|을|를|의|과|와|에서|으로|까지)"
+        return re.sub(re.escape(school) + suffix, "자녀 학교", text)
+
+    canned_sentence_tails = (
+        "에도 해당합니다",
+        "확인에도 해당합니다",
+        "사례에서도 살펴볼 내용입니다",
+        "생활권에서도 확인해 보세요",
+        "관련 상담 질문입니다",
+        "상담 기준입니다",
+        "학부모의 점검 항목입니다",
+    )
+
+    def prune_canned_sentences(text: str) -> str:
+        """Remove source-template asides that do not help the reader."""
+        text = re.sub(
+            r"\s*[—–]\s*[^.!?]{0,100}?학습 기록(?:\s+점검)?\s+기준입니다\.?",
+            ".",
+            text,
+        )
+        parts = [
+            part.strip()
+            for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", text)
+            if part.strip()
+        ]
+        kept: list[str] = []
+        for part in parts:
+            probe = part.strip(" \t\r\n'\"‘’“”")
+            probe = re.sub(r"[.!?]+$", "", probe).strip()
+            if any(probe.endswith(tail) for tail in canned_sentence_tails):
+                continue
+            kept.append(part)
+        return " ".join(kept)
+
+    def polish_sentence(value: object) -> str:
+        text = str(value or "")
+        text = text.replace(
+            "‘우리 아이의 영어와 수학에서 각각 첫 번째로 고칠 한 가지는 무엇이며, 그 이유를 어떤 자료로 판단했나요?’",
+            "우리 아이의 영어와 수학에서 각각 먼저 고칠 한 가지와 그 판단 자료를 함께 물어보세요.",
+        )
+        text = text.replace(
+            "‘누가, 언제, 무엇을 기록하고 다음 수업에서 어떻게 조정하나요?’",
+            "누가 언제 무엇을 기록하고 다음 수업에서 어떻게 조정하는지 물어보세요.",
+        )
+        text = re.sub(
+            r"아이와 함께 수업을 결정할 때는\s*‘좋았어\?’라고만 묻지 말고\s*"
+            r"이해한 내용을 하나 설명해 보기,\s*모를 때 질문하기 쉬웠는지 말해 보기,\s*"
+            r"과제를 혼자 시작할 수 있을지 예상해 보기를 권합니다(?=[.!?—–;]|$)",
+            "아이와 함께 수업을 결정할 때는 수업이 어땠는지만 묻지 말고, "
+            "이해한 내용 한 가지와 질문하기 쉬웠던 점, 과제를 혼자 시작할 수 있을지를 함께 확인해 보세요",
+            text,
+        )
+        text = re.sub(r"상담\s+첫\s+상담", "첫 상담", text)
+        text = text.replace("추가 설명이 확인할 필요가 있습니다", "상담에서 구체적인 설명을 확인해야 합니다")
+        text = text.replace("추가 설명을 확인할 필요가 있습니다", "상담에서 구체적인 설명을 확인해야 합니다")
+        text = text.replace(
+            "연습 시간을 더 배정하는 설계가 확인할 필요가 있습니다",
+            "연습 시간을 더 배정하는 설계인지 확인할 필요가 있습니다",
+        )
+        text = text.replace("과정을 보완해야 하는 상태입니다", "과정을 꾸준히 이어 갈 필요가 있습니다")
+        text = text.replace("재설계가 우선 살펴볼 기준입니다", "재설계를 우선 검토해야 합니다")
+        text = text.replace("시험 범위 확인는", "시험 범위 확인은")
+        text = text.replace("시험 범위 확인가", "시험 범위 확인이")
+        text = text.replace("많은 안내를 끝내는 방식", "상담 내용을 정리하는 방식")
+        text = text.replace(
+            "영어 과제는 상담 내용을 정리하는 방식보다",
+            "영어 과제는 많은 분량을 한 번에 끝내기보다",
+        )
+        text = text.replace("교통·주차·차량 운행 여부", "이동·주차 관련 사항")
+        text = text.replace("이동·주차 관련 사항는", "이동·주차 관련 사항은")
+        text = text.replace("학습 기록 점검 확인", "학습 기록 확인")
+        text = text.replace("학습 기록 점검 기록", "학습 기록")
+        text = text.replace("학습 기록 점검의 실제 운영", "학습 기록을 활용하는 방법")
+        text = text.replace("학습 기록 점검의 실제 절차", "학습 기록 활용 방법")
+        text = text.replace(
+            "학습 기록을 어떤 기록으로 확인할지",
+            "학습 과정을 어떤 기록으로 확인할지",
+        )
+        text = text.replace("영어으로", "영어로")
+        text = text.replace("초등 학교", "초등학교")
+        text = re.sub(r"(초등\s+[1-6]학년)으로\s+영어는", r"\1이며 영어는", text)
+        text = re.sub(r"(초등\s+(?:저|고)학년)으로\s+영어는", r"\1이며 영어는", text)
+        text = text.replace("예시인 학생으로 영어는", "예시인 학생이며 영어는")
+        text = text.replace("학생으로 영어는", "학생이며 영어는")
+        text = text.replace(
+            "우리 아이가 학생이며 영어는",
+            "우리 아이는 영어",
+        )
+        text = text.replace(
+            "우리 아이는 영어 짧은 문장은 이해하지만",
+            "우리 아이는 짧은 영어 문장을 이해하지만",
+        )
+        text = text.replace(
+            "우리 아이는 영어 영어 숙제는 끝내지만",
+            "우리 아이는 영어 숙제를 끝내지만",
+        )
+        text = text.replace(
+            "이 안내의 예시는 학생이며 영어는",
+            "이 안내의 예시 학생은 영어",
+        )
+        text = re.sub(
+            r"(?:[가-힣A-Za-z0-9]+(?:\s+[가-힣A-Za-z0-9]+){0,3})의 예시인 학생이며 영어는",
+            "영어는",
+            text,
+        )
+        text = text.replace("학생이며 영어는", "영어는")
+        text = text.replace("영어는 영어 학습량은 많아도", "영어 학습량은 많아도")
+        text = text.replace("영어는 영어 숙제는 끝내지만", "영어는 숙제를 끝내지만")
+        text = text.replace("영어는 발음은 자신 있어도", "영어는 발음에 자신 있어도")
+        text = text.replace(
+            "영어는 단어 암기량은 충분한데",
+            "영어는 외운 단어 수가 충분해도",
+        )
+        text = text.replace(
+            "영어는 알파벳과 소리는 익숙하지만",
+            "영어는 알파벳과 소리에 익숙하지만",
+        )
+        text = text.replace(
+            "제공 데이터의 학교 항목이 비어 있어",
+            "제공된 센터 자료에서 초등학교 정보가 확인되지 않아",
+        )
+        text = text.replace("학습 기록과 연결된 기록", "학습 과정과 연결된 기록")
+        text = text.replace("이동·주차 관련 사항는", "이동·주차 관련 사항은")
+        text = text.replace(
+            "수학은 수학 개념 설명은 가능하지만",
+            "수학은 개념을 설명할 수 있지만",
+        )
+        text = text.replace("수학은 계산은 빠르지만", "수학은 계산이 빠르지만")
+        text = text.replace(
+            "수학은 교과서 예제는 풀어도",
+            "수학은 교과서 예제를 풀어도",
+        )
+        text = re.sub(
+            r"((?:초|중|고)[1-6](?:·(?:초|중|고)[1-6])*)이\s+수업\s+가능",
+            r"\1까지 수업 가능",
+            text,
+        )
+        text = re.sub(
+            r"확인된 학교 정보에 포함된\s+[^,.!?]{1,120}?"
+            r"(?:(?:은|는)\s+|,\s*)상담 범위를 확인하는 참고 정보입니다\.?",
+            safe_sentence,
+            text,
+        )
+        text = prune_canned_sentences(text)
+        parts = [
+            part.strip()
+            for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", text)
+            if part.strip()
+        ]
+        cleaned_school_parts: list[str] = []
+        for part in parts:
+            malformed_school_sentence = (
+                ("제공 자료에는" in part and "수업 가능 학교 정보" in part)
+                or "입력된 학교 정보 중" in part
+                or "센터 안내 기준으로 수업 가능 학교로 확인되는 명칭은" in part
+                or re.search(r"학교 정보에는\s*등이", part)
+                or re.search(r"확인된 학교 예시는\s*등", part)
+                or "등이 수업 가능 학교 정보에 들어 있습니다" in part
+                or re.search(r"(?:초|초등학교)이\s+수업 가능 학교 정보로 제시되어 있습니다", part)
+            )
+            replacement = safe_sentence if malformed_school_sentence else part
+            if not cleaned_school_parts or cleaned_school_parts[-1] != replacement:
+                cleaned_school_parts.append(replacement)
+        text = " ".join(cleaned_school_parts)
+        text = re.sub(
+            r"\s*[;—]\s*[^.!?]{0,120}?(?:확인에도 해당합니다|"
+            r"사례에서도 살펴볼 내용입니다|생활권에서도 확인해 보세요|"
+            r"관련 상담 질문입니다|상담 기준입니다|학부모의 점검 항목입니다)\.?",
+            ".",
+            text,
+        )
+        text = re.sub(r",\s*[—–]\s*(?=[.!?]|$)", ".", text)
+        if not disallowed or not any(contains_school(text, school) for school in disallowed):
+            return text
+        parts = [
+            part.strip()
+            for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", text)
+            if part.strip()
+        ]
+        cleaned: list[str] = []
+        for part in parts:
+            replacement = safe_sentence if any(contains_school(part, school) for school in disallowed) else part
+            if not cleaned or cleaned[-1] != replacement:
+                cleaned.append(replacement)
+        return " ".join(cleaned)
+
+    def polish_meta(value: object) -> str:
+        text = str(value or "")
+        for school in disallowed:
+            text = replace_school(text, school)
+        text = re.sub(r"(?:자녀 학교\s*[,·]\s*)+자녀 학교", "자녀 학교", text)
+        title = f"{local} 초등학생학원"
+        if not text.startswith(title):
+            text = f"{title} 상담 전 영어·수학 교재와 과제·복습 기록, 수업 가능 학년과 학교 자료 활용 기준을 확인하세요."
+        if len(text) > 100:
+            text = text[:99].rsplit(" ", 1)[0].rstrip(" ,·.?!") + "."
+        if len(text) < 70:
+            text = text.rstrip(" ,·.?!") + ". 최근 교재와 오답 기록도 함께 확인하세요."
+        return text
+
+    def polish_heading(value: object, fallback: str) -> str:
+        text = str(value or "")
+        if any(contains_school(text, school) for school in disallowed):
+            return fallback
+        return polish_sentence(text)
+
+    manuscript["meta"] = polish_meta(manuscript.get("meta"))
+    manuscript["intro"] = [polish_sentence(value) for value in manuscript.get("intro", [])]
+    manuscript["sections"] = [
+        (
+            polish_heading(heading, f"{local} 초등학교 자료를 상담에서 확인하는 법"),
+            [polish_sentence(value) for value in paragraphs],
+        )
+        for heading, paragraphs in manuscript.get("sections", [])
+    ]
+    manuscript["faqs"] = [
+        {
+            "question": polish_heading(item["question"], f"{local} 초등학교 자료의 적용 범위는 어떻게 확인하나요?"),
+            "answer": polish_sentence(item["answer"]),
+        }
+        for item in manuscript.get("faqs", [])
+    ]
+    manuscript["reviews"] = [
+        {"label": polish_sentence(item["label"]), "content": polish_sentence(item["content"])}
+        for item in manuscript.get("reviews", [])
+    ]
+    manuscript["summary"] = polish_sentence(manuscript.get("summary"))
+    manuscript["answer_heading"] = polish_heading(
+        manuscript.get("answer_heading"), f"{local} 초등 영어·수학 상담 기준"
+    )
+    manuscript["answer_text"] = polish_sentence(manuscript.get("answer_text"))
+    manuscript["answer_tags"] = [polish_sentence(value) for value in manuscript.get("answer_tags", [])]
+    return manuscript
+
+
+def finalize_elementary_manuscript(value: object) -> object:
+    """Apply last-mile language fixes recursively to every manuscript field."""
+    if isinstance(value, str):
+        text = re.sub(r"상담\s+첫\s+상담", "첫 상담", value)
+        text = text.replace("추가 설명이 확인할 필요가 있습니다", "상담에서 구체적인 설명을 확인해야 합니다")
+        text = text.replace("추가 설명을 확인할 필요가 있습니다", "상담에서 구체적인 설명을 확인해야 합니다")
+        text = text.replace("학습 기록과 연결된 기록", "학습 과정과 연결된 기록")
+        text = text.replace(
+            "학습 기록을 어떤 기록으로 확인할지",
+            "학습 과정을 어떤 기록으로 확인할지",
+        )
+        text = text.replace("영어는 영어 학습량은 많아도", "영어 학습량은 많아도")
+        text = text.replace("영어는 영어 숙제는 끝내지만", "영어는 숙제를 끝내지만")
+        text = text.replace(
+            "우리 아이가 학생이며 영어는",
+            "우리 아이는 영어",
+        )
+        text = text.replace(
+            "우리 아이는 영어 짧은 문장은 이해하지만",
+            "우리 아이는 짧은 영어 문장을 이해하지만",
+        )
+        text = text.replace(
+            "우리 아이는 영어 영어 숙제는 끝내지만",
+            "우리 아이는 영어 숙제를 끝내지만",
+        )
+        text = text.replace(
+            "이 안내의 예시는 학생이며 영어는",
+            "이 안내의 예시 학생은 영어",
+        )
+        text = re.sub(
+            r"(?:[가-힣A-Za-z0-9]+(?:\s+[가-힣A-Za-z0-9]+){0,3})의 예시인 학생이며 영어는",
+            "영어는",
+            text,
+        )
+        text = text.replace("학생이며 영어는", "영어는")
+        text = text.replace("영어는 발음은 자신 있어도", "영어는 발음에 자신 있어도")
+        text = text.replace(
+            "영어는 단어 암기량은 충분한데",
+            "영어는 외운 단어 수가 충분해도",
+        )
+        text = text.replace(
+            "영어는 알파벳과 소리는 익숙하지만",
+            "영어는 알파벳과 소리에 익숙하지만",
+        )
+        text = text.replace(
+            "제공 데이터의 학교 항목이 비어 있어",
+            "제공된 센터 자료에서 초등학교 정보가 확인되지 않아",
+        )
+        text = text.replace(
+            "수학은 수학 개념 설명은 가능하지만",
+            "수학은 개념을 설명할 수 있지만",
+        )
+        text = text.replace("수학은 계산은 빠르지만", "수학은 계산이 빠르지만")
+        text = text.replace(
+            "수학은 교과서 예제는 풀어도",
+            "수학은 교과서 예제를 풀어도",
+        )
+        text = text.replace(
+            "영어 과제는 상담 내용을 정리하는 방식보다",
+            "영어 과제는 많은 분량을 한 번에 끝내기보다",
+        )
+        text = re.sub(r"([.!?])\s+([’”])", r"\1\2", text)
+        return text
+    if isinstance(value, dict):
+        return {key: finalize_elementary_manuscript(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [finalize_elementary_manuscript(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(finalize_elementary_manuscript(item) for item in value)
+    return value
+
+
+ELEMENTARY_SCHOOL_FACT_SENTENCE_RE = re.compile(
+    r"확인된 초등학교 정보는 [^.!?]{1,160}?이며,?\s*"
+    r"실제 적용 범위는 상담에서 자녀 학교와 최근 교재를 기준으로 다시 확인해야 합니다\."
+)
+
+
+def dedupe_elementary_school_fact_sentences(
+    manuscript: dict[str, object],
+    local: str,
+) -> dict[str, object]:
+    """Keep one copy of each generated school-fact sentence per visible page.
+
+    Cross-level school scrubbing can replace several source sentences with the
+    same safe elementary-school statement.  Remove later copies across visible
+    fields in display order while retaining the surrounding paragraph text.
+    """
+    seen: set[str] = set()
+
+    def clean(value: object) -> str:
+        text = str(value or "")
+        parts = [
+            part.strip()
+            for part in re.findall(r"[^.!?]+(?:[.!?]+|$)", text)
+            if part.strip()
+        ]
+        kept: list[str] = []
+        for part in parts:
+            match = ELEMENTARY_SCHOOL_FACT_SENTENCE_RE.search(part)
+            if not match:
+                kept.append(part)
+                continue
+            normalized = re.sub(r"\s+", " ", match.group(0)).replace("이며, 실제", "이며 실제")
+            if normalized in seen:
+                # The fact can follow a generated introductory bridge in the
+                # same sentence. Dropping the whole sentence avoids leaving a
+                # dangling fragment such as "...보면," behind.
+                continue
+            seen.add(normalized)
+            kept.append(part)
+        return " ".join(kept).strip()
+
+    summary = clean(manuscript.get("summary"))
+    manuscript["summary"] = summary or (
+        f"{local}에서는 최근 초등 영어·수학 교재와 과제·복습 기록을 먼저 확인하세요."
+    )
+
+    manuscript["intro"] = [
+        cleaned
+        for value in manuscript.get("intro", [])
+        if (cleaned := clean(value))
+    ]
+
+    sections: list[tuple[str, list[str]]] = []
+    for heading, paragraphs in manuscript.get("sections", []):
+        cleaned_paragraphs = [
+            cleaned
+            for value in paragraphs
+            if (cleaned := clean(value))
+        ]
+        if not cleaned_paragraphs:
+            cleaned_paragraphs = [
+                "자녀 학교의 현재 교재와 범위를 준비해 상담에서 실제 적용 여부를 확인하세요."
+            ]
+        sections.append((str(heading), cleaned_paragraphs))
+    manuscript["sections"] = sections
+
+    answer_text = clean(manuscript.get("answer_text"))
+    manuscript["answer_text"] = answer_text or (
+        "최근 교재와 학습 기록을 준비해 과목별 시작점과 학교 자료의 적용 범위를 확인하세요."
+    )
+
+    reviews: list[dict[str, str]] = []
+    for item in manuscript.get("reviews", []):
+        content = clean(item.get("content"))
+        reviews.append(
+            {
+                "label": str(item.get("label", "상담 상황 예시")),
+                "content": content or (
+                    "자녀 학교의 현재 교재와 학습 기록을 준비해 상담에서 적용 범위를 확인한 상황 예시입니다."
+                ),
+            }
+        )
+    manuscript["reviews"] = reviews
+
+    faqs: list[dict[str, str]] = []
+    for item in manuscript.get("faqs", []):
+        answer = clean(item.get("answer"))
+        faqs.append(
+            {
+                "question": str(item.get("question", "")),
+                "answer": answer or (
+                    "자녀 학교의 현재 교재와 범위를 준비해 상담에서 실제 적용 여부를 확인하세요."
+                ),
+            }
+        )
+    manuscript["faqs"] = faqs
+    return manuscript
+
+
 def improve_high_student_manuscript(
     manuscript: dict[str, object],
     local: str,
@@ -1267,8 +2038,10 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
         )
     if len(manuscript.get("faqs", [])) < 4:
         raise ValueError(f"{slug}/{local}: FAQ가 4개 미만입니다")
-    if slug in {"중학생학원", "고등학생학원"} and len(manuscript.get("faqs", [])) != 4:
+    if slug in {"초등학생학원", "중학생학원", "고등학생학원"} and len(manuscript.get("faqs", [])) != 4:
         raise ValueError(f"{slug}/{local}: FAQ가 정확히 4개가 아닙니다")
+    if slug in {"초등학생학원", "중학생학원", "고등학생학원"} and len(manuscript.get("sections", [])) != 6:
+        raise ValueError(f"{slug}/{local}: 본문 H2 구획이 정확히 6개가 아닙니다")
     visible_parts = (
         [meta, *[str(item) for item in manuscript.get("intro", [])]]
         + [str(value) for pair in manuscript.get("sections", []) for value in (pair[0], *pair[1])]
@@ -1296,10 +2069,10 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
         r"전문학원\s*상담\s*가능\s*학년)|(?:루틴|장치|구조|절차|관리)(?:가|이)\s+확인할\s+필요|"
         r"상담\s+첫\s+상담)"
     )
-    match = forbidden.search(visible)
-    if match:
-        raise ValueError(f"{slug}/{local}: 공개용 문장 금지 표현 {match.group(0)!r}")
     for part in visible_parts:
+        forbidden_match = forbidden.search(part)
+        if forbidden_match:
+            raise ValueError(f"{slug}/{local}: 공개용 문장 금지 표현 {forbidden_match.group(0)!r}")
         malformed = MALFORMED_LANGUAGE_RE.search(part)
         if malformed:
             raise ValueError(f"{slug}/{local}: 공개용 문장 비문 {malformed.group(0)!r}")
@@ -1374,6 +2147,52 @@ def validate_manuscript(slug: str, local: str, manuscript: dict[str, object]) ->
             raise ValueError(
                 f"{slug}/{local}: 임의 참고 항목 잔여 {generic_source_residue.group(0)!r}"
             )
+    if slug == "초등학생학원":
+        elementary_residue = re.search(
+            r"확인에도 해당합니다|사례에서도 살펴볼 내용입니다|"
+            r"생활권에서도 확인해 보세요|교통·주차·차량 운행 여부|"
+            r"이동·주차 관련 사항는|"
+            r"정보에는\s*등이|(?:초|초등학교)이\s+수업 가능 학교 정보|"
+            r"등이\s+수업 가능 학교 정보에 들어 있습니다|에도\s+해당합니다|"
+            r"확인된 학교 예시는\s*등|학습 기록을 어떤 기록으로 확인할지|"
+            r"학생이며\s+영어는|우리 아이가\s+학생이며|"
+            r"우리 아이는\s+영어\s+[가-힣]+은|영어\s+영어|"
+            r"확인된 학교 정보에 포함된[^.!?]{0,160}초(?:은|는)\s+상담 범위를|"
+            r"센터 안내 기준으로 수업 가능 학교로 확인되는 명칭은|"
+            r"입력된 학교 정보 중|(?:초등\s+(?:(?:저|고)학년|[1-6]학년)|학생)으로\s+영어는|"
+            r"학생은\s+영어에서|영어에서\s+영어\s+학습량|"
+            r"영어는\s+영어\s+(?:학습량은|숙제는)|제공 데이터|"
+            r"영어는\s+(?:발음은|단어\s+암기량은|알파벳과\s+소리는)|"
+            r"학습 기록과 연결된 기록|추가 설명(?:이|을)\s+확인할 필요|"
+            r"수학은\s+(?:수학\s+개념\s+설명은|계산은|교과서\s+예제는)|"
+            r"영어 과제는 상담 내용을 정리하는 방식보다|[.!?]\s+[’”]|"
+            r"영어으로|설계가\s+확인할 필요가 있습니다",
+            visible,
+        )
+        if elementary_residue:
+            raise ValueError(
+                f"{slug}/{local}: 초등 원고 문장 잔여 {elementary_residue.group(0)!r}"
+            )
+        for opening_quote, closing_quote in (("‘", "’"), ("“", "”")):
+            if visible.count(opening_quote) != visible.count(closing_quote):
+                raise ValueError(
+                    f"{slug}/{local}: 인용부호 불균형 "
+                    f"{opening_quote}{visible.count(opening_quote)}/"
+                    f"{closing_quote}{visible.count(closing_quote)}"
+                )
+        school_fact_sentences: list[str] = []
+        for part in visible_parts:
+            school_fact_sentences.extend(ELEMENTARY_SCHOOL_FACT_SENTENCE_RE.findall(part))
+        normalized_school_facts = [
+            sentence.replace("이며, 실제", "이며 실제")
+            for sentence in school_fact_sentences
+        ]
+        if len(normalized_school_facts) != len(set(normalized_school_facts)):
+            raise ValueError(f"{slug}/{local}: 동일 학교 확인 문장 반복")
+        intro_text = " ".join(str(value) for value in manuscript.get("intro", []))
+        display_local = str(row_for(local).get("동네", "")).strip()
+        if local not in intro_text and (not display_local or display_local not in intro_text):
+            raise ValueError(f"{slug}/{local}: 도입부 지역명 누락")
     operation = UNVERIFIED_OPERATION_RE.search(visible)
     if operation:
         raise ValueError(f"{slug}/{local}: 검증되지 않은 운영 표현 {operation.group(0)!r}")
@@ -1423,11 +2242,25 @@ def prepare_manuscripts(config: dict[str, object]) -> tuple[dict[str, dict[str, 
                 raise ValueError(f"원고 동네가 중복 매핑되었습니다: {local}")
             manuscript["title"] = f"{local} {config['label']}"
             center = namespace["extract_center_data"](local)
+            source_references: tuple[str, ...] = ()
+            if str(config["slug"]) == "초등학생학원":
+                source_references = normalize_elementary_source_reference(manuscript, local, center)
             polish_manuscript(manuscript, local, config, center)
-            if str(config["slug"]) == "고등학생학원":
+            if str(config["slug"]) == "초등학생학원":
+                improve_elementary_student_manuscript(manuscript, local, center)
+                scrub_elementary_cross_level_facts(manuscript, local, center)
+                finalized = finalize_elementary_manuscript(manuscript)
+                if not isinstance(finalized, dict):
+                    raise ValueError(f"{config['slug']}/{local}: 원고 최종 정리 오류")
+                manuscript = dedupe_elementary_school_fact_sentences(finalized, local)
+            elif str(config["slug"]) == "고등학생학원":
                 improve_high_student_manuscript(manuscript, local, center)
             elif str(config["slug"]) == "중학생학원":
                 improve_middle_student_manuscript(manuscript, local, center)
+            if source_references:
+                for heading, _paragraphs in manuscript.get("sections", []):
+                    if any(pattern.fullmatch(str(heading).strip()) for pattern in ELEMENTARY_REFERENCE_HEADING_PATTERNS):
+                        raise ValueError(f"{config['slug']}/{local}: 원고 참고 H2 잔여 {heading!r}")
             validate_manuscript(str(config["slug"]), local, manuscript)
             mapped[local] = manuscript
         except ValueError as exc:
@@ -1492,7 +2325,7 @@ def subject_root_schema() -> dict[str, object]:
     return {
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "CollectionPage", "@id": url + "#webpage", "url": url, "name": f"과목별학원 | {DOMAIN_NAME}", "description": "종합·영수·영어·수학 전문학원과 중학생·고등학생학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다.", "inLanguage": "ko-KR", "isPartOf": {"@id": SITE_URL + "/#website"}, "breadcrumb": {"@id": url + "#breadcrumb"}, "mainEntity": {"@id": url + "#directory"}, "dateModified": TODAY},
+            {"@type": "CollectionPage", "@id": url + "#webpage", "url": url, "name": f"과목별학원 | {DOMAIN_NAME}", "description": "종합·영수·영어·수학 전문학원과 초등학생·중학생·고등학생학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다.", "inLanguage": "ko-KR", "isPartOf": {"@id": SITE_URL + "/#website"}, "breadcrumb": {"@id": url + "#breadcrumb"}, "mainEntity": {"@id": url + "#directory"}, "dateModified": TODAY},
             {"@type": "BreadcrumbList", "@id": url + "#breadcrumb", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": SITE_URL + "/"}, {"@type": "ListItem", "position": 2, "name": "과목별학원", "item": url}]},
             {"@type": "ItemList", "@id": url + "#directory", "name": "전문학원 분류", "numberOfItems": len(items), "itemListElement": items},
             {"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
@@ -1502,7 +2335,7 @@ def subject_root_schema() -> dict[str, object]:
 
 def subject_root_faqs() -> list[tuple[str, str]]:
     return [
-        ("과목별학원 페이지는 전국센터와 무엇이 다른가요?", "전국센터는 동네와 센터를 먼저 선택하는 구조이고, 과목별학원은 종합·영수·영어·수학 전문학원 또는 중학생·고등학생학원 분류를 먼저 고른 뒤 해당 동네의 학습 안내를 확인하는 구조입니다."),
+        ("과목별학원 페이지는 전국센터와 무엇이 다른가요?", "전국센터는 동네와 센터를 먼저 선택하는 구조이고, 과목별학원은 종합·영수·영어·수학 전문학원 또는 초등학생·중학생·고등학생학원 분류를 먼저 고른 뒤 해당 동네의 학습 안내를 확인하는 구조입니다."),
         ("전문학원 상담 전에는 어떤 자료를 준비하면 좋나요?", "최근 시험지와 현재 교재, 틀린 문제의 답안·풀이 기록, 학교 시험 범위와 일주일 공부 시간을 준비하면 현재 상태를 더 구체적으로 나눌 수 있습니다."),
         ("동네 페이지에 표시된 센터 정보는 어떻게 확인하나요?", "제공된 센터정보 자료의 센터명, 주소, 교육지원청 등록번호, 가능 학년과 학교 정보를 사용하며 실제 개설 여부와 시간표는 상담에서 다시 확인합니다."),
     ]
@@ -1510,7 +2343,7 @@ def subject_root_faqs() -> list[tuple[str, str]]:
 
 def render_subject_root() -> str:
     canonical = encoded_url("과목별학원")
-    description = "종합·영수·영어·수학 전문학원과 중학생·고등학생학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다."
+    description = "종합·영수·영어·수학 전문학원과 초등학생·중학생·고등학생학원 안내를 371개 동네별로 찾고 현재 학습 상태, 센터 정보와 상담 준비 기준을 확인할 수 있습니다."
     cards = "".join(
         f'''<a class="home-link-card{' is-primary' if index == 0 else ''}" href="./{slug}/"><span>{esc(CATEGORY_COPY[slug]['eyebrow'])}</span><strong>{esc(CATEGORY_COPY[slug]['label'])}</strong><p>{esc(CATEGORY_COPY[slug]['lead'])}</p></a>'''
         for index, slug in enumerate(TARGET_SLUGS)
@@ -1520,7 +2353,7 @@ def render_subject_root() -> str:
 <body class="center-page subject-page"><a class="skip-link" href="#main">본문 바로가기</a>{navigation("../", "과목별학원")}
   <main id="main">
     <section class="center-hero"><div class="wrap"><div class="crumbs"><span><a href="../">홈</a></span><span>과목별학원</span></div><div class="center-hero-card"><div class="center-hero-inner"><div><p class="eyebrow">SUBJECT ACADEMY DIRECTORY</p><h1>과목별학원</h1><p>{description}</p><div class="local-actions"><a class="btn btn-primary" href="#subject-categories">분류 선택</a><a class="btn btn-ghost" href="../전국센터/">전국센터 보기</a></div></div><aside class="hero-mini-panel"><span>전문학원 분류</span><strong>{len(TARGET_SLUGS)}개</strong><span>각 371개 동네 안내</span></aside></div></div></div></section>
-    <section id="subject-categories" class="local-section"><div class="wrap"><article class="home-link-hub"><p class="eyebrow">CHOOSE A SUBJECT</p><h2>학생의 현재 상황에 맞는 안내를 선택하세요</h2><p>학습 일정과 관리 흐름은 전문학원, 두 과목의 균형은 영수 전문학원, 한 과목의 진단은 영어·수학 전문학원, 학교 진도와 평가·복습 관리는 중학생·고등학생학원 안내에서 확인할 수 있습니다.</p><div class="home-link-grid">{cards}</div></article></div></section>
+    <section id="subject-categories" class="local-section"><div class="wrap"><article class="home-link-hub"><p class="eyebrow">CHOOSE A SUBJECT</p><h2>학생의 현재 상황에 맞는 안내를 선택하세요</h2><p>학습 일정과 관리 흐름은 전문학원, 두 과목의 균형은 영수 전문학원, 한 과목의 진단은 영어·수학 전문학원, 학령별 기초·학교 진도·평가·복습 관리는 초등학생·중학생·고등학생학원 안내에서 확인할 수 있습니다.</p><div class="home-link-grid">{cards}</div></article></div></section>
     <section class="local-section"><div class="wrap local-grid"><article class="local-card"><p class="eyebrow">HOW TO USE</p><h2>동네 페이지 확인 순서</h2><ol class="process-list"><li><strong>1. 분류 선택</strong>종합 관리, 영수·영어·수학 또는 중·고등 과정 가운데 현재 우선순위를 고릅니다.</li><li><strong>2. 동네 검색</strong>허브에서 동네명 또는 광역지역을 선택합니다.</li><li><strong>3. 자료 확인</strong>최근 교재·시험지, 센터 정보와 가능 학년을 함께 봅니다.</li><li><strong>4. 상담 질문</strong>진단·과제·오답 재확인 과정을 실제 시간표와 대조합니다.</li></ol></article><article class="local-card"><p class="eyebrow">FACT CHECK</p><h2>안내 정보의 기준</h2><p>센터명·주소·교육지원청 등록번호·가능 학년·참고 학교는 제공된 센터정보 자료를 사용합니다. 자료가 비어 있는 항목은 임의로 만들지 않으며 상담 확인이 필요하다고 표시합니다.</p><p class="verified-note">자료 기준: 센터정보 정리 자료 · 최종 검수 {TODAY}</p></article></div></section>
     <section id="faq-section" class="local-section"><div class="wrap faq-local"><p class="eyebrow">FAQ</p><h2>과목별학원 이용 전 확인사항</h2>{faq}</div></section>
   </main>{footer("../")}
@@ -1535,6 +2368,8 @@ def hub_faqs(slug: str) -> list[tuple[str, str]]:
         first = "영어와 수학의 최근 시험지·교재를 따로 놓고 취약 영역, 과목별 오답, 학교 일정과 주간 학습시간을 비교할 수 있습니다."
     elif slug == "영어전문학원":
         first = "최근 영어 시험지와 교재에서 어휘 누적, 문법 적용, 독해 근거와 서술형 표현을 나누어 확인할 수 있습니다."
+    elif slug == "초등학생학원":
+        first = "최근 초등 영어·수학 교재와 과제 기록에서 읽기·어휘, 개념·연산, 질문 습관과 짧은 복습 순서를 나누어 확인할 수 있습니다."
     elif slug == "중학생학원":
         first = "최근 중등 영어·수학 학습 자료에서 학교 진도, 지필·수행평가 준비, 과제 실행과 오답 복습 순서를 나누어 확인할 수 있습니다."
     elif slug == "고등학생학원":
@@ -1665,8 +2500,10 @@ def detail_schema(slug: str, local: str, manuscript: dict[str, object], center: 
 
 
 def related_links(slug: str, local: str, index: int) -> list[dict[str, str]]:
-    if slug == "중학생학원":
+    if slug == "초등학생학원":
         sibling_slugs = [other for other in TARGET_SLUGS if other != slug]
+    elif slug == "중학생학원":
+        sibling_slugs = [*LEGACY_SLUGS, "고등학생학원"]
     elif slug == "고등학생학원":
         sibling_slugs = list(LEGACY_SLUGS)
     else:
@@ -1698,7 +2535,7 @@ def render_detail(slug: str, local: str, index: int, manuscript: dict[str, objec
     schema = detail_schema(slug, local, manuscript, center, representative, links)
     grades = [str(value) for value in center.get("verified_grades", [])]
     grade_html = "".join(f"<span>{esc(value)}</span>" for value in grades) if grades else "<span>상담 확인 필요</span>"
-    schools = [str(value) for value in center.get("schools", [])]
+    schools = public_school_names([str(value) for value in center.get("schools", [])])
     school_html = "".join(f"<span>{esc(value)}</span>" for value in schools)
     sections = "".join(
         f'<section class="subject-prose-section" id="section-{section_index}"><p class="subject-section-index">{section_index:02d}</p><h2>{esc(heading)}</h2>{"".join(f"<p>{esc(paragraph)}</p>" for paragraph in paragraphs)}</section>'
@@ -1773,7 +2610,7 @@ def update_navigation() -> int:
 def update_home_discovery() -> None:
     path = ROOT / "index.html"
     source = path.read_text(encoding="utf-8")
-    card = '<a class="home-link-card" href="과목별학원/"><span>SUBJECT DIRECTORY</span><strong>과목별학원 6개 분류</strong><p>종합·영수·영어·수학 전문학원과 중학생·고등학생학원 안내를 371개 동네별로 확인합니다.</p></a>\n          '
+    card = f'<a class="home-link-card" href="과목별학원/"><span>SUBJECT DIRECTORY</span><strong>과목별학원 {len(TARGET_SLUGS)}개 분류</strong><p>종합·영수·영어·수학 전문학원과 초등학생·중학생·고등학생학원 안내를 371개 동네별로 확인합니다.</p></a>\n          '
     card_pattern = re.compile(r'<a class="home-link-card" href="과목별학원/">.*?</a>\s*', re.DOTALL)
     if card_pattern.search(source):
         source = card_pattern.sub(card, source, count=1)
@@ -1788,7 +2625,7 @@ def update_home_discovery() -> None:
 def update_llms() -> None:
     path = ROOT / "llms.txt"
     source = path.read_text(encoding="utf-8")
-    block = f'''\n## 과목별학원\n\n- 과목별학원: {encoded_url('과목별학원')}\n- 전문학원: {encoded_url('과목별학원', '전문학원')}\n- 영수 전문학원: {encoded_url('과목별학원', '영수전문학원')}\n- 영어 전문학원: {encoded_url('과목별학원', '영어전문학원')}\n- 수학 전문학원: {encoded_url('과목별학원', '수학전문학원')}\n- 중학생학원: {encoded_url('과목별학원', '중학생학원')}\n- 고등학생학원: {encoded_url('과목별학원', '고등학생학원')}\n'''
+    block = f'''\n## 과목별학원\n\n- 과목별학원: {encoded_url('과목별학원')}\n- 전문학원: {encoded_url('과목별학원', '전문학원')}\n- 영수 전문학원: {encoded_url('과목별학원', '영수전문학원')}\n- 영어 전문학원: {encoded_url('과목별학원', '영어전문학원')}\n- 수학 전문학원: {encoded_url('과목별학원', '수학전문학원')}\n- 초등학생학원: {encoded_url('과목별학원', '초등학생학원')}\n- 중학생학원: {encoded_url('과목별학원', '중학생학원')}\n- 고등학생학원: {encoded_url('과목별학원', '고등학생학원')}\n'''
     if "## 과목별학원" not in source:
         source = source.rstrip() + "\n" + block
     else:

@@ -55,6 +55,12 @@ CATEGORIES: dict[str, dict[str, Any]] = {
         "focus": "combined",
         "subjects": ("영어", "수학"),
     },
+    "초등학생학원": {
+        "label": "초등학생학원",
+        "focus": "combined",
+        "grade_prefix": "초",
+        "subjects": ("영어", "수학"),
+    },
     "중학생학원": {
         "label": "중학생학원",
         "focus": "combined",
@@ -520,10 +526,18 @@ def expected_grades(row: dict[str, str], category: dict[str, Any]) -> list[str]:
 
 def expected_schools(row: dict[str, str], category: dict[str, Any] | None = None) -> list[str]:
     prefix = str(category.get("grade_prefix", "")) if category else ""
-    if prefix == "중":
-        keys = ("타깃학교\n(중)",)
-    elif prefix == "고":
-        keys = ("타깃학교\n(고)",)
+    school_fields = {
+        "초": "타깃학교\n(초)",
+        "중": "타깃학교\n(중)",
+        "고": "타깃학교\n(고)",
+    }
+    school_suffixes = {
+        "초": r"(?:초|초등학교)$",
+        "중": r"(?:중|중학교)$",
+        "고": r"(?:고|고등학교)$",
+    }
+    if prefix in school_fields:
+        keys = (school_fields[prefix],)
     else:
         keys = ("타깃학교\n(초)", "타깃학교\n(중)", "타깃학교\n(고)")
     return unique(
@@ -532,7 +546,7 @@ def expected_schools(row: dict[str, str], category: dict[str, Any] | None = None
         for school in split_schools(row.get(key, ""))
         if school not in {"초등학교", "중학교", "고등학교"}
         and (prefix != "중" or school != "오현초호매실중")
-        and re.search(r"(?:초|중|고|초등학교|중학교|고등학교)$", school)
+        and re.search(school_suffixes.get(prefix, r"(?:초|중|고|초등학교|중학교|고등학교)$"), school)
     )
 
 
@@ -1208,12 +1222,14 @@ def audit_detail(
         items = item_list.get("itemListElement", [])
         if isinstance(items, list):
             item_urls = [str(item.get("url", "")) for item in items if isinstance(item, dict)]
-    # Existing collections are preserved byte-for-byte. The new middle-school
-    # collection links to all five established siblings; legacy and high-school
-    # pages retain their prior sibling-link sets.
+    # Existing collections are preserved byte-for-byte. The new elementary
+    # collection links to all six established siblings; middle, legacy and
+    # high-school pages retain the sibling-link sets from their release dates.
     legacy_slugs = {"영수전문학원", "영어전문학원", "수학전문학원", "전문학원"}
-    if slug == "중학생학원":
+    if slug == "초등학생학원":
         sibling_slugs = [other for other in CATEGORIES if other != slug]
+    elif slug == "중학생학원":
+        sibling_slugs = [other for other in CATEGORIES if other in legacy_slugs or other == "고등학생학원"]
     elif slug == "고등학생학원":
         sibling_slugs = [other for other in CATEGORIES if other in legacy_slugs]
     else:
