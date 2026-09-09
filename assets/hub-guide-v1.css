@@ -29,7 +29,7 @@
 .hub-guide-faq summary { padding: 18px 0; font-size: 16px; font-weight: 800; cursor: pointer; }
 .hub-guide-faq details p { padding-bottom: 6px; }
 /* Leave room for the existing right-side contact buttons on narrow desktops. */
-@media (min-width: 1000px) and (max-width: 1399px) { .hub-guide > .wrap { padding-right: 96px; } }
+@media (min-width: 901px) and (max-width: 1399px) { .hub-guide > .wrap { padding-right: 96px; } }
 @media (max-width: 900px) { .hub-guide-grid, .hub-guide .hub-center-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) {
   .hub-guide { padding: 24px 0; }
@@ -40,3 +40,110 @@
   .hub-guide-reading { padding: 18px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Mobile reading layout, scoped to the 28 enriched collection pages only. */
+@media (max-width: 900px) {
+  body.hub-enhanced-page { font-size: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .hub-enhanced-page .wrap { width: calc(100% - 32px); min-width: 0; }
+  .hub-enhanced-page .site-header { position: static; }
+  .hub-enhanced-page .nav { gap: 10px; padding-block: 12px; }
+  .hub-enhanced-page .brand { gap: 9px; min-height: 38px; font-size: 15px; }
+  .hub-enhanced-page .brand-mark { width: 34px; height: 34px; flex: 0 0 34px; }
+  .hub-enhanced-page .brand small { font-size: 10px; letter-spacing: .08em; }
+  .hub-enhanced-page .nav-cta { display: none; }
+  .hub-enhanced-page .nav-links { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 4px; width: 100%; padding: 4px; border-radius: 13px; }
+  .hub-enhanced-page .nav-links a { grid-column: span 2; min-width: 0; min-height: 44px; padding: 6px; font-size: 13px; line-height: 1.4; border-radius: 9px; letter-spacing: -.02em; }
+  .hub-enhanced-page .nav-links a:nth-child(n+4) { grid-column: span 3; }
+
+  .hub-enhanced-page .center-hero { padding: 24px 0; }
+  .hub-enhanced-page .crumbs { font-size: 12px; line-height: 1.7; margin-bottom: 14px; flex-wrap: wrap; }
+  .hub-enhanced-page .center-hero-card { border-radius: 16px; }
+  .hub-enhanced-page .center-hero-inner { padding: 20px; gap: 20px; grid-template-columns: minmax(0,1fr); }
+  .hub-enhanced-page .center-hero h1 { font-size: 28px; line-height: 1.35; letter-spacing: -.035em; word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
+  .hub-enhanced-page .center-hero p { margin-top: 14px; font-size: 16px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page .center-hero .eyebrow,
+  .hub-enhanced-page .hub-guide .eyebrow,
+  .hub-enhanced-page .local-section .eyebrow { margin: 0 0 10px; font-size: 11px; line-height: 1.65; letter-spacing: .1em; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hero-mini-panel { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 3px 14px; align-items: center; padding: 14px 16px; border-radius: 12px; min-height: 72px; }
+  .hub-enhanced-page .hero-mini-panel strong { grid-column: 1; grid-row: 1 / 3; font-size: 26px; line-height: 1.2; }
+  .hub-enhanced-page .hero-mini-panel span { grid-column: 2; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hero-mini-panel span:first-child { grid-row: 1; }
+  .hub-enhanced-page .hero-mini-panel span:last-child { grid-row: 2; }
+  .hub-enhanced-page .local-keywords { gap: 6px; margin-top: 16px; }
+  .hub-enhanced-page .local-keywords span { font-size: 12px; padding: 6px 10px; }
+  .hub-enhanced-page .local-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-top: 18px; }
+  .hub-enhanced-page .local-actions .btn { min-width: 0; min-height: 48px; padding: 10px 8px; font-size: 14px; line-height: 1.5; border-radius: 10px; }
+
+  .hub-enhanced-page .hub-guide-jumps { margin: 18px 0 6px; }
+  .hub-enhanced-page .hub-guide-jumps .wrap { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .hub-enhanced-page .hub-guide-jumps a { min-width: 0; min-height: 48px; padding: 10px 8px; font-size: 14px; line-height: 1.5; text-align: center; border-radius: 11px; }
+  .hub-enhanced-page .local-section, .hub-enhanced-page .hub-guide { padding: 24px 0; }
+  .hub-enhanced-page main h2 { font-size: 22px; line-height: 1.45; letter-spacing: -.03em; text-wrap: balance; word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page main h3 { font-size: 18px; line-height: 1.5; letter-spacing: -.025em; word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hub-guide p,
+  .hub-enhanced-page .local-card p,
+  .hub-enhanced-page .center-search-card p { font-size: 16px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; text-align: left; }
+  .hub-enhanced-page .hub-guide .hub-guide-note { font-size: 14px; line-height: 1.75; }
+  .hub-enhanced-page .hub-guide-heading { margin-bottom: 16px; }
+  .hub-enhanced-page .local-card,
+  .hub-enhanced-page .hub-card,
+  .hub-enhanced-page .center-search-card,
+  .hub-enhanced-page .hub-guide-card { min-width: 0; padding: 18px; border-radius: 15px; box-shadow: none; }
+  .hub-enhanced-page .local-grid,
+  .hub-enhanced-page .hub-guide-grid { grid-template-columns: minmax(0,1fr); gap: 14px; }
+  .hub-enhanced-page .hub-guide-number { width: 30px; height: 30px; margin-bottom: 12px; font-size: 12px; }
+  .hub-enhanced-page .hub-guide-card p:last-child { margin-bottom: 0; }
+
+  .hub-enhanced-page .hub-mobile-link-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; }
+  .hub-enhanced-page .hub-mobile-link-grid > .hub-link:not(.is-hidden):not([hidden]) { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; width: 100%; min-width: 0; min-height: 64px; padding: 12px 14px; text-align: left; border: 1px solid var(--line); border-radius: 11px; }
+  .hub-enhanced-page .hub-mobile-link-grid > .hub-link strong { font-size: 16px; line-height: 1.45; font-weight: 800; word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hub-mobile-link-grid > .hub-link small { font-size: 13px; line-height: 1.65; font-weight: 500; color: var(--ink-soft); word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hub-mobile-regions > .hub-link:not(.is-hidden):not([hidden]) { display: grid; grid-template-columns: 48px minmax(0,1fr); column-gap: 12px; align-items: center; }
+  .hub-enhanced-page .hub-mobile-regions > .hub-link small { text-align: left; }
+  .hub-enhanced-page .category-region-tabs { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; margin: 0; padding: 0; overflow: visible; }
+  .hub-enhanced-page .category-region-tab { min-width: 0; min-height: 44px; padding: 8px 4px; border-radius: 9px; font-size: 13px; line-height: 1.5; }
+  .hub-enhanced-page .category-district-list { gap: 12px; }
+  .hub-enhanced-page .category-district summary { gap: 8px; padding: 13px 14px; font-size: 16px; line-height: 1.5; }
+  .hub-enhanced-page .category-district summary small { font-size: 12px; flex-shrink: 0; }
+  .hub-enhanced-page .category-district .hub-links { padding: 0 12px 12px; }
+  .hub-enhanced-page .center-toolbar { padding: 16px; }
+  .hub-enhanced-page .center-search-head,
+  .hub-enhanced-page .center-search-form { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .hub-enhanced-page .center-search-form input { min-height: 48px; padding: 10px 12px; font-size: 16px; }
+  .hub-enhanced-page .center-search-form button { min-height: 48px; padding: 10px 12px; font-size: 14px; border-radius: 10px; }
+  .hub-enhanced-page .home-link-card { min-width: 0; padding: 20px; border-radius: 14px; }
+  .hub-enhanced-page .home-link-card > span { font-size: 11px; line-height: 1.65; letter-spacing: .08em; overflow-wrap: anywhere; }
+  .hub-enhanced-page .home-link-card strong { font-size: 21px; line-height: 1.45; }
+  .hub-enhanced-page .home-link-card p { font-size: 15px; line-height: 1.8; }
+
+  .hub-enhanced-page .hub-center-card dl { font-size: 15px; line-height: 1.8; }
+  .hub-enhanced-page .hub-center-card dt { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); color: var(--ink-soft); font-size: 13px; }
+  .hub-enhanced-page .hub-center-card dd { margin-top: 4px; word-break: keep-all; overflow-wrap: anywhere; }
+  .hub-enhanced-page .hub-center-card > a { display: flex; justify-content: center; width: 100%; margin-top: 18px; padding: 10px 12px; min-height: 48px; border-radius: 10px; background: var(--accent-pale); text-decoration: none; font-size: 14px; text-align: center; line-height: 1.6; }
+  .hub-enhanced-page .hub-guide-reading { padding: 16px; }
+  .hub-enhanced-page .hub-guide-gallery { grid-template-columns: minmax(0,1fr); gap: 14px; }
+  .hub-enhanced-page .hub-guide-gallery figure { padding: 10px; border-radius: 14px; }
+  .hub-enhanced-page .hub-guide-gallery img { width: 100%; height: auto; max-height: none; }
+  .hub-enhanced-page .hub-guide-faq details { padding: 0 16px; border-radius: 11px; }
+  .hub-enhanced-page .hub-guide-faq summary { padding: 16px 0; font-size: 16px; line-height: 1.7; }
+  .hub-enhanced-page .hub-guide[id], .hub-enhanced-page .hub-guide [id],
+  .hub-enhanced-page .hub-directory-anchor, .hub-enhanced-page .hub-region,
+  .hub-enhanced-page .category-region-panel { scroll-margin-top: 24px; }
+  .hub-enhanced-page .floating-actions { left: 8px; right: 8px; bottom: max(8px,env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; width: auto; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.97); }
+  .hub-enhanced-page .floating-actions a { width: 100%; min-width: 0; min-height: 48px; padding: 8px 4px; border-radius: 9px; font-size: 13px; line-height: 1.4; white-space: nowrap; }
+  .hub-enhanced-page .floating-actions a:first-child { color: #fff; background: var(--accent-deep); }
+  .hub-enhanced-page .hub-link.is-hidden,
+  .hub-enhanced-page .category-region-panel[hidden],
+  .hub-enhanced-page .category-district.is-hidden { display: none; }
+}
+@media (max-width: 360px) {
+  .hub-enhanced-page .center-hero-inner { padding: 16px; }
+  .hub-enhanced-page .center-hero h1 { font-size: 26px; }
+  .hub-enhanced-page .local-card,
+  .hub-enhanced-page .hub-card,
+  .hub-enhanced-page .hub-guide-card,
+  .hub-enhanced-page .center-search-card { padding: 16px; }
+  .hub-enhanced-page .hub-mobile-regions > .hub-link:not(.is-hidden):not([hidden]) { column-gap: 8px; padding-inline: 12px; }
+}
+/* Native hidden attributes used by the existing search must override card display. */
+.hub-enhanced-page .hub-link[hidden] { display: none; }

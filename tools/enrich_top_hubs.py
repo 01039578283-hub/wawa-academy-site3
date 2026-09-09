@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from build_academy_hubs import load_manifest, REGION_ORDER, CATEGORIES, BASE_URL
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS = '/assets/hub-guide-v1.css'
+CSS = '/assets/hub-guide-v1.css?v=20260910-mobile1'
 SUBJECTS = ['영수전문학원', '영어전문학원', '수학전문학원', '전문학원', '초등학생학원', '중학생학원', '고등학생학원']
 PHOTO_INFO = [
     ('classroom-desks.webp', 500, 300, '개별 책상과 칸막이가 배치된 학습 공간', '개별 책상과 칸막이 배치를 살펴볼 수 있는 공통 학습 공간 사진입니다.'),
@@ -137,6 +137,7 @@ def update_page(rel, copy, centers, modified):
     path = ROOT / rel
     before = path.read_text(encoding='utf-8')
     soup = BeautifulSoup(before, 'html.parser')
+    soup.body['class'] = list(dict.fromkeys(soup.body.get('class', []) + ['hub-enhanced-page']))
     canonical = soup.find('link', rel='canonical')['href']
     fixed = (soup.title.get_text(), soup.h1.get_text(), canonical, soup.find('meta', property='og:url')['content'])
     for old in soup.select('[data-hub-enrichment]'):
@@ -158,6 +159,10 @@ def update_page(rel, copy, centers, modified):
         directory = search.find_parent('section') if search else None
     if directory is None:
         directory = next((s for s in main.find_all('section', recursive=False) if s != hero and len(s.find_all('a')) >= 6), None)
+    if rel=='전국센터/index.html':
+        first_region=soup.find('a',class_='hub-link',href='서울/')
+        if first_region:
+            directory=first_region.find_parent('section')
     if directory is None:
         raise ValueError(f'No directory detected: {rel}')
     directory.insert_before(parse_fragment('<span id="hub-directory" class="hub-directory-anchor" data-hub-enrichment="anchor"></span>'))
@@ -178,8 +183,20 @@ def update_page(rel, copy, centers, modified):
         meta=soup.find('meta',attrs={attr:key})
         if meta:
             meta['content']=copy['description']
-    if not soup.find('link',href=CSS):
+    stylesheet = next((link for link in soup.find_all('link',href=True) if link['href'].split('?')[0]==CSS.split('?')[0]), None)
+    if stylesheet:
+        stylesheet['href']=CSS
+    else:
         soup.head.append(soup.new_tag('link',rel='stylesheet',href=CSS))
+    # Layout hooks preserve every existing href, label, filter attribute and script.
+    for link in soup.select('main a.hub-link'):
+        parent=link.parent
+        parent['class']=list(dict.fromkeys(parent.get('class',[])+['hub-mobile-link-grid']))
+    if rel=='전국센터/index.html':
+        region_link=soup.find('a',class_='hub-link',href='서울/')
+        if region_link:
+            parent=region_link.parent
+            parent['class']=list(dict.fromkeys(parent.get('class',[])+['hub-mobile-regions']))
     graphs=[]
     scripts=soup.find_all('script',attrs={'type':'application/ld+json'})
     for script in scripts:
