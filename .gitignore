@@ -5,3 +5,7 @@ __pycache__/
 tools/reports/title-suffix-plan.json
 tools/reports/title-suffix-public-verification.json
 tools/reports/title-suffix-release.json
+
+# Local-only evidence and QA for hub content enrichment.
+/tools/reports/hub-enrichment/
+/tools/data/hub-enrichment/
