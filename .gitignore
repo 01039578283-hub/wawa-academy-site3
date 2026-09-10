@@ -9,3 +9,5 @@ tools/reports/title-suffix-release.json
 # Local-only evidence and QA for hub content enrichment.
 /tools/reports/hub-enrichment/
 /tools/data/hub-enrichment/
+/tools/data/brand-upgrade/
+/tools/reports/brand-upgrade/
