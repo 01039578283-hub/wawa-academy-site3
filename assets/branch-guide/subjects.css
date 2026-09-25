@@ -1,0 +1,37 @@
+/* Subject guides share the existing cream/coral branch design. */
+.bc-media-stacked{grid-template-columns:minmax(0,1fr);max-width:720px;margin-inline:auto;gap:26px}
+.bc-media-stacked img{height:auto;max-height:none;object-fit:contain}
+.bs-hero h1{max-width:960px;font-size:clamp(30px,4.4vw,48px)}
+.bs-hero .bc-lead{font-size:17px}
+.bs-reading{max-width:760px}
+.bs-topic{padding:0 0 30px;margin-bottom:28px;border-bottom:1px solid #e1d9c9}
+.bs-topic:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.bs-topic h3{font-size:22px;line-height:1.55;margin-bottom:17px}
+.bs-topic p{font-size:16px;line-height:1.95;margin:0 0 17px;color:#3d4751}
+.bs-topic p:last-child{margin-bottom:0}
+.bs-grade-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:25px}
+.bs-grade-grid>div{background:#fff;border:1px solid #dedbd1;border-radius:14px;padding:23px}
+.bs-grade-grid p{font-size:15px;line-height:1.9;color:#535e68;margin:0}
+.bs-neighborhoods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.bs-neighborhoods>div{background:#fff;border:1px solid #dedbd1;border-radius:14px;padding:22px}
+.bs-neighborhoods h3{margin:0;font-size:18px}
+.bs-neighborhoods .bc-link-list{margin-top:14px}
+.bs-neighborhoods .bc-button{flex:1 1 145px}
+.bs-hub-subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.bs-hub-subjects>div{border-top:2px solid #d9c9b1;padding-top:22px}
+.bs-hub-subjects p{font-size:16px;line-height:1.9;color:#58636e;margin:0}
+.bs-page .bc-section> .wrap>p:not(.bc-eyebrow){line-height:1.9}
+@media(max-width:900px){.bs-grade-grid{grid-template-columns:1fr}.bs-neighborhoods{gap:12px}}
+@media(max-width:640px){
+ .bc-media-stacked{gap:18px}
+ .bs-hero h1{font-size:31px;line-height:1.45}
+ .bs-hero .bc-lead{font-size:16px}
+ .bs-topic{padding-bottom:23px;margin-bottom:23px}
+ .bs-topic h3{font-size:20px;line-height:1.6}
+ .bs-topic p{font-size:16px;line-height:1.95}
+ .bs-grade-grid>div{padding:19px}
+ .bs-neighborhoods,.bs-hub-subjects{grid-template-columns:1fr}
+ .bs-neighborhoods>div{padding:19px}
+ .bs-hub-subjects p{font-size:15px}
+ .bs-page #related-pages .bc-button{flex:1 1 145px}
+}

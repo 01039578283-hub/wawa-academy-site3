@@ -11,3 +11,9 @@ tools/reports/title-suffix-release.json
 /tools/data/hub-enrichment/
 /tools/data/brand-upgrade/
 /tools/reports/brand-upgrade/
+
+# Isolated public release: never commit derived output or private inputs.
+.public-release/
+node_modules/
+.env*
+tools/data/

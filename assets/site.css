@@ -2595,3 +2595,38 @@ input:focus-visible {
     scroll-behavior: auto;
   }
 }
+
+/* Branch directory navigation: one shared menu, including legacy pages. */
+.branch-directory-bridge {
+  width: min(calc(100% - 40px), 1120px);
+  margin: 36px auto;
+  padding: 25px;
+  border: 1px solid #dfd7c8;
+  border-radius: 16px;
+  background: #f5efe0;
+  color: #20262f;
+  line-height: 1.85;
+}
+.branch-directory-bridge strong { display: block; font-size: 19px; }
+.branch-directory-bridge p { font-size: 15px; margin: 10px 0 16px; }
+.branch-directory-bridge a {
+  display: inline-flex; align-items: center; min-height: 46px;
+  padding: 10px 17px; border-radius: 10px; background: #c94f2a;
+  color: #fff; font-size: 14px; font-weight: 800; text-decoration: none;
+}
+@media (min-width: 901px) {
+  .nav:has([data-branch-nav]) .nav-links a { padding-inline: 12px; }
+}
+@media (max-width: 640px) {
+  .nav-links:has([data-branch-nav]), .bc-page .nav-links {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%; border-radius: 14px; gap: 3px;
+  }
+  .nav-links:has([data-branch-nav]) a, .bc-page .nav-links a {
+    grid-column: auto !important; min-height: 44px;
+    font-size: 13px; line-height: 1.4; padding: 10px 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .branch-directory-bridge { width: calc(100% - 24px); padding: 20px; }
+  .branch-directory-bridge strong { font-size: 17px; }
+}

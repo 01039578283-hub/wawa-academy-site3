@@ -1,0 +1,76 @@
+/* Scoped to the three academy families; the home and other menus stay intact. */
+body[data-content-layout] main{overflow-wrap:anywhere;word-break:keep-all}
+body[data-content-layout] main .cl-section{padding:54px 0;scroll-margin-top:105px;border-top:1px solid #ece8de}
+body[data-content-layout] main .cl-reading{max-width:1108px;min-width:0}
+body[data-content-layout] .cl-eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;color:#aa472b;margin:0 0 12px}
+body[data-content-layout] .cl-section h2{font-size:27px;line-height:1.45;letter-spacing:-.035em;margin:0 0 24px}
+body[data-content-layout] .cl-section h3{font-size:20px;line-height:1.55;letter-spacing:-.025em;margin:0 0 13px}
+body[data-content-layout] .cl-section p,body[data-content-layout] .cl-section li,body[data-content-layout] .cl-section dd{font-size:17px;line-height:1.95}
+body[data-content-layout] .cl-section p{margin:0 0 18px}
+body[data-content-layout] .cl-section .cl-note,body[data-content-layout] .cl-section .bc-note{font-size:14px;color:#656861;line-height:1.8}
+body[data-content-layout] .cl-media{max-width:720px;margin:0 auto}
+body[data-content-layout] .cl-media figure{display:block;margin:0 0 30px;padding:0;border:1px solid #e6e2d7;border-radius:16px;overflow:hidden;background:#fff}
+body[data-content-layout] .cl-media img{display:block;width:100%;height:auto!important;max-height:none!important;object-fit:contain;border-radius:0;clip-path:none}
+body[data-content-layout] img[hidden]{display:none!important}
+body[data-content-layout] .cl-media figcaption{position:static!important;display:block;padding:15px 18px;font-size:14px;line-height:1.75;color:#52564f;background:#fff;border-top:1px solid #ece8de;transform:none}
+body[data-content-layout] .cl-media figcaption a{display:inline-block;color:#9b3d24;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+body[data-content-layout] .cl-section .cl-media-note{font-size:14px;line-height:1.8;color:#656861;margin:8px 0 22px}
+body[data-content-layout] #learning-space{background:#f6f3ea}
+body[data-content-layout] .cl-space-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:900px;margin:auto}
+body[data-content-layout] .cl-space-grid figure{margin:0;align-self:start;border-radius:16px;overflow:hidden;background:white}
+body[data-content-layout] .cl-space-grid img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
+body[data-content-layout] .cl-toc{display:flex;flex-wrap:wrap;gap:8px;padding-top:20px;padding-bottom:20px}
+body[data-content-layout] .cl-toc a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border:1px solid #dedbcf;border-radius:12px;color:#252a27;background:white;font-size:14px;font-weight:700;text-decoration:none;line-height:1.55}
+body[data-content-layout] .cl-toc a:hover,body[data-content-layout] .cl-toc a:focus-visible{border-color:#b24a2c;background:#fcf2eb;outline-offset:3px}
+body[data-content-layout] .cl-facts{margin:0;border-top:1px solid #e0dbcf}
+body[data-content-layout] .cl-facts>div{display:grid;grid-template-columns:140px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid #e0dbcf}
+body[data-content-layout] .cl-facts dt{font-size:15px;font-weight:700;line-height:1.95}
+body[data-content-layout] .cl-facts dd{margin:0;min-width:0}
+body[data-content-layout] .cl-grade-grid,body[data-content-layout] .cl-school-grid,body[data-content-layout] .cl-step-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+body[data-content-layout] .cl-grade-grid article,body[data-content-layout] .cl-school-grid article,body[data-content-layout] .cl-step-grid article{border:1px solid #e5dfd3;background:white;border-radius:18px;padding:24px;min-width:0}
+body[data-content-layout] .cl-step-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-content-layout] .cl-step-index{display:inline-block;color:#ad4b2e;font-size:14px;font-weight:800;margin-bottom:15px}
+body[data-content-layout] .cl-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+body[data-content-layout] .cl-actions a{max-width:100%;white-space:normal;line-height:1.6}
+body[data-content-layout] .cl-callout{background:#f6f1e5;border-left:3px solid #ba5834;border-radius:0 14px 14px 0;padding:24px;margin:20px 0}
+body[data-content-layout] .cl-section .subject-article{max-width:900px;padding:0!important;border:0;box-shadow:none;background:transparent}
+body[data-content-layout] .cl-prose-block{border:1px solid #e4dfd3;border-radius:20px;padding:32px!important;margin:28px 0!important;background:#fff;scroll-margin-top:105px}
+body[data-content-layout] .cl-prose-block h2{font-size:25px;line-height:1.5;margin:0 0 21px}
+body[data-content-layout] .cl-prose-block p{max-width:760px;margin:0 0 19px}
+body[data-content-layout] .cl-prose-block .subject-section-index{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;background:#f9eee4;color:#97442b;border-radius:8px;font-size:13px;font-weight:800;margin-bottom:12px}
+body[data-content-layout] .cl-reading-index{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
+body[data-content-layout] .cl-reading-index a{padding:13px 16px;min-height:44px;border:1px solid #e2ddd0;border-radius:12px;background:#fff;font-size:14px;line-height:1.65;text-decoration:none;color:#424b44}
+body[data-content-layout] .bs-reading{max-width:900px}
+body[data-content-layout] .bs-reading article{padding:28px;border:1px solid #e2ddd0;border-radius:18px;background:white;margin-bottom:22px}
+body[data-content-layout] .bs-reading article h3{padding-left:15px;border-left:3px solid #bd5932}
+body[data-content-layout] .geo-answer-grid,body[data-content-layout] .geo-checklist-grid{gap:18px}
+body[data-content-layout] .geo-answer-card,body[data-content-layout] .geo-check-card{border-radius:16px;padding:24px;min-width:0}
+body[data-content-layout] .cl-section details{margin:0 0 12px;border-radius:13px;border:1px solid #e0dbcf;background:white;padding:0 20px}
+body[data-content-layout] .cl-section summary{font-size:17px;line-height:1.75;padding:18px 28px 18px 0;min-height:48px}
+body[data-content-layout] .cl-section details p{padding:4px 0 14px}
+body[data-content-layout] .summary-list li{font-weight:400;line-height:1.85}
+body[data-content-layout] .summary-list li strong{display:block;font-size:13px;font-weight:700;color:#6b6b61;margin-bottom:5px}
+body[data-content-layout] .cl-legacy-anchor{display:block;scroll-margin-top:110px}
+body[data-content-layout] .cl-revised{font-size:13px;color:#70756e;line-height:1.8;padding-top:18px;padding-bottom:24px}
+body[data-content-layout] .cl-section .local-image-pair:empty{display:none}
+@media(max-width:720px){
+ body[data-content-layout] main .cl-section{padding:34px 0;scroll-margin-top:210px}
+ body[data-content-layout] .cl-section h2{font-size:23px;line-height:1.5;margin-bottom:20px}
+ body[data-content-layout] .cl-section h3{font-size:18px}
+ body[data-content-layout] .cl-section p,body[data-content-layout] .cl-section li,body[data-content-layout] .cl-section dd{font-size:16px;line-height:1.9}
+ body[data-content-layout] .cl-prose-block{padding:22px!important;border-radius:16px;margin:20px 0!important;scroll-margin-top:210px}
+ body[data-content-layout] .cl-prose-block h2{font-size:21px}
+ body[data-content-layout] .cl-grade-grid,body[data-content-layout] .cl-school-grid,body[data-content-layout] .cl-step-grid,body[data-content-layout] .cl-space-grid{grid-template-columns:1fr;gap:16px}
+ body[data-content-layout] .cl-grade-grid article,body[data-content-layout] .cl-school-grid article,body[data-content-layout] .cl-step-grid article{padding:21px}
+ body[data-content-layout] .cl-facts>div{grid-template-columns:1fr;gap:3px;padding:14px 0}
+ body[data-content-layout] .cl-facts dt{font-size:13px;color:#70756e}
+ body[data-content-layout] .cl-toc{gap:7px;padding-top:16px;padding-bottom:16px}
+ body[data-content-layout] .cl-toc a{font-size:13px;padding:10px 12px;flex:1 0 auto}
+ body[data-content-layout] .cl-reading-index{grid-template-columns:1fr}
+ body[data-content-layout] .cl-space-grid{max-width:550px}
+ body[data-content-layout] .bs-reading article{padding:21px}
+ body[data-content-layout] .cl-section summary{font-size:16px}
+ body[data-content-layout] .cl-media figure{border-radius:12px;margin-bottom:22px}
+ body[data-content-layout] .cl-legacy-anchor{scroll-margin-top:210px}
+}
+@media(prefers-reduced-motion:reduce){body[data-content-layout]{scroll-behavior:auto}}
