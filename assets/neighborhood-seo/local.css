@@ -1,0 +1,136 @@
+/* Neighborhood facts and intent links use existing brand typography/colors. */
+body[data-neighborhood-phase3] .ns-school-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px;margin:20px 0}
+body[data-neighborhood-phase3] .ns-school-grid article{min-width:0;padding:18px;border:1px solid #ddd5c7;border-radius:9px;background:#fff}
+body[data-neighborhood-phase3] .ns-school-grid h3{font-size:19px;line-height:1.5;margin:0 0 12px}
+body[data-neighborhood-phase3] .ns-school-names{padding-left:20px;margin:0 0 16px;line-height:1.8}
+body[data-neighborhood-phase3] .ns-school-grid .ns-preparation{font-size:14px;line-height:1.8;margin:16px 0}
+body[data-neighborhood-phase3] .ns-school-grades{font-size:14px;line-height:1.7;margin:0}
+body[data-neighborhood-phase3] .ns-school-grades div{display:grid;grid-template-columns:105px minmax(0,1fr);gap:8px;margin:7px 0}
+body[data-neighborhood-phase3] .ns-school-grades dt{color:#686a63}
+body[data-neighborhood-phase3] .ns-school-grades dd{margin:0;overflow-wrap:anywhere}
+body[data-neighborhood-phase3] .ns-local-guide-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}
+body[data-neighborhood-phase3] .ns-local-guide-facts dt{font-size:14px;color:#686a63;margin-bottom:6px}
+body[data-neighborhood-phase3] .ns-local-guide-facts dd{margin:0;line-height:1.7;font-weight:700}
+body[data-neighborhood-phase3] .ns-photo-shortcut{margin-top:16px}
+body[data-neighborhood-phase3] .ns-photo-shortcut p,body[data-neighborhood-phase3] .ns-photo-source{font-size:14px;line-height:1.8}
+body[data-neighborhood-phase3] .cl-space-grid figcaption{padding:10px 2px;font-size:14px;line-height:1.7;color:#505a50;overflow-wrap:anywhere}
+body[data-neighborhood-phase3] #student-answer-checks{padding:52px 0;background:#fbf7ef}
+body[data-neighborhood-phase3] #student-answer-checks h2{font-size:30px;line-height:1.5;margin-bottom:20px}
+body[data-neighborhood-phase3] .ns-shared-checks details{margin:14px 0;border:1px solid #d7c8b1;border-radius:9px;background:#fff;scroll-margin-top:110px}
+body[data-neighborhood-phase3] .ns-shared-checks summary{padding:18px;font-size:18px;line-height:1.6;font-weight:700;cursor:pointer}
+body[data-neighborhood-phase3] .ns-shared-checks summary:focus-visible{outline:3px solid #9a4629;outline-offset:3px}
+body[data-neighborhood-phase3] .ns-shared-content{padding:0 18px 18px}
+body[data-neighborhood-phase3] #student-answer-checks p{line-height:1.8}
+body[data-neighborhood-phase3] #student-answer-checks .ns-link-grid{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+body[data-neighborhood-phase3] #student-answer-checks .ns-link{display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid #cbbfaa;border-radius:9px;color:#79381e;background:white;font-size:15px;font-weight:700;line-height:1.5;text-decoration:none;box-sizing:border-box}
+body[data-neighborhood-phase3] #student-answer-checks .ns-check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:22px 0}
+body[data-neighborhood-phase3] #student-answer-checks .ns-check-grid article{min-width:0;border-top:2px solid #ccaf8c;padding-top:16px}
+body[data-neighborhood-phase3] #student-answer-checks h3{font-size:18px;line-height:1.6;margin-bottom:12px}
+@media(max-width:760px){
+ body[data-neighborhood-phase3] .ns-shared-checks details{scroll-margin-top:210px}
+ body[data-neighborhood-phase3] .ns-local-guide-facts,body[data-neighborhood-phase3] #student-answer-checks .ns-check-grid{grid-template-columns:1fr}
+ body[data-neighborhood-phase3] #student-answer-checks h2{font-size:24px}
+ body[data-neighborhood-phase3] .ns-school-grid article{padding:16px}
+}
+body[data-neighborhood-phase2] .ns-image-summary{margin:18px 0;padding:16px;border:1px solid #ddd5c7;border-radius:9px;background:#fbf7ef}
+body[data-neighborhood-phase2] .ns-image-summary p{font-size:14px;line-height:1.8;margin:0 0 10px}
+body[data-neighborhood-phase2] .ns-conditions{grid-template-columns:1fr 1fr}
+body[data-neighborhood-phase2] .ns-comparison-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+body[data-neighborhood-phase2] .ns-comparison-list article{min-width:0;border-top:2px solid #ccaf8c;padding-top:16px;scroll-margin-top:20px}
+body[data-neighborhood-phase2] .ns-comparison-list h3{font-size:19px;line-height:1.5;margin:0 0 12px}
+body[data-neighborhood-phase2][data-neighborhood-hub] .ns-facts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 16px}
+body[data-neighborhood-phase2][data-neighborhood-hub] .ns-facts dt{font-size:13px;color:#686a63;margin-bottom:6px}
+body[data-neighborhood-phase2][data-neighborhood-hub] .ns-facts dd{margin:0;font-weight:700;line-height:1.7}
+body[data-neighborhood-phase2][data-neighborhood-hub] .ns-check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+body[data-neighborhood-seo] .ns-section{padding:28px 0!important}
+body[data-neighborhood-seo] #local-summary{background:#fbf7ef}
+body[data-neighborhood-seo] #local-summary h2{font-size:24px;margin-bottom:18px}
+body[data-neighborhood-seo] .ns-facts{display:grid;grid-template-columns:1fr 1.4fr 1.4fr;gap:16px;margin:0 0 16px}
+body[data-neighborhood-seo] .ns-facts div{min-width:0}
+body[data-neighborhood-seo] .ns-facts dt{font-size:13px;color:#686a63;margin-bottom:6px}
+body[data-neighborhood-seo] .ns-facts dd{margin:0;font-weight:700;line-height:1.7}
+body[data-neighborhood-seo] #local-summary p{font-size:14px;line-height:1.7;margin-bottom:12px}
+body[data-neighborhood-seo] .ns-actions,body[data-neighborhood-seo] .ns-link-grid{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+body[data-neighborhood-seo] .ns-link{display:inline-flex;align-items:center;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid #cbbfaa;border-radius:9px;color:#79381e;background:white;font-size:15px;font-weight:700;line-height:1.5;text-decoration:none;box-sizing:border-box}
+body[data-neighborhood-hub] .ns-link-grid{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 26px}
+body[data-neighborhood-hub] .ns-link{display:inline-flex;align-items:center;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid #cbbfaa;border-radius:9px;color:#79381e;background:white;font-size:15px;font-weight:700;line-height:1.5;text-decoration:none;box-sizing:border-box}
+body[data-neighborhood-hub] .ns-link:focus-visible{outline:3px solid #9a4629;outline-offset:3px}
+body[data-neighborhood-seo] .ns-link:hover{background:#fff1e2}
+body[data-neighborhood-seo] .ns-link:focus-visible{outline:3px solid #9a4629;outline-offset:3px}
+body[data-neighborhood-seo] .ns-check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:22px 0}
+body[data-neighborhood-seo] .ns-check-grid article{border-top:2px solid #ccaf8c;padding-top:16px;min-width:0}
+body[data-neighborhood-seo] .ns-section details{border-bottom:1px solid #ddd5c7;padding:14px 0}
+body[data-neighborhood-seo] .ns-section summary{cursor:pointer;font-size:17px;font-weight:700;line-height:1.6}
+body[data-neighborhood-seo] .ns-section details p{margin:14px 0 0}
+body[data-neighborhood-seo] .cl-media picture{display:block}
+body[data-neighborhood-seo] .bc-hero{padding:30px 0}
+@media(max-width:760px){
+ body[data-neighborhood-phase2] .ns-comparison-list{grid-template-columns:1fr;gap:16px}
+ body[data-neighborhood-phase2][data-neighborhood-hub] .ns-facts,body[data-neighborhood-phase2][data-neighborhood-hub] .ns-check-grid{grid-template-columns:1fr}
+ body[data-neighborhood-seo] .ns-facts{grid-template-columns:1fr;gap:10px}
+ body[data-neighborhood-seo] .ns-facts div{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px}
+ body[data-neighborhood-seo] .ns-facts dt{margin-top:4px}
+ body[data-neighborhood-seo] .ns-facts dd{font-size:15px}
+ body[data-neighborhood-seo] .ns-check-grid{grid-template-columns:1fr;gap:14px}
+ body[data-neighborhood-seo] .ns-section{padding:24px 0!important}
+ body[data-neighborhood-seo] .ns-link{font-size:14px;padding:9px 12px}
+ body[data-neighborhood-seo] .bc-hero{padding:24px 0}
+}
+
+/* Phase 4: literal, dated branch fee originals. */
+body[data-neighborhood-phase4] .ns-fee-source{padding:16px 18px;border-left:4px solid #9a4629;background:#fff5e9;margin:16px 0}
+body[data-neighborhood-phase4] .ns-fee-source p{margin:0 0 8px;overflow-wrap:anywhere}
+body[data-neighborhood-phase4] .ns-fee-source p:last-child{margin-bottom:0}
+body[data-neighborhood-phase4] .ns-fee-table{width:100%;table-layout:fixed;border-collapse:collapse;margin:14px 0 22px;font-size:14px;line-height:1.6}
+body[data-neighborhood-phase4] .ns-fee-table caption{text-align:left;font-weight:700;padding:0 0 12px;color:#493c30}
+body[data-neighborhood-phase4] .ns-fee-table th,body[data-neighborhood-phase4] .ns-fee-table td{padding:12px 10px;border-bottom:1px solid #d6cbbd;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+body[data-neighborhood-phase4] .ns-fee-table thead th{background:#f1ebe2;color:#47392e}
+body[data-neighborhood-phase4] .ns-fee-table th:first-child{width:44%}
+body[data-neighborhood-phase4] .ns-fee-table th:last-child{width:24%}
+body[data-neighborhood-phase4] .ns-fee-table small{display:block;font-size:12px;line-height:1.6;color:#61554b;margin-top:4px}
+body[data-neighborhood-phase4] .ns-fee-table td:last-child{font-weight:700}
+body[data-neighborhood-phase4] #fees details{padding:14px 0;border-bottom:1px solid #d6cbbd}
+body[data-neighborhood-phase4] #fees summary{cursor:pointer;font-weight:700;font-size:18px;line-height:1.6}
+body[data-neighborhood-phase4] #fees summary:focus-visible{outline:3px solid #9a4629;outline-offset:4px}
+body[data-neighborhood-phase4] #fees .ns-fee-terms{font-size:14px;line-height:1.8;color:#5d5045}
+@media(max-width:760px){body[data-neighborhood-phase4] .ns-fee-table{font-size:13px}body[data-neighborhood-phase4] .ns-fee-table th,body[data-neighborhood-phase4] .ns-fee-table td{padding:10px 6px}body[data-neighborhood-phase4] .ns-fee-table th:first-child{width:40%}body[data-neighborhood-phase4] .ns-fee-table th:last-child{width:25%}body[data-neighborhood-phase4] .ns-fee-source{padding:14px}}
+
+/* Phase 5: readable, linked FAQ answers before long original images. */
+body[data-neighborhood-phase5] [data-faq-role] details{border-bottom:1px solid #d6cbbd;padding:15px 0}
+body[data-neighborhood-phase5] [data-faq-role] summary{cursor:pointer;font-size:18px;font-weight:700;line-height:1.65;overflow-wrap:anywhere}
+body[data-neighborhood-phase5] [data-faq-role] summary:focus-visible{outline:3px solid #9a4629;outline-offset:5px}
+body[data-neighborhood-phase5] [data-faq-role] details p{margin:12px 0;line-height:1.85;overflow-wrap:anywhere}
+body[data-neighborhood-phase5] .ns-faq-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+body[data-neighborhood-phase5] .ns-faq-links .ns-link{max-width:100%;min-height:44px;box-sizing:border-box;overflow-wrap:anywhere}
+@media(max-width:760px){body[data-neighborhood-phase5] [data-faq-role] summary{font-size:17px}body[data-neighborhood-phase5] .ns-faq-links{display:grid;grid-template-columns:minmax(0,1fr)}}
+
+/* Phase 6: confirmation status on links to enrollment pages with empty grade data. */
+.ns-grade-confirm-link{display:inline-flex!important;flex-direction:column;align-items:flex-start!important;justify-content:center;gap:4px;min-width:0;min-height:44px;max-width:100%;box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;color:#79381e!important;background:#fff!important;text-align:left}
+.ns-grade-confirm-link:hover,.ns-grade-confirm-link:focus-visible{color:#79381e!important;background:#fff1e2!important}
+.ns-grade-confirm-link:focus-visible{outline:3px solid #9a4629;outline-offset:3px}
+.ns-grade-confirm-label{max-width:100%;color:inherit;white-space:normal;overflow-wrap:anywhere}
+.ns-grade-confirm-status{display:block;max-width:100%;padding:2px 7px;border:1px solid #c5a967;border-radius:5px;background:#fff4d6;color:#593b00;font-size:12px;font-weight:600;line-height:1.6;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box}
+
+/* Phase 7: purpose-based neighborhood finder on existing index pages. */
+.nf-section{background:#fbf7ef;padding:32px 0;scroll-margin-top:110px}
+.nf-section [hidden]{display:none!important}
+.nf-section h2{font-size:28px;line-height:1.5;margin:0 0 14px;overflow-wrap:anywhere}
+.nf-section p{line-height:1.8;margin:10px 0;overflow-wrap:anywhere}
+.nf-purpose-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0}
+.nf-purpose-grid article{min-width:0;padding:18px;border:1px solid #ddd0b9;border-radius:10px;background:white}
+.nf-purpose-grid h3,.nf-result h3{font-size:18px;line-height:1.6;margin:0 0 8px;overflow-wrap:anywhere}
+.nf-purpose-grid p{font-size:14px}
+.nf-form{padding:22px;border:1px solid #d3c5b0;border-radius:12px;background:#fff}
+.nf-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.nf-field{display:block;min-width:0;font-weight:700;font-size:15px;color:#493c30}
+.nf-field input,.nf-field select{display:block;width:100%;min-width:0;max-width:100%;min-height:46px;margin-top:7px;padding:10px;border:1px solid #a69276;border-radius:6px;background:#fff;color:#292923;font:inherit;box-sizing:border-box}
+.nf-field input:focus-visible,.nf-field select:focus-visible,.nf-link:focus-visible{outline:3px solid #9a4629;outline-offset:3px}
+.nf-course-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;grid-column:1/-1}
+.nf-message{font-size:14px;color:#5e5144;min-height:26px}
+.nf-result{border-top:2px solid #c9ae89;margin-top:18px;padding-top:20px}
+.nf-results,.nf-follow{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.nf-link{display:inline-flex;align-items:center;min-width:0;min-height:44px;max-width:100%;padding:10px 14px;border:1px solid #cbbfaa;border-radius:8px;box-sizing:border-box;color:#79381e;background:white;font-size:15px;font-weight:700;line-height:1.6;text-decoration:none;white-space:normal;overflow-wrap:anywhere}
+.nf-link:hover{color:#79381e;background:#fff1e2}
+.nf-note{font-size:14px}
+.nf-follow .nf-link{font-size:14px;font-weight:500}
+@media(max-width:760px){.nf-section{padding:24px 0;scroll-margin-top:210px}.nf-section h2{font-size:24px}.nf-purpose-grid{grid-template-columns:1fr;gap:10px}.nf-purpose-grid article{padding:14px}.nf-fields{grid-template-columns:1fr}.nf-course-fields{grid-column:auto}.nf-form{padding:16px}.nf-results,.nf-follow{display:grid;grid-template-columns:minmax(0,1fr)}}
