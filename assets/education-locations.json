@@ -1,0 +1,3386 @@
+[
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "강릉교동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%EA%B0%95%EB%A6%89%EA%B5%90%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "단구점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%EB%8B%A8%EA%B5%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "석사점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%EC%84%9D%EC%82%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "원주시청점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%EC%9B%90%EC%A3%BC%EC%8B%9C%EC%B2%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "혁신점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%ED%98%81%EC%8B%A0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "강원",
+    "label": "후평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/%ED%9B%84%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "강릉교동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%95%EB%A6%89%EA%B5%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "개운동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%9C%EC%9A%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "단계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A8%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "단구동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A8%EA%B5%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "명륜동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AA%85%EB%A5%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "무실동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AC%B4%EC%8B%A4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "반곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "석사동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9D%EC%82%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "원주혁신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%90%EC%A3%BC%ED%98%81%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "퇴계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%87%B4%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "강원",
+    "label": "후평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%9B%84%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "갈매점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B0%88%EB%A7%A4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "갈산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B0%88%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "고잔점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B3%A0%EC%9E%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "광명점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B4%91%EB%AA%85%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "교하점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B5%90%ED%95%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "금릉점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B8%88%EB%A6%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "기흥구청점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B8%B0%ED%9D%A5%EA%B5%AC%EC%B2%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "다산도농점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8B%A4%EC%82%B0%EB%8F%84%EB%86%8D%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "다산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "다산지금점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A7%80%EA%B8%88%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "단대점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8B%A8%EB%8C%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "덕이점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8D%95%EC%9D%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "동백점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8F%99%EB%B0%B1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "동탄목동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8F%99%ED%83%84%EB%AA%A9%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "동탄호수점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%8F%99%ED%83%84%ED%98%B8%EC%88%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "마두점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%A7%88%EB%91%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "망포점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%A7%9D%ED%8F%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "명지대역점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%AA%85%EC%A7%80%EB%8C%80%EC%97%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "목감점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%AA%A9%EA%B0%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "미금점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%AF%B8%EA%B8%88%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "미사점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%AF%B8%EC%82%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "반달점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B0%98%EB%8B%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "반송점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B0%98%EC%86%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "배곧점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B0%B0%EA%B3%A7%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "범박점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B2%94%EB%B0%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "별가람점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B3%84%EA%B0%80%EB%9E%8C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "별내점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B3%84%EB%82%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "별내중앙점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B3%84%EB%82%B4%EC%A4%91%EC%95%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "병점점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B3%91%EC%A0%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "보라점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B3%B4%EB%9D%BC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "봉담점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B4%89%EB%8B%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "부발점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B6%80%EB%B0%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "비산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B9%84%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "비전점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EB%B9%84%EC%A0%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "사우점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%82%AC%EC%9A%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "산내점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%82%B0%EB%82%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "산본점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%82%B0%EB%B3%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "삼송점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%82%BC%EC%86%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "상동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%83%81%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "상현점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%83%81%ED%98%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "서수원점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%84%9C%EC%88%98%EC%9B%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "세교점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%84%B8%EA%B5%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "센트럴점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%84%BC%ED%8A%B8%EB%9F%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "소하점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%86%8C%ED%95%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "수지점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%88%98%EC%A7%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "수진점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%88%98%EC%A7%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "시흥대야점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%8B%9C%ED%9D%A5%EB%8C%80%EC%95%BC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "신곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%8B%A0%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "신봉점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%8B%A0%EB%B4%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "신중동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%8B%A0%EC%A4%91%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "야탑점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%95%BC%ED%83%91%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "영천점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%81%EC%B2%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "영통구청점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%81%ED%86%B5%EA%B5%AC%EC%B2%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "영통점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%81%ED%86%B5%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "오산대역점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%A4%EC%82%B0%EB%8C%80%EC%97%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "오산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%A4%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "옥길스타점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%A5%EA%B8%B8%EC%8A%A4%ED%83%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "옥길점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%A5%EA%B8%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "옥정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%98%A5%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "용인백현점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9A%A9%EC%9D%B8%EB%B0%B1%ED%98%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "운양점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9A%B4%EC%96%91%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "운정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9A%B4%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "운정중앙점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9A%B4%EC%A0%95%EC%A4%91%EC%95%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "운정호수점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9A%B4%EC%A0%95%ED%98%B8%EC%88%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "원당점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9B%90%EB%8B%B9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "원흥점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9B%90%ED%9D%A5%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "위례창곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9C%84%EB%A1%80%EC%B0%BD%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "이매점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9D%B4%EB%A7%A4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "이충점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9D%B4%EC%B6%A9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "인창점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9D%B8%EC%B0%BD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "장곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9E%A5%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "장기점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%9E%A5%EA%B8%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "주엽점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%A3%BC%EC%97%BD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "중동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%A4%91%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "중산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%A4%91%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "진접점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%A7%84%EC%A0%91%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "천천점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%B2%9C%EC%B2%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "철산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EC%B2%A0%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "탄벌점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%83%84%EB%B2%8C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "탄현점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%83%84%ED%98%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "퇴계원점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%87%B4%EA%B3%84%EC%9B%90%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "평내점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%8F%89%EB%82%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "풍동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%92%8D%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "하남풍산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%95%98%EB%82%A8%ED%92%8D%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "행신점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%96%89%EC%8B%A0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "향남점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%96%A5%EB%82%A8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "호매실점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%98%B8%EB%A7%A4%EC%8B%A4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "호평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%98%B8%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "화성태안점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%99%94%EC%84%B1%ED%83%9C%EC%95%88%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "화정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%99%94%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "후곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%9B%84%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경기",
+    "label": "흥덕점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%ED%9D%A5%EB%8D%95%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "갈매동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%88%EB%A7%A4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "갈산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%88%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "경안동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B2%BD%EC%95%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "고잔동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%A0%EC%9E%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "광명동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%91%EB%AA%85%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "괴안동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%B4%EC%95%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "교문동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%90%EB%AC%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "교하",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%90%ED%95%98/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "구갈동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EA%B0%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "구미동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EB%AF%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "권선동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B6%8C%EC%84%A0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금광동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EA%B4%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금릉",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EB%A6%89/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금오동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EC%98%A4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "금촌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%88%EC%B4%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "김량장동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B9%80%EB%9F%89%EC%9E%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "내삼미동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%82%B4%EC%82%BC%EB%AF%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "다산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A4%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "다산신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A4%EC%82%B0%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "단대동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A8%EB%8C%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "대야동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%EC%95%BC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "대화동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%ED%99%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "덕이동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8D%95%EC%9D%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "덕이지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8D%95%EC%9D%B4%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "덕풍동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8D%95%ED%92%8D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "도농동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EB%86%8D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "동구동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EA%B5%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "동백동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EB%B0%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "동삭동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EC%82%AD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "동탄목동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%ED%83%84%EB%AA%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "동패동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%ED%8C%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "마두동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%88%EB%91%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "마산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%88%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "망월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%9D%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "망포동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%9D%ED%8F%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "매탄동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%A4%ED%83%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "목감",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AA%A9%EA%B0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "목동동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AA%A9%EB%8F%99%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "미금",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AF%B8%EA%B8%88/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "미사",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AF%B8%EC%82%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "미사신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AF%B8%EC%82%AC%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "반달마을",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EB%8B%AC%EB%A7%88%EC%9D%84/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "반송동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EC%86%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "배곧",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%B0%EA%B3%A7/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "배곧동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%B0%EA%B3%A7%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "백석동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%B1%EC%84%9D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "범박동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B2%94%EB%B0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "별내",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%84%EB%82%B4/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "별내동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%84%EB%82%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "별내신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%84%EB%82%B4%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "별내중앙",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%84%EB%82%B4%EC%A4%91%EC%95%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "병점",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%91%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "병점동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%91%EC%A0%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "보라동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%B4%EB%9D%BC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "봉담2지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EB%8B%B42%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "봉담읍",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EB%8B%B4%EC%9D%8D/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "부발읍",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EB%B0%9C%EC%9D%8D/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "부산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "부천 상동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EC%B2%9C%EC%83%81%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "부천 중동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EC%B2%9C%EC%A4%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "북변동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%81%EB%B3%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "비산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B9%84%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "비전동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B9%84%EC%A0%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "사우동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%AC%EC%9A%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "산내마을",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EB%82%B4%EB%A7%88%EC%9D%84/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "산본동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EB%B3%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "산척동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EC%B2%99%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "삼송",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%BC%EC%86%A1/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "삼송동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%BC%EC%86%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "상대원동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%EB%8C%80%EC%9B%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "상현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "서정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9C%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "석우동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9D%EC%9A%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "성남 금곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EB%82%A8%EA%B8%88%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "성남동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EB%82%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "성복동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EB%B3%B5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "성사동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EC%82%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "세교",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B8%EA%B5%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "소사벌",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%8C%EC%82%AC%EB%B2%8C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "소사본동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%8C%EC%82%AC%EB%B3%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "소하동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%8C%ED%95%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "송동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "송탄",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%ED%83%84/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "수원 금곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%9B%90%EA%B8%88%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "수진동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%A7%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "수청동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%B2%AD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "수택동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%ED%83%9D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "식사동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%9D%EC%82%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "신갈동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EA%B0%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "신곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "신봉동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%B4%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "신원동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%9B%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "신중동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%A4%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "심곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%AC%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "안양동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%88%EC%96%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "안흥동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%88%ED%9D%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "야당동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%BC%EB%8B%B9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "야탑",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%BC%ED%83%91/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "야탑동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%BC%ED%83%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "약대동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%BD%EB%8C%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "여수동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%AC%EC%88%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "역북동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%AD%EB%B6%81%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "영덕동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%81%EB%8D%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "영천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%81%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "영통동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%81%ED%86%B5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "오산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A4%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "옥길동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A5%EA%B8%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "옥정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A5%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "옥정신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A5%EC%A0%95%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "용인 중동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%A9%EC%9D%B8%EC%A4%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "운양동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B4%EC%96%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "운정",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B4%EC%A0%95/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "운정신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B4%EC%A0%95%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "운정중앙",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B4%EC%A0%95%EC%A4%91%EC%95%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "운정호수",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B4%EC%A0%95%ED%98%B8%EC%88%98/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "원동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "원흥동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%90%ED%9D%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "은계지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%80%EA%B3%84%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "은행동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%80%ED%96%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "이매동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B4%EB%A7%A4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "이충동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B4%EC%B6%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "인창동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B8%EC%B0%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "일산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%BC%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "일직동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%BC%EC%A7%81%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "장곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "장기동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%EA%B8%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "장지동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%EC%A7%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "장항동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%ED%95%AD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "장현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "정발산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%95%EB%B0%9C%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "정왕동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%95%EC%99%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "정자동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%95%EC%9E%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "조남동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A1%B0%EB%82%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "주교동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A3%BC%EA%B5%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "주엽동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A3%BC%EC%97%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "죽백동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A3%BD%EB%B0%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "중산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A4%91%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "진안동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%84%EC%95%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "진접읍",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%84%EC%A0%91%EC%9D%8D/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "천천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%9C%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "철산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%A0%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "청계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%AD%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "초지동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B4%88%EC%A7%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "탄벌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%83%84%EB%B2%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "탄현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%83%84%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "토당동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%86%A0%EB%8B%B9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "퇴계원읍",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%87%B4%EA%B3%84%EC%9B%90%EC%9D%8D/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "평내동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%8F%89%EB%82%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "풍덕천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%92%8D%EB%8D%95%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "풍동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%92%8D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "풍산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%92%8D%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "하대원동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%95%98%EB%8C%80%EC%9B%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "하안동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%95%98%EC%95%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "행신동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%96%89%EC%8B%A0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "향남읍",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%96%A5%EB%82%A8%EC%9D%8D/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "호매실",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%98%B8%EB%A7%A4%EC%8B%A4/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "호매실동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%98%B8%EB%A7%A4%EC%8B%A4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "호평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%98%B8%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "화성태안",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EC%84%B1%ED%83%9C%EC%95%88/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "화정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "후곡마을",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%9B%84%EA%B3%A1%EB%A7%88%EC%9D%84/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경기",
+    "label": "흥덕마을",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%9D%A5%EB%8D%95%EB%A7%88%EC%9D%84/"
+  },
+  {
+    "kind": "center",
+    "region": "경남",
+    "label": "거제수월점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%82%A8/%EA%B1%B0%EC%A0%9C%EC%88%98%EC%9B%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경남",
+    "label": "상남점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%82%A8/%EC%83%81%EB%82%A8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경남",
+    "label": "석동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%82%A8/%EC%84%9D%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "경화동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B2%BD%ED%99%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "고현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%A0%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "사파동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%AC%ED%8C%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "상남동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%EB%82%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "석동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "수월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "신월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "양정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%96%91%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경남",
+    "label": "자은동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%90%EC%9D%80%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "경북",
+    "label": "두호점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%B6%81/%EB%91%90%ED%98%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경북",
+    "label": "사동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%B6%81/%EC%82%AC%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경북",
+    "label": "양덕점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%B6%81/%EC%96%91%EB%8D%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경북",
+    "label": "옥계점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%B6%81/%EC%98%A5%EA%B3%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "경북",
+    "label": "정평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EB%B6%81/%EC%A0%95%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "경산사동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B2%BD%EC%82%B0%EC%82%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "두호동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%91%90%ED%98%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "양덕동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%96%91%EB%8D%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "옥계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A5%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "옥산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A5%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "장량동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%EB%9F%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "장성동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%A5%EC%84%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "경북",
+    "label": "정평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%95%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "선운점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%84%A0%EC%9A%B4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "수완점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%88%98%EC%99%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "신창점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%8B%A0%EC%B0%BD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "진월점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%A7%84%EC%9B%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "첨단점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%B2%A8%EB%8B%A8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "광주",
+    "label": "치평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B4%91%EC%A3%BC/%EC%B9%98%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "산월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "상무지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%EB%AC%B4%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "선암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%A0%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "수완동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%99%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "수완지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%99%84%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "신가동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EA%B0%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "신창동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%B0%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "신창지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%B0%BD%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "쌍암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8C%8D%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "월계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%94%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "주월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A3%BC%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "진월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%84%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "첨단",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%A8%EB%8B%A8/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "첨단지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%A8%EB%8B%A8%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "광주",
+    "label": "치평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%98%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "대구도남점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EB%8C%80%EA%B5%AC%EB%8F%84%EB%82%A8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "대구역점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EB%8C%80%EA%B5%AC%EC%97%AD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "대구장기점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EB%8C%80%EA%B5%AC%EC%9E%A5%EA%B8%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "반월당점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EB%B0%98%EC%9B%94%EB%8B%B9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "복현점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EB%B3%B5%ED%98%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "수성2가점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%88%98%EC%84%B12%EA%B0%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "수성만촌점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%88%98%EC%84%B1%EB%A7%8C%EC%B4%8C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "신월성점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%8B%A0%EC%9B%94%EC%84%B1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "알파시티점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%95%8C%ED%8C%8C%EC%8B%9C%ED%8B%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "율하점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%9C%A8%ED%95%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "이곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%9D%B4%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "이시아폴리스점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%9D%B4%EC%8B%9C%EC%95%84%ED%8F%B4%EB%A6%AC%EC%8A%A4%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "진천점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%A7%84%EC%B2%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "칠곡점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%B9%A0%EA%B3%A1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대구",
+    "label": "침산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EA%B5%AC/%EC%B9%A8%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "감삼동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%90%EC%82%BC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "고성동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%A0%EC%84%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "구암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "국우동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AD%EC%9A%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "노변동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%85%B8%EB%B3%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "대구 유천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%EA%B5%AC%EC%9C%A0%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "대구 장기동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%EA%B5%AC%EC%9E%A5%EA%B8%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "대봉동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%EB%B4%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "도남동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EB%82%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "도남지구",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EB%82%A8%EC%A7%80%EA%B5%AC/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "동천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "만촌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%8C%EC%B4%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "범어동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B2%94%EC%96%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "복현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%B5%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "본리동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%B8%EB%A6%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "봉무동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EB%AC%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "봉산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "산격동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EA%B2%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "상인동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%EC%9D%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "성서",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EC%84%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "수성동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%84%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "수창동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EC%B0%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "시지동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%9C%EC%A7%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "신기동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EA%B8%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "신당동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%8B%B9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "신월성",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%9B%94%EC%84%B1/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "신천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "용산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%A9%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "월성동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%94%EC%84%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "율하동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9C%A8%ED%95%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "이곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B4%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "이시아폴리스",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B4%EC%8B%9C%EC%95%84%ED%8F%B4%EB%A6%AC%EC%8A%A4/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "죽전동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A3%BD%EC%A0%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "진천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%84%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "칠곡",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%A0%EA%B3%A1/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "칠성동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%A0%EC%84%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대구",
+    "label": "침산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%A8%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "관저점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EA%B4%80%EC%A0%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "관평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EA%B4%80%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "도안점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EB%8F%84%EC%95%88%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "둔산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EB%91%94%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "반석점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EB%B0%98%EC%84%9D%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "송촌점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EC%86%A1%EC%B4%8C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "지족점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%EC%A7%80%EC%A1%B1%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "대전",
+    "label": "태평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%8C%80%EC%A0%84/%ED%83%9C%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "관저동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%80%EC%A0%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "관평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%80%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "노은동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%85%B8%EC%9D%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "도마동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EB%A7%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "도안동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EC%95%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "도안신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%84%EC%95%88%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "둔산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%91%94%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "반석동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EC%84%9D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "법동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B2%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "비래동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B9%84%EB%9E%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "송강동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EA%B0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "송촌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EC%B4%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "원내동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%90%EB%82%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "원신흥동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9B%90%EC%8B%A0%ED%9D%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "유천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9C%A0%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "지족동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%80%EC%A1%B1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "탄방동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%83%84%EB%B0%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "대전",
+    "label": "태평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%83%9C%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "부산",
+    "label": "동래점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%B6%80%EC%82%B0/%EB%8F%99%EB%9E%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "부산",
+    "label": "반여점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%B6%80%EC%82%B0/%EB%B0%98%EC%97%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "부산",
+    "label": "사직점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%B6%80%EC%82%B0/%EC%82%AC%EC%A7%81%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "부산",
+    "label": "좌동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%B6%80%EC%82%B0/%EC%A2%8C%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "부산",
+    "label": "화명점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EB%B6%80%EC%82%B0/%ED%99%94%EB%AA%85%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "거제동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B1%B0%EC%A0%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "반여동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EC%97%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "사직동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%AC%EC%A7%81%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "온천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%98%A8%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "재송동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9E%AC%EC%86%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "좌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A2%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "해운대 중동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%95%B4%EC%9A%B4%EB%8C%80%EC%A4%91%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "화명동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EB%AA%85%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "부산",
+    "label": "화명신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EB%AA%85%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "가좌점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EA%B0%80%EC%A2%8C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "광장점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EA%B4%91%EC%9E%A5%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "구산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EA%B5%AC%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "금천점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EA%B8%88%EC%B2%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "내발산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%82%B4%EB%B0%9C%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "당산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%8B%B9%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "돈암점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%8F%88%EC%95%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "동소문점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%8F%99%EC%86%8C%EB%AC%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "마포2호점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%A7%88%ED%8F%AC2%ED%98%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "마포점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%A7%88%ED%8F%AC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "명일점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%AA%85%EC%9D%BC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "목동점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EB%AA%A9%EB%8F%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "삼각산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%82%BC%EA%B0%81%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "상암점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%83%81%EC%95%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "송파위례점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%86%A1%ED%8C%8C%EC%9C%84%EB%A1%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "신도림점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%8B%A0%EB%8F%84%EB%A6%BC%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "신방화점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%8B%A0%EB%B0%A9%ED%99%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "염창점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%97%BC%EC%B0%BD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "위례점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "은평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9D%80%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "제기점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%A0%9C%EA%B8%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "종암점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%A2%85%EC%95%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "서울",
+    "label": "하계점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%ED%95%98%EA%B3%84%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "갈현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%88%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "공덕동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%B5%EB%8D%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "광장동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%91%EC%9E%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "구산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "구의동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EC%9D%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "구파발",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%ED%8C%8C%EB%B0%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "길음동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B8%B8%EC%9D%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "남가좌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%82%A8%EA%B0%80%EC%A2%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "내발산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%82%B4%EB%B0%9C%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "당산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%B9%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "돈암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%88%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "동소문동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EC%86%8C%EB%AC%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "등촌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%93%B1%EC%B4%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "마곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%A7%88%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "명일동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AA%85%EC%9D%BC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "목동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AA%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "미아동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%AF%B8%EC%95%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "방화동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%A9%ED%99%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "북가좌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%81%EA%B0%80%EC%A2%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "삼각산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%BC%EA%B0%81%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "상암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%81%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "시흥동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%9C%ED%9D%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "신도림동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%8F%84%EB%A6%BC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "신방화",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%B0%A9%ED%99%94/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "신수동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%88%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "신정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "양평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%96%91%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "역촌동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%AD%EC%B4%8C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "염리동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%BC%EB%A6%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "염창동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%BC%EC%B0%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "용강동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%A9%EA%B0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "용두동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%A9%EB%91%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "위례",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9C%84%EB%A1%80/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "위례신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9C%84%EB%A1%80%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "제기동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%9C%EA%B8%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "종암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A2%85%EC%95%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "중계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A4%91%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "진관동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A7%84%EA%B4%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "창곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B0%BD%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "천호동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%9C%ED%98%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "하계동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%95%98%EA%B3%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "서울",
+    "label": "화곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "세종",
+    "label": "새롬점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%B8%EC%A2%85/%EC%83%88%EB%A1%AC%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "세종",
+    "label": "다정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%A4%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "세종",
+    "label": "새롬동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%83%88%EB%A1%AC%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "울산",
+    "label": "남외점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9A%B8%EC%82%B0/%EB%82%A8%EC%99%B8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "울산",
+    "label": "복산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9A%B8%EC%82%B0/%EB%B3%B5%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "울산",
+    "label": "삼산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9A%B8%EC%82%B0/%EC%82%BC%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "울산",
+    "label": "송정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9A%B8%EC%82%B0/%EC%86%A1%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "남외동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%82%A8%EC%99%B8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "달동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "반구동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B0%98%EA%B5%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "병영동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%91%EC%98%81%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "복산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%B5%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "송정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "약사동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%95%BD%EC%82%AC%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "울산 삼산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B8%EC%82%B0%EC%82%BC%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "울산",
+    "label": "화봉동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%99%94%EB%B4%89%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "구월점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EA%B5%AC%EC%9B%94%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "논현점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EB%85%BC%ED%98%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "동춘점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EB%8F%99%EC%B6%98%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "루원시티점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EB%A3%A8%EC%9B%90%EC%8B%9C%ED%8B%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "부평점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EB%B6%80%ED%8F%89%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "송도점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EC%86%A1%EB%8F%84%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "웰카운티점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EC%9B%B0%EC%B9%B4%EC%9A%B4%ED%8B%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "인천삼산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EC%9D%B8%EC%B2%9C%EC%82%BC%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "인천",
+    "label": "청라점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%9D%B8%EC%B2%9C/%EC%B2%AD%EB%9D%BC%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "가정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%80%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "관교동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%80%EA%B5%90%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "구월동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B5%AC%EC%9B%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "논현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%85%BC%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "동춘동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8F%99%EC%B6%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "부개동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EA%B0%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "부평동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%ED%8F%89%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "산곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "삼산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%BC%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "송도",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EB%8F%84/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "송도동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EB%8F%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "신현동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%ED%98%84%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "연수동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%B0%EC%88%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "인천 갈산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B8%EC%B2%9C%EA%B0%88%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "인천",
+    "label": "청라",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%AD%EB%9D%BC/"
+  },
+  {
+    "kind": "center",
+    "region": "전북",
+    "label": "서신점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%A0%84%EB%B6%81/%EC%84%9C%EC%8B%A0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "전북",
+    "label": "송천점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%A0%84%EB%B6%81/%EC%86%A1%EC%B2%9C%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "전북",
+    "label": "전주혁신점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%A0%84%EB%B6%81/%EC%A0%84%EC%A3%BC%ED%98%81%EC%8B%A0%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "서신동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9C%EC%8B%A0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "송천동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%86%A1%EC%B2%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "전주 장동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%84%EC%A3%BC%EC%9E%A5%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "전주혁신도시",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%84%EC%A3%BC%ED%98%81%EC%8B%A0%EB%8F%84%EC%8B%9C/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "중화산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A4%91%ED%99%94%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "전북",
+    "label": "효자동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%9A%A8%EC%9E%90%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "제주",
+    "label": "노형점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%A0%9C%EC%A3%BC/%EB%85%B8%ED%98%95%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "제주",
+    "label": "노형동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%85%B8%ED%98%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "제주",
+    "label": "연동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%97%B0%EB%8F%99/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "당진중앙점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%EB%8B%B9%EC%A7%84%EC%A4%91%EC%95%99%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "두정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%EB%91%90%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "불당점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%EB%B6%88%EB%8B%B9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "신방점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%EC%8B%A0%EB%B0%A9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "쌍용점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%EC%8C%8D%EC%9A%A9%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충남",
+    "label": "탕정점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%82%A8/%ED%83%95%EC%A0%95%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "당진 읍내동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8B%B9%EC%A7%84%EC%9D%8D%EB%82%B4%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "두정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%91%90%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "봉명동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EB%AA%85%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "불당동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%88%EB%8B%B9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "성정동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%EC%A0%95%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "신방동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%B0%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "신불당",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8B%A0%EB%B6%88%EB%8B%B9/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "쌍용동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%8C%8D%EC%9A%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "용곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%A9%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "천안 백석동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B2%9C%EC%95%88%EB%B0%B1%EC%84%9D%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충남",
+    "label": "탕정",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%83%95%EC%A0%95/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "가경점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EA%B0%80%EA%B2%BD%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "개신점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EA%B0%9C%EC%8B%A0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "복대점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EB%B3%B5%EB%8C%80%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "산남점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EC%82%B0%EB%82%A8%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "충주용산점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EC%B6%A9%EC%A3%BC%EC%9A%A9%EC%82%B0%EC%A0%90/"
+  },
+  {
+    "kind": "center",
+    "region": "충북",
+    "label": "칠금점",
+    "path": "/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%B6%A9%EB%B6%81/%EC%B9%A0%EA%B8%88%EC%A0%90/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "가경동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%80%EA%B2%BD%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "강서동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%95%EC%84%9C%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "개신동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%9C%EC%8B%A0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "복대동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B3%B5%EB%8C%80%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "봉방동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B4%89%EB%B0%A9%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "비하동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B9%84%ED%95%98%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "산남동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%82%B0%EB%82%A8%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "성화동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%B1%ED%99%94%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "수곡동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%88%98%EA%B3%A1%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "충주 용산동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B6%A9%EC%A3%BC%EC%9A%A9%EC%82%B0%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "칠금동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%A0%EA%B8%88%EB%8F%99/"
+  },
+  {
+    "kind": "neighborhood",
+    "region": "충북",
+    "label": "호암동",
+    "path": "/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%ED%98%B8%EC%95%94%EB%8F%99/"
+  }
+]
