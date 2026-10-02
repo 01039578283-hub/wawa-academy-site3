@@ -1,0 +1,2 @@
+# Blank worksheet answer lines intentionally retain their single separator space.
+assets/learning-guide-worksheets/*.txt whitespace=-blank-at-eol

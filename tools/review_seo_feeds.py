@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from lxml import etree, html
 from email.utils import parsedate_to_datetime
-from improve_neighborhood_phase9 import body, spaced, identity
+from seo_feed_content import body, spaced, identity
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://xn--sp5b72l1taf0p.com'
