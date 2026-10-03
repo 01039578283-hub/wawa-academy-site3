@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "domain": "https://xn--sp5b72l1taf0p.com",
-  "reviewedAt": "2026-10-03T09:07:02.441379+09:00",
+  "reviewedAt": "2026-10-03T12:16:42.314972+09:00",
   "policy": "Review-only ledger. Public content/dates are never rewritten. Hashes accept CRLF/LF only. Node build checks these independently of the release manifest; refresh only after all current RSS bodies and sitemap metadata pass this review.",
   "htmlPages": 8784,
   "sitemap": {
@@ -1408,8 +1408,8 @@
       "pageModifiedDates": [
         "2026-10-03"
       ],
-      "sourceTextSha256": "0dd60c05807fc782dafbed61e36e3fdf2f3904ee5877b238303c387c92dc484f",
-      "builtTextSha256": "85a87d5118d85bc0359dbb5ca58697f10f6dff2d5167cc1d19bfd8a6b9a9cf42"
+      "sourceTextSha256": "51489771f1077cd11671f5fbe4a6a0a88f38022b50ca0023d0db27c261770fbc",
+      "builtTextSha256": "7a3ac6e43fee4128ff3f37d5498cd4e00cc46fa1228029bc3a68405e21c84304"
     },
     "공부커리큘럼/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%B5%EB%B6%80%EC%BB%A4%EB%A6%AC%ED%81%98%EB%9F%BC/",

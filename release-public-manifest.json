@@ -1,6 +1,6 @@
 {
   "domain": "코칭학원.com",
-  "createdAt": "2026-10-02T19:41:49+09:00",
+  "createdAt": "2026-10-03T12:14:15+09:00",
   "sitemapPages": 8784,
   "files": {
     "assets/branch-guide/directory.css": "8dc2049fb0ce786dad1b294f64c2825fe024c2acf1a0ab89db3dfd2128cca225",
@@ -2378,7 +2378,7 @@
     "assets/teacher-profiles/representative-11.png": "fd4ea14222357a6ea87e4a521e2ed1a61d8e0d40b4bd831209daac15abc7a22a",
     "assets/teacher-profiles/representative-12.png": "3ee6af5e474f53eaf997d3ac30a34adae22e9f8515dd871a3d91aabf1f8a2448",
     "assets/title.png": "465d9afa2772954875143fc18e3edb0858f53ab322b2e99297e559189378c6e2",
-    "index.html": "0dd60c05807fc782dafbed61e36e3fdf2f3904ee5877b238303c387c92dc484f",
+    "index.html": "9f676706ae2585b8ee54d96d0b78a1f17a3915d4d7d24028f707f7c39a2df8fe",
     "llms.txt": "9515b29c4181abe4ab54ea52f0f17f6256804c8a441e20c5e8096327a8d1dbf9",
     "robots.txt": "3926c08c1ffa9f03b82eb68ce4281ac6c3e353ab395370969bbf4ceb8010e41d",
     "rss.xml": "f0a140a161ff4c4098bbed9d3012c4069608a4309e5deeea3ff80e6e9a123c77",
@@ -11165,7 +11165,10 @@
     "학습가이드/학원상담자료/index.html": "48fd68627193cbd476a3eda9b4d54bd94482fc6bfde354f023eacd70814d588f",
     "학습가이드/학원추가판단/index.html": "68ae294e82ebed1081794c8fd139157fbcf93848969bf6814cf9c8b5e0422490",
     "학습가이드/함수표그래프/index.html": "0be3810e6e4612cb5f28542a17e1c9610c38bf4c6e45090bee8b67cc4d8d36ab",
-    "학습관리/index.html": "844337a0f3a41a46ea5c94fc3d7366bfa653b488cdcc22650226719355ee42bf"
+    "학습관리/index.html": "844337a0f3a41a46ea5c94fc3d7366bfa653b488cdcc22650226719355ee42bf",
+    "assets/home-reference-20261003.css": "7fc74827e24e10c774373f36bffb0cb7b1f0d797e7e543e2ae188193e5cb3677",
+    "assets/home-reference-20261003/school-materials.png": "fc143db86235819186bfc4165b1dfe321c35b607585d5f270683366dd5bd0f40",
+    "assets/home-reference-20261003/planner-coaching.png": "5587900ff5db7e82b0458f22aac85cd161be90a5b97e113d4aeae97dc94acae8"
   },
   "textSha256": {
     "assets/branch-guide/directory.css": "de9393a487d15fae3783e7f5ffd164e1d19a0cf6661c760d40a404209cff0dcf",
@@ -11238,7 +11241,7 @@
     "assets/site.css": "15e3dbe0bbf228fa41efd1fca02c6fdc97dbb2d7951ba3b35b17ec0cb90ec697",
     "assets/teacher-finder.css": "b96efc468a4dba54a7bc56d64c6eaf512f6991a4df6d985e056a4db7ade3cde0",
     "assets/teacher-finder.js": "d966f85e872a191ab82a48558bfe44e6832b8e510fec30fc670042d9a44aae8c",
-    "index.html": "0dd60c05807fc782dafbed61e36e3fdf2f3904ee5877b238303c387c92dc484f",
+    "index.html": "51489771f1077cd11671f5fbe4a6a0a88f38022b50ca0023d0db27c261770fbc",
     "llms.txt": "69728241dcdcc9c0d8429a1519cc390377f31a457f2377e649fa72dd50df26e6",
     "robots.txt": "c4318a4f3c2380f93dd4bcf73b4537dd82b79224ef5687890a868b29ef664cc0",
     "rss.xml": "f0a140a161ff4c4098bbed9d3012c4069608a4309e5deeea3ff80e6e9a123c77",
@@ -20025,6 +20028,7 @@
     "학습가이드/학원상담자료/index.html": "48fd68627193cbd476a3eda9b4d54bd94482fc6bfde354f023eacd70814d588f",
     "학습가이드/학원추가판단/index.html": "68ae294e82ebed1081794c8fd139157fbcf93848969bf6814cf9c8b5e0422490",
     "학습가이드/함수표그래프/index.html": "0be3810e6e4612cb5f28542a17e1c9610c38bf4c6e45090bee8b67cc4d8d36ab",
-    "학습관리/index.html": "844337a0f3a41a46ea5c94fc3d7366bfa653b488cdcc22650226719355ee42bf"
+    "학습관리/index.html": "844337a0f3a41a46ea5c94fc3d7366bfa653b488cdcc22650226719355ee42bf",
+    "assets/home-reference-20261003.css": "7fc74827e24e10c774373f36bffb0cb7b1f0d797e7e543e2ae188193e5cb3677"
   }
 }

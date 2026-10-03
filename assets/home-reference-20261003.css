@@ -1,0 +1,57 @@
+/* Homepage learning explanations; all controls are ordinary HTML links. */
+.home-upgrade .hx-section[id]{padding:64px 0;scroll-margin-top:150px;color:#193632}
+.home-upgrade .hx-process[id]{scroll-margin-top:150px}
+.home-upgrade .hx-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:28px}
+.home-upgrade .hx-heading h2{margin:8px 0 0;font-size:clamp(27px,3.1vw,40px);line-height:1.35;letter-spacing:-.035em}
+.home-upgrade .hx-heading>p{max-width:380px;margin:0;color:#4d625b;line-height:1.85}
+.home-upgrade .hx-compare{background:#eef3ed;border-block:1px solid #dbe4d8}
+.home-upgrade .hx-table-box{border:1px solid #d6e1d4;border-radius:20px;background:#fff;overflow:hidden}
+.home-upgrade .hx-comparison{border-collapse:collapse;width:100%;table-layout:fixed;font-size:15px;line-height:1.8}
+.home-upgrade .hx-comparison caption{text-align:left;padding:18px 22px;font-size:14px;color:#53695e;background:#fbfcf8}
+.home-upgrade .hx-comparison th,.home-upgrade .hx-comparison td{padding:19px 22px;text-align:left;vertical-align:top;overflow-wrap:anywhere;border-top:1px solid #dbe4d8}
+.home-upgrade .hx-comparison thead th{background:#193c33;color:#fff;font-size:16px}
+.home-upgrade .hx-comparison thead th:first-child{width:19%}
+.home-upgrade .hx-comparison tbody th{background:#f8faf5;color:#265543;font-weight:700}
+.home-upgrade .hx-comparison td+td{background:#f1f6ed;border-left:1px solid #dbe4d8}
+.home-upgrade .hx-mobile-label{display:none}
+.home-upgrade .hx-note{font-size:14px;line-height:1.8;color:#53695e;margin:18px 0 0}
+.home-upgrade .hx-actions{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:24px}
+.home-upgrade .hx-link{display:inline-flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;padding:11px 16px;border:1px solid #a9bfa0;border-radius:12px;background:#fff;color:#265543;font-size:14px;line-height:1.7;font-weight:700;text-decoration:none}
+.home-upgrade .hx-link:hover{background:#e7efdf;border-color:#527249}
+.home-upgrade .hx-section a:focus-visible,.home-upgrade .hx-process a:focus-visible{outline:3px solid #225144;outline-offset:4px}
+.home-upgrade .hx-school{background:#fcfcf8}
+.home-upgrade .hx-two-column{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.home-upgrade .hx-photo{margin:0;min-width:0;background:#fff;border:1px solid #dbe4d8;border-radius:18px;overflow:hidden}
+.home-upgrade .hx-photo img{display:block;width:100%;height:auto}
+.home-upgrade .hx-photo figcaption{padding:13px 18px;color:#53695e;font-size:12px;line-height:1.7}
+.home-upgrade .hx-photo figcaption a{color:inherit;text-underline-offset:3px}
+.home-upgrade .hx-checks h3,.home-upgrade .hx-timeline-heading h3,.home-upgrade .hx-plan-example h3,.home-upgrade .hx-parent-questions h3{margin:0 0 16px;font-size:21px;line-height:1.5;letter-spacing:-.025em}
+.home-upgrade .hx-checks dl{margin:0}
+.home-upgrade .hx-checks dl>div{padding:15px 0;border-top:1px solid #dbe4d8}
+.home-upgrade .hx-checks dt{font-weight:700;margin-bottom:5px}
+.home-upgrade .hx-checks dd{margin:0;color:#4d625b;line-height:1.85;font-size:15px}
+.home-upgrade .hx-timeline-heading{margin-top:30px}
+.home-upgrade .hx-timeline-heading h3{margin-bottom:6px}
+.home-upgrade .hx-timeline-heading p{font-size:14px;color:#53695e;line-height:1.8;margin:0 0 16px}
+.home-upgrade .hx-timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;list-style:none;padding:0;margin:0}
+.home-upgrade .hx-timeline li{padding:22px;border:1px solid #dbe4d8;border-radius:16px;background:#fff}
+.home-upgrade .hx-timeline li>span{font-size:13px;font-weight:700;color:#527249}
+.home-upgrade .hx-timeline h4{font-size:18px;line-height:1.5;margin:8px 0}
+.home-upgrade .hx-timeline p{font-size:14px;line-height:1.8;color:#4d625b;margin:0}
+.home-upgrade .hx-planner{background:#f5f0e6;border-block:1px solid #e5decf}
+.home-upgrade .hx-planner-layout{grid-template-columns:1.12fr .88fr}
+.home-upgrade .hx-plan-example{border:1px solid #dbe4d8;border-radius:18px;background:#fff;padding:26px}
+.home-upgrade .hx-plan-example ol{list-style:none;margin:0;padding:0}
+.home-upgrade .hx-plan-example li{display:grid;grid-template-columns:54px 1fr;gap:12px;padding:12px 0;border-top:1px solid #e2e9de;font-size:15px;line-height:1.85}
+.home-upgrade .hx-plan-example li strong{color:#265543}
+.home-upgrade .hx-plan-example li span{color:#4d625b}
+.home-upgrade .hx-parent-questions{margin-top:24px}
+.home-upgrade .hx-parent-questions h3{margin-bottom:8px}
+.home-upgrade .hx-parent-questions ul{margin:0;padding-left:20px;color:#4d625b;font-size:15px;line-height:2}
+.home-upgrade .hx-process .process-card h3{font-size:21px;line-height:1.5}
+.home-upgrade .hx-process .process-card span{font-size:12px;letter-spacing:.015em}
+@media(max-width:900px){.home-upgrade .hx-section[id],.home-upgrade .hx-process[id]{scroll-margin-top:210px}.home-upgrade .hx-heading{flex-direction:column;align-items:flex-start;gap:16px}.home-upgrade .hx-heading>p{max-width:680px}.home-upgrade .hx-timeline{grid-template-columns:repeat(2,minmax(0,1fr))}.home-upgrade .hx-two-column{gap:22px}}
+@media(max-width:700px){.home-upgrade .hx-comparison,.home-upgrade .hx-comparison tbody{display:block}.home-upgrade .hx-comparison thead{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}.home-upgrade .hx-comparison tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid #dbe4d8}.home-upgrade .hx-comparison tbody th{grid-column:1/-1;padding:12px 18px;border-top:0}.home-upgrade .hx-comparison tbody td{padding:16px 18px;border-top:0;font-size:14px}.home-upgrade .hx-mobile-label{display:block;font-size:13px;font-weight:700;color:#265543;margin-bottom:7px}.home-upgrade .hx-comparison caption{display:block;padding:16px 18px}}
+@media(max-width:640px){.home-upgrade .hx-section[id]{padding:42px 0;scroll-margin-top:310px}.home-upgrade .hx-process[id]{scroll-margin-top:310px}.home-upgrade .hx-two-column,.home-upgrade .hx-planner-layout{grid-template-columns:1fr}.home-upgrade .hx-school .hx-photo{order:2}.home-upgrade .hx-planner-photo{max-width:420px;justify-self:center}.home-upgrade .hx-actions{flex-direction:column;align-items:stretch}.home-upgrade .hx-plan-example{padding:20px}.home-upgrade .hx-timeline li{padding:18px}.home-upgrade .hx-photo figcaption a{display:inline-flex;align-items:center;min-height:44px}.home-upgrade .hx-note{margin-top:14px}}
+@media(max-width:420px){.home-upgrade .hx-comparison tbody tr{grid-template-columns:1fr}.home-upgrade .hx-comparison tbody td+td{border-left:0;border-top:1px solid #dbe4d8}.home-upgrade .hx-timeline{grid-template-columns:1fr}}
+@media(forced-colors:active){.home-upgrade .hx-link,.home-upgrade .hx-table-box,.home-upgrade .hx-plan-example{border-color:ButtonText}.home-upgrade .hx-section a:focus-visible{outline-color:Highlight}}
