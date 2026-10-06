@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "domain": "https://xn--sp5b72l1taf0p.com",
-  "reviewedAt": "2026-10-06T12:33:12.911277+09:00",
+  "reviewedAt": "2026-10-06T13:11:46.464191+09:00",
   "policy": "Review-only ledger. Public content/dates are never rewritten. Hashes accept CRLF/LF only. Node build checks these independently of the release manifest; refresh only after all current RSS bodies and sitemap metadata pass this review.",
   "htmlPages": 8814,
   "sitemap": {
@@ -2548,8 +2548,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "975d71fac88d5a89bbf3f132aa04736393e21344b483e0e112ae599a465cbe16",
-      "builtTextSha256": "520d4f820f56a61d81dd1bec585cb486a36ee08c655a7656be31c5e3b60287c3"
+      "sourceTextSha256": "eda9f489e1d3469c5781025f1276ca25351476af95ef97999c5abf06eb7b70ef",
+      "builtTextSha256": "73c3319dfedfb3a0193a7c774de200a8ff141357c8bdc9b479e30e723f632596"
     },
     "과목별학원/고등학생학원/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1%ED%95%99%EC%83%9D%ED%95%99%EC%9B%90/",
@@ -2557,8 +2557,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "6db410167eaf765315b52c734888d10b6304863737106140fe04111177267153",
-      "builtTextSha256": "8a2d114c26b3e659522e8d211b2ec20eb0c9ddf4bf7b2d0fff4c07ac6e99728a"
+      "sourceTextSha256": "da24ed8f6d27c3053b615b48769f7ec91821db38e4f1c0e7eb534987abd3494c",
+      "builtTextSha256": "eb5d44fcdb8910c3fa3d6ad41fe06c9dda5b1d3ebf5cc41ba274c6fe2cb6da7d"
     },
     "과목별학원/고등학생학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1%ED%95%99%EC%83%9D%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -5905,8 +5905,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "3b0e3f5afd53973021ca1cdd413385d0eb237ba749a41983c5ddff74fc44e14d",
-      "builtTextSha256": "c47fb96d37382329f27ae4dabc7b886a2eb3fec77b719523c7ee1042a0b5859f"
+      "sourceTextSha256": "5a92769acd83e35c98b2940226ee7fb6ed3c5c61b96aa0a5a43c00b6fc0c3166",
+      "builtTextSha256": "b3b03ca67c1e83f2dbf40b693b6729af3f566661aec69611cbfa8af91ebd4981"
     },
     "과목별학원/수학전문학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%88%98%ED%95%99%EC%A0%84%EB%AC%B8%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -9253,8 +9253,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "0758bd0cfd377eebc208632f86c2bd9e2b5b2d0befcb669a731e36ca5e49a270",
-      "builtTextSha256": "5afbdda50400562d940487251ac21ee0e74726e59dc7414c81e043a9ad78333d"
+      "sourceTextSha256": "3e411aad50b24d1529238cbbedd967b25df7de4c8e5c9796e649104b54d1d5d2",
+      "builtTextSha256": "af1d55f8692423a3be2ac60980557243cf1acc1084216b44e6f159dc91257d6b"
     },
     "과목별학원/영수전문학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%98%81%EC%88%98%EC%A0%84%EB%AC%B8%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -12601,8 +12601,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "680f85f4341b6bba5cc2e7792d4ca09f49a6f686608ab7e75731d5523fb65f7f",
-      "builtTextSha256": "6a9c16639d8c446c18164f51debcb8ef21f65448eaa7f93f1eb00e567a64926c"
+      "sourceTextSha256": "ccca5d30a4a6af91145f2efc7c44a7cc2b204624ed690bc3b900c3179a68f341",
+      "builtTextSha256": "6c40a1816ed912c97f7d3b0b523303acb5bdbe7c157e9c8359529bbeb5415a98"
     },
     "과목별학원/영어전문학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%98%81%EC%96%B4%EC%A0%84%EB%AC%B8%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -15949,8 +15949,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "44add80ab78f0dc5016633c2989b56f51f3588470ccd6d4f76a5ef4599b2cc3c",
-      "builtTextSha256": "ea5cee393bb3226ed5514a5885deaddebc64248ecfbd54c66a3ad19acf048449"
+      "sourceTextSha256": "120d3732f39e7f4d0dbc23358419d06af9748b1d16063b7f3aa67916d9950884",
+      "builtTextSha256": "e6bb9ca86d96fd62d7b43ba53ae1942b2a858ed814b12e6a59b5e95f59c3fc76"
     },
     "과목별학원/전문학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%A0%84%EB%AC%B8%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -19297,8 +19297,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "e467e6759e6d59e1eb9a5265bced1db08eb1d59ae28e7678c700cba9a39b2893",
-      "builtTextSha256": "ddeb293add764cbdcdbaa0a14ba23d906b60c74af153dea10ce7198bc0204973"
+      "sourceTextSha256": "1528a5e7a13a60f59f76a75bb8d38d89c08ed4c19b51eaff16c2a303eef7cc51",
+      "builtTextSha256": "40323899e8e71dfe239e416b479bacc715d65fdac2e64c0e3b5fed343ee20108"
     },
     "과목별학원/중학생학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%A4%91%ED%95%99%EC%83%9D%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -22645,8 +22645,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "4410f37648527d468775c1ed1062b269476a2b6897fdcd7a429e1e5bc91c76c8",
-      "builtTextSha256": "709dd6c7adadb8ef1ada83e220d2f898842f032dfcd59fdb81fd88f31ee55bf1"
+      "sourceTextSha256": "6a4fd31fd8f88fee8dceedae780ca11caa4276dbb0d7eaa14fa15420102667ae",
+      "builtTextSha256": "da6ff8302a06e294509cbc42e70a59d2ee7815fc76b450e86971197598368de7"
     },
     "과목별학원/초등학생학원/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EA%B3%BC%EB%AA%A9%EB%B3%84%ED%95%99%EC%9B%90/%EC%B4%88%EB%93%B1%ED%95%99%EC%83%9D%ED%95%99%EC%9B%90/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -28405,8 +28405,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "41cd64972098d5d8c89c24d358d59b1f8655ee00c0ce70eddf0a54f10874f122",
-      "builtTextSha256": "9fb106dfea1b9b0907e607a3453980ff557056b1140106572b5378b41d797ebf"
+      "sourceTextSha256": "3c0a151e2558f46163ad7f74127d52e8594cf3e93018b6f3ad0250c179f93019",
+      "builtTextSha256": "82f025d5d7875f2f5e77e5ce46a1186928c8b2b55a51e9395bb74a315b7d29e2"
     },
     "전국센터/가경동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%80%EA%B2%BD%EB%8F%99/",
@@ -28918,8 +28918,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "e8dd34f7ab5b05eea70d11e4cdacb1d6acd869c02693236149c20e7b279cefc8",
-      "builtTextSha256": "8eeb434bc737b44cd76e3a956f809df6cc8fe9efb064a36d1bf95bb512a5c31b"
+      "sourceTextSha256": "689c4af66b154c49372c10f82bd381c3d8fca9938d3f9826e4aeb398eb7bef7c",
+      "builtTextSha256": "b8a7d2183104f66624eebbe8b30210ce4233a22e163b1fd74068f7d379246c33"
     },
     "전국센터/개신동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B0%9C%EC%8B%A0%EB%8F%99/",
@@ -29116,8 +29116,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "d3d02fdfdad35317f02c9b2aa71043ebf69a00b427cbc9c08f827c6780dd781d",
-      "builtTextSha256": "959eafa17ffe2911acc35551baddd614499a34ffbb2da8db9b602ca26a6cb9fd"
+      "sourceTextSha256": "925dfe945c10566a53115efe9f42a25f7bed18c95208ad0cdaf42d85f7602bc2",
+      "builtTextSha256": "e9799a1db6b6cf653845e690fb11d4989928e238f45782922d90ae2c8d0d9d05"
     },
     "전국센터/경산사동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B2%BD%EC%82%B0%EC%82%AC%EB%8F%99/",
@@ -29188,8 +29188,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "488975a99d370b5723b4abbbed07264b505c7a6757a82362313a12de3b28b730",
-      "builtTextSha256": "8677b5e92bd4ab937885bb2f0a3ab6b98828770a065ea7aaec73434b586484db"
+      "sourceTextSha256": "d637e2da94cd6aba1090fc9dd9763db6d17dd329783a858785af5662960c395f",
+      "builtTextSha256": "b38e816b41e5139d4d06a01a6f7d8de5fbbb846ff1a59209eef8d0e5466f7310"
     },
     "전국센터/경안동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B2%BD%EC%95%88%EB%8F%99/",
@@ -29323,8 +29323,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "e85c9f23605c57c9008472e76a4b75861bc567a3acc1f9616d08f2e7ee1f9bfa",
-      "builtTextSha256": "dc777de3a87f6eadb640b71d3fe9d14c8d05342372031dde10553e34fd585ea2"
+      "sourceTextSha256": "7400a8c35671ae847941fe2818e0ba2e85261526e5a30f61415beccbf0e4cfde",
+      "builtTextSha256": "7b7b392f560109279f4a1ffe4a2044d199d05ba1bc0b351ab8b5568fe93473ef"
     },
     "전국센터/고등영어학원/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%A0%EB%93%B1%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/",
@@ -29332,8 +29332,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "05e6b81413b54f646ce34e5e6a79c35a84e38e41740c9a97292a277d05031056",
-      "builtTextSha256": "bb289640d9c4a1bf71809c313430fdb4b58c422848978d9b83fbf1a8ba514fed"
+      "sourceTextSha256": "a49b46f59d695af07e29fe90c08ee45321b39fff46d0b71d89ad29199e928ed2",
+      "builtTextSha256": "83e0bb480975c8d1511b789cb1161fdebd1d1c9c1a27fc7b31e27f73711d846e"
     },
     "전국센터/고성동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B3%A0%EC%84%B1%EB%8F%99/",
@@ -29908,8 +29908,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "405c0624fb372a331fa3d85b481841416eebfa5a4edb1f82744f325337333039",
-      "builtTextSha256": "fe8593d5bf12ebbd880488c6f1e9303bd9dc508d0420fccec32daea0e3748b6f"
+      "sourceTextSha256": "b8222e53f38621bd616f8b67c8e4b4630e933b7f3f6425ced01a7cdd00dcd7b5",
+      "builtTextSha256": "b75062892a6b5c68daaf6038480fb7effb9c9a82dcbff19b14bd33e54e33d266"
     },
     "전국센터/괴안동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EA%B4%B4%EC%95%88%EB%8F%99/",
@@ -32311,8 +32311,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "fd21f1a436f90859d60791d5b9b2fd96f5d95bbc6ba84c9ad243d48e31e29bc4",
-      "builtTextSha256": "afc7591e8261412e28e8b709955526c1075f373a200cb8fbdd0ff7df51292ae4"
+      "sourceTextSha256": "ad4c36a4417784a59d952af524b2190118f921e3d7cfdb4fcf511ccf511f51a9",
+      "builtTextSha256": "ce0d36df0c16b61d6efa59d8da3d0a5894324d35b69595fceb4d084801b1d083"
     },
     "전국센터/대구유천동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%EA%B5%AC%EC%9C%A0%EC%B2%9C%EB%8F%99/",
@@ -32572,8 +32572,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "edf1cc611549c925cb6caae58bf5e8605a89e2a3b4c9b654ed64da2a562c02e3",
-      "builtTextSha256": "50fc8a9d3d9744072c7895e993d434c7e17f08c6a9f4fb3bc30e0a5392f7af1c"
+      "sourceTextSha256": "a62525f9dfcf824ef6adcf78483e7781aa19db5922ec752339afdd4faf3b3b64",
+      "builtTextSha256": "064f3b8bf84415e70ce2a97da3ce6c9f274ff765cf79e75b7726b89e281237bc"
     },
     "전국센터/대화동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%8C%80%ED%99%94%EB%8F%99/",
@@ -37180,8 +37180,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "e72e0ea652d6f2db73d84e3f49834373b9750b1296124f1622502c524704d62b",
-      "builtTextSha256": "d57b3b66b6c403a2740da3052a803fbee07041b5ed74d1767d7ebf042db140fa"
+      "sourceTextSha256": "95ac24b0f65c2e48787fae02a4381ec0d089fb1b323a1ee22760359d330e217c",
+      "builtTextSha256": "97e73c4f7bc1c386dbae84131b7b69d8a792f8f7d0977018e3bd875e1cab8a09"
     },
     "전국센터/부산동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EB%B6%80%EC%82%B0%EB%8F%99/",
@@ -39268,8 +39268,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "00231a6e13e69fe812e1b81c1f67c0320abc16a228c3423d9fee28b762894cd5",
-      "builtTextSha256": "95a25558e48a6c3bcba0b6dcdd949c63ee01ce4e7ee2099bf01142c78b259307"
+      "sourceTextSha256": "950f5f4178cef08bf5421604492d10b2a45218850372bdebb97b58904e394b74",
+      "builtTextSha256": "afc4e80852edca697402bc88995ab6fab2f0f4df7a03986659b270d9fb814d07"
     },
     "전국센터/서정동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%84%9C%EC%A0%95%EB%8F%99/",
@@ -45388,8 +45388,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "754fe4668a474ac3910df84aa3930aa68f15257e0f59eb550aa5a06679d2c71e",
-      "builtTextSha256": "9ce745a71e59540b20ebeaadf05bf8de69d7492600f678e25f51f0ff13216f8e"
+      "sourceTextSha256": "d6079c4a8202926c2fe52d431a8d4c42f81f53b32e506998d54e60c150597d9f",
+      "builtTextSha256": "7b52e4264a1a0e8ba5aa9c9dcee8a46416fb59951a1c5d794f6602d9bf56d6df"
     },
     "전국센터/울산삼산동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9A%B8%EC%82%B0%EC%82%BC%EC%82%B0%EB%8F%99/",
@@ -46594,8 +46594,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "a21b24f993f7b4262d0771fa1bf6d64b20b4017bd6ff73a4acab79fd49aef4b7",
-      "builtTextSha256": "fffb42ef6ad867b0b350fbedd45008f3822f07993d525018200eda1deba2c5af"
+      "sourceTextSha256": "78aff2b80d6a5370a5d17af763e1031b9b5ad6b10532eec794d3a73cac38a055",
+      "builtTextSha256": "48ad6b988b27776f40b9a5b0a8fa7cf543333d2d4ab2bf04c8bae7c6621ba172"
     },
     "전국센터/인천갈산동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%9D%B8%EC%B2%9C%EA%B0%88%EC%82%B0%EB%8F%99/",
@@ -47359,8 +47359,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "60e182652a1c95d88a0b785dc571c260e6bcef136a99f52d688c405d1ad46f3c",
-      "builtTextSha256": "8e857ee3ec39c11762434dcdc1775358bb4cb6fe2839dc7f854d360210a756fd"
+      "sourceTextSha256": "129bea8796d4e2535308ed0d6b5ad183debcf514467c430c97749d470009dd98",
+      "builtTextSha256": "16ff859c025417767e322174a86f3e7a5c64d3fb2688487ddd8cf2892f975347"
     },
     "전국센터/전주장동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A0%84%EC%A3%BC%EC%9E%A5%EB%8F%99/",
@@ -47809,8 +47809,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "2f3ae965c92224d20cc2553f0d4e1eaa404b198210d957cfab4c930f71a61f0a",
-      "builtTextSha256": "b602121ea8bd4879ae480426d4db530a5a447ab51cb9120008c3145e6f92b68d"
+      "sourceTextSha256": "48a9e15419da615e025fb9707bb11a4633faf58b65807085b8961c6d63ed9f2f",
+      "builtTextSha256": "3edd7e0d106920cf64545df4089b640438b3b37cb2f5ddce33644fb0731df12a"
     },
     "전국센터/조남동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A1%B0%EB%82%A8%EB%8F%99/",
@@ -48385,8 +48385,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "b7d45aebbb78ce241d1c5b98e7d44046e0dc9b0da76ee836963edc4c6f4be7fe",
-      "builtTextSha256": "ed044535ce7ede2b92b82c6e145082fb46418cc568d6c64dc3c964c2decea3a0"
+      "sourceTextSha256": "5e07b79cfeb25b78423849e616eb2f2746ba87114c6bd6be3891def9559ef4ff",
+      "builtTextSha256": "fef00753642ba3835df8e4ba1aacac18c2654f009509eb129cbb25e6cac6e1a0"
     },
     "전국센터/중등영어학원/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A4%91%EB%93%B1%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/",
@@ -48394,8 +48394,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "e6caf415b5a1cb3acf1f6b2d2587db84160d94c7c44e535111e12159b2564f3b",
-      "builtTextSha256": "c20ec491dedbe3317e8dbbf9fe2ba6fca93ef3eb38c6c59d6fb837d260caf9b9"
+      "sourceTextSha256": "6f00283273b73bb50ffa58762d0d5ac347216636a290c105f9972c99705a1eb1",
+      "builtTextSha256": "ee53110ec0659fece0db2cdaabe261086b8e875bbdb2594d613c5815f570b71c"
     },
     "전국센터/중산동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%A4%91%EC%82%B0%EB%8F%99/",
@@ -49474,8 +49474,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "1ca520facaa7d6e589487337397bc2d153ae5536ceb8e20262331d6d26db694b",
-      "builtTextSha256": "c7c99b84b4cad274860adaac71a66d9602770413934833a7ce4bf1b90fe7a752"
+      "sourceTextSha256": "2ad971e83ca3552e6c1cbc672ac24be9d8c1c4cf1d2deb316d62e365c65f05bc",
+      "builtTextSha256": "f1cd21543c6548fdd79d18170eccee42981fba84cb8eaacc47aa8651986f069e"
     },
     "전국센터/초등영어학원/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B4%88%EB%93%B1%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/",
@@ -49483,8 +49483,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "d7e35cd38414d0d8fb8b771db727c0a5024c3fc120b2eb560f95d919e791eb3d",
-      "builtTextSha256": "c55c50563ad5f9f7255d8fcaf2a8c85ece16e94711a5ecb873899639b7d9912b"
+      "sourceTextSha256": "b763eb26d8029cfbbbea6e862b48ccaf1dee9f2e211ee8e7548e188a3b2867c6",
+      "builtTextSha256": "f76c7f37d97e9827eb989a022aaedf57897941e43a61aab7824e8b68a99ee17d"
     },
     "전국센터/초지동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B4%88%EC%A7%80%EB%8F%99/",
@@ -49618,8 +49618,8 @@
       "pageModifiedDates": [
         "2026-10-06"
       ],
-      "sourceTextSha256": "82ad5b3d8728cf552e7052586d1af12bc4d645a034f8e74b2e56a95dc5ba271f",
-      "builtTextSha256": "484d5e7be182c2dc3c4e49a04b97c03f58605c47f32d9fd7ef1df6dc0a74cd65"
+      "sourceTextSha256": "1476397a56e6df62a9e82702b745836038a9c475b5aeecdae79c60b674ad7458",
+      "builtTextSha256": "6255f378e6de4c52f3d7614a41ae7bb623eabf516e0da40f8de9203eb00ca7e6"
     },
     "전국센터/치평동/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A0%84%EA%B5%AD%EC%84%BC%ED%84%B0/%EC%B9%98%ED%8F%89%EB%8F%99/",
