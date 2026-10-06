@@ -1,0 +1,39 @@
+/* Shared homepage identity. Content layouts remain owned by their page family. */
+:root{--brand-paper:#f5efe0;--brand-ink:#20262f;--brand-muted:#5c6672;--brand-accent:#c94f2a;--brand-deep:#a83a1b;--brand-line:#dedbd3;--brand-soft:#fff3eb;--brand-font:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--lg-paper:var(--brand-paper);--lg-ink:var(--brand-ink);--lg-muted:var(--brand-muted);--lg-tint:#efe7d8;--lg-line:var(--brand-line);--lg-accent:var(--brand-accent);--lg-soft:var(--brand-soft);--lg-radius:20px;--tf-paper:var(--brand-paper);--tf-ink:var(--brand-ink);--tf-muted:var(--brand-muted);--tf-line:var(--brand-line);--tf-accent:var(--brand-accent);--tf-tint:#efe7d8;--cc-paper:var(--brand-paper);--cc-ink:var(--brand-ink);--cc-muted:var(--brand-muted);--cc-line:var(--brand-line);--cc-accent:var(--brand-accent);--cc-tint:#efe7d8}
+body.site-brand-unified{margin:0;background:var(--brand-paper);color:var(--brand-ink);font:16px/1.75 var(--brand-font);word-break:keep-all;overflow-wrap:anywhere}
+.site-brand-unified :is(button,input,select,textarea){font-family:var(--brand-font)}
+.site-brand-unified :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid var(--brand-deep);outline-offset:4px}
+.brand-shell,.brand-shell *,.brand-footer,.brand-footer *{box-sizing:border-box}
+.brand-shell{position:relative;z-index:5;background:var(--brand-paper);border-bottom:1px solid var(--brand-line);color:var(--brand-ink)}
+.brand-shell-inner{max-width:1120px;margin:auto;padding:22px 0 18px}
+.brand-topline{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand-home{display:inline-flex;align-items:center;gap:12px;min-height:44px;text-decoration:none!important;color:var(--brand-ink)!important;font-size:19px;font-weight:800;line-height:1.4;letter-spacing:-.035em}
+.brand-symbol{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:12px;background:var(--brand-ink);color:#fff;font-size:25px;line-height:1;font-weight:850}
+.brand-name small{display:block;margin-bottom:2px;font-size:10px;font-weight:750;color:var(--brand-deep);letter-spacing:.16em;line-height:1.5}
+.brand-header-cta,.brand-contact-button{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:10px 20px;border-radius:10px;background:var(--brand-accent);color:#fff!important;text-decoration:none!important;font-size:14px;font-weight:750;line-height:1.6;border:1px solid var(--brand-accent)}
+.brand-header-cta:hover,.brand-contact-button:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
+.brand-menu-toggle{display:none;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;border:1px solid var(--brand-line);border-radius:10px;background:#fff;color:var(--brand-ink);font:750 14px/1.4 var(--brand-font);cursor:pointer}
+.site-brand-unified .brand-menu-toggle{font:750 14px/1.4 var(--brand-font);min-height:44px}
+.brand-menu-icon{display:grid;gap:4px;width:16px}.brand-menu-icon i{display:block;height:2px;background:currentColor}
+.brand-navigation{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin-top:18px;padding:6px;background:#fff;border:1px solid var(--brand-line);border-radius:14px}
+.brand-navigation a{display:flex;justify-content:center;align-items:center;min-height:44px;padding:9px 13px;border-radius:9px;color:var(--brand-ink)!important;font-size:14px;font-weight:700;line-height:1.6;text-decoration:none!important;white-space:nowrap}
+.brand-navigation a:hover{background:var(--brand-soft);color:var(--brand-deep)!important}
+.brand-navigation a[aria-current]{background:var(--brand-ink);color:#fff!important}
+.brand-footer{background:var(--brand-ink);color:#fff;padding:48px 0 40px;margin-top:0}
+.brand-footer-inner{max-width:1120px;margin:auto;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:44px}
+.brand-footer .brand-home{color:#fff!important}.brand-footer .brand-symbol{background:#fff;color:var(--brand-ink)}.brand-footer .brand-name small{color:#ffb892}
+.brand-footer p{margin:16px 0;color:#e1e4e8;font-size:14px;line-height:1.8;max-width:430px}
+.brand-footer h2{margin:0 0 12px;color:#fff;font-size:15px;font-weight:750;letter-spacing:0;line-height:1.6}
+.brand-footer nav{display:grid;align-content:start;gap:4px}
+.brand-footer nav a,.brand-phone{display:flex;align-items:center;min-height:44px;padding:7px 0;color:#e1e4e8!important;text-decoration:none!important;font-size:14px;line-height:1.6}
+.brand-footer nav a:hover,.brand-phone:hover{color:#ffb892!important;text-decoration:underline!important;text-underline-offset:4px}
+.brand-footer .brand-phone{width:max-content;font-size:18px;font-weight:750;color:#fff!important;margin:6px 0 14px}
+.site-brand-unified :is(.lg-button,.ei-button,.tf-button,.cc-button){border-radius:10px;font-family:var(--brand-font);min-height:48px}
+.site-brand-unified :is(.lg-card,.ei-card,.tf-card,.cc-card,.lg-category){border-radius:20px}
+.home-upgrade .hc-hero-video{color:#ffb892}
+@media(max-width:1180px){.brand-shell-inner,.brand-footer-inner{margin-inline:24px}.brand-navigation a{padding-inline:10px}}
+@media(max-width:760px){.brand-shell-inner{margin-inline:20px;padding:16px 0}.brand-topline{gap:10px}.brand-home{font-size:17px;gap:10px}.brand-symbol{width:40px;height:40px;font-size:23px}.brand-name small{font-size:9px}.brand-header-cta{display:none}.brand-shell[data-enhanced="true"] .brand-menu-toggle{display:inline-flex}.brand-navigation{justify-content:flex-start;gap:6px;margin-top:14px;padding:8px}.brand-navigation a{flex:1 1 42%;justify-content:flex-start;padding:10px 12px;white-space:normal}.brand-shell[data-enhanced="true"][data-expanded="false"] .brand-navigation{display:none}.brand-footer{padding:36px 0 104px}.brand-footer-inner{margin-inline:20px;grid-template-columns:1fr 1fr;gap:28px 20px}.brand-footer-intro{grid-column:1/-1}.brand-footer p{max-width:none}.site-brand-unified main{min-width:0}}
+@media(max-width:380px){.brand-shell-inner{margin-inline:14px}.brand-home{font-size:15px;gap:8px}.brand-symbol{width:36px;height:36px}.brand-menu-toggle{padding-inline:10px}.brand-name small{font-size:8px;letter-spacing:.13em}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.site-brand-unified *{scroll-behavior:auto!important}}
+@media(forced-colors:active){.brand-navigation a[aria-current]{border:2px solid ButtonText}.brand-symbol,.brand-menu-toggle,.brand-header-cta,.brand-contact-button{border:1px solid ButtonText}}
+@media print{body.site-brand-unified{background:#fff;color:#000;font-size:11pt}.brand-shell,.brand-footer,.site-brand-unified .floating-actions{display:none!important}}

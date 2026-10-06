@@ -2,7 +2,7 @@
 .brand-upgrade { --upgrade-gap: 24px; overflow-wrap: anywhere; }
 .brand-upgrade :is(h1, h2, h3, p, figure, dl) { min-width: 0; }
 .brand-upgrade :is(section, article, main)[id] { scroll-margin-top: 110px; }
-.brand-upgrade :is(a, button, summary):focus-visible { outline: 3px solid #1269b4; outline-offset: 4px; }
+.brand-upgrade :is(a, button, summary):focus-visible { outline: 3px solid #a83a1b; outline-offset: 4px; }
 .brand-upgrade .eyebrow { font-size: 12px; letter-spacing: .08em; }
 .brand-upgrade :is(.section-title h2, .split-copy h2, .upgrade-ai-preview h2, .cta h2) { font-size: clamp(27px, 3.3vw, 40px); line-height: 1.35; text-wrap: balance; }
 .brand-upgrade :is(.section-title p, .split-copy p, .hero-copy) { line-height: 1.85; }
@@ -45,16 +45,16 @@
 .brand-upgrade .video-player-actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; padding: 12px 16px 0; }
 .brand-upgrade :is(.video-close, .video-external) { display: grid; place-items: center; min-height: 44px; margin: 0; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .brand-upgrade .video-external { color: var(--accent-deep); }
-.brand-upgrade .upgrade-ai-preview { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 48px; padding: 40px; border: 1px solid #c3d6ce; border-radius: 24px; background: #edf5f0; }
+.brand-upgrade .upgrade-ai-preview { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 48px; padding: 40px; border: 1px solid #dedbd3; border-radius: 24px; background: #f5efe0; }
 .brand-upgrade .upgrade-ai-preview h2 { margin: 0; }
-.brand-upgrade .upgrade-ai-preview p:not(.eyebrow):not(.upgrade-note) { color: #425c51; line-height: 1.85; }
+.brand-upgrade .upgrade-ai-preview p:not(.eyebrow):not(.upgrade-note) { color: #5c6672; line-height: 1.85; }
 .brand-upgrade .upgrade-subject-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
-.brand-upgrade .upgrade-subject-links a { display: inline-flex; justify-content: center; align-items: center; gap: 16px; min-height: 46px; min-width: 70px; padding: 9px 18px; border: 1px solid #bccfc5; border-radius: 10px; background: #fff; font-size: 15px; font-weight: 800; }
-.brand-upgrade .upgrade-subject-links a:hover { background: #def0e5; }
+.brand-upgrade .upgrade-subject-links a { display: inline-flex; justify-content: center; align-items: center; gap: 16px; min-height: 46px; min-width: 70px; padding: 9px 18px; border: 1px solid #dedbd3; border-radius: 10px; background: #fff; font-size: 15px; font-weight: 800; }
+.brand-upgrade .upgrade-subject-links a:hover { background: #fff3eb; }
 .brand-upgrade .upgrade-ai-visual { display: grid; justify-items: center; align-content: center; gap: 12px; }
 .brand-upgrade .upgrade-ai-visual img { margin-bottom: 8px; width: 120px; height: auto; }
-.brand-upgrade .upgrade-ai-visual :is(span, b) { width: 100%; text-align: center; padding: 9px; border: 1px solid #bdd0c3; border-radius: 8px; color: #294537; background: #fff; font-size: 14px; }
-.brand-upgrade .upgrade-ai-visual b { background: #294537; color: #fff; }
+.brand-upgrade .upgrade-ai-visual :is(span, b) { width: 100%; text-align: center; padding: 9px; border: 1px solid #dedbd3; border-radius: 8px; color: #20262f; background: #fff; font-size: 14px; }
+.brand-upgrade .upgrade-ai-visual b { background: #20262f; color: #fff; }
 .brand-upgrade .upgrade-four-c { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; }
 .brand-upgrade .upgrade-diagram { margin: 0; padding: 24px; border-radius: 20px; background: #fff; }
 .brand-upgrade .upgrade-diagram img { width: 100%; height: auto; }
@@ -73,13 +73,13 @@
 .brand-upgrade .upgrade-care-card p { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.9; }
 .brand-upgrade .upgrade-care-card .upgrade-care-focus { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; }
 .brand-upgrade .upgrade-care-focus strong { display: block; color: var(--ink); font-size: 14px; margin-top: 5px; }
-.brand-upgrade .upgrade-ai-notice { border-left: 4px solid #42614f; border-radius: 0 12px 12px 0; background: #e7eee7; padding: 20px 24px; }
-.brand-upgrade .upgrade-ai-notice strong { color: #294537; }
+.brand-upgrade .upgrade-ai-notice { border-left: 4px solid #c94f2a; border-radius: 0 12px 12px 0; background: #f5efe0; padding: 20px 24px; }
+.brand-upgrade .upgrade-ai-notice strong { color: #20262f; }
 .brand-upgrade .upgrade-ai-notice p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
 .brand-upgrade .upgrade-ai-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .brand-upgrade .upgrade-ai-card { padding: 32px; border-radius: 20px; border: 1px solid var(--line); background: #fff; }
 .brand-upgrade .upgrade-ai-card-title { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.brand-upgrade .upgrade-age { padding: 5px 12px; border-radius: 99px; color: #284f3a; background: #eaf4ef; font-size: 13px; font-weight: 800; }
+.brand-upgrade .upgrade-age { padding: 5px 12px; border-radius: 99px; color: #20262f; background: #f5efe0; font-size: 13px; font-weight: 800; }
 .brand-upgrade .upgrade-ai-card h3 { margin: 18px 0 12px; font-size: 24px; line-height: 1.45; }
 .brand-upgrade .upgrade-ai-card p { margin: 0; color: var(--ink-soft); font-size: 16px; line-height: 1.9; }
 .brand-upgrade .upgrade-ai-card figure { margin: 24px 0; }
