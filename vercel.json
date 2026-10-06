@@ -4,6 +4,16 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/%EC%84%A0%EC%83%9D%EB%8B%98%EC%B0%BE%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A0%90\\(W\\+\\)/",
+      "destination": "/%EC%84%A0%EC%83%9D%EB%8B%98%EC%B0%BE%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A0%90%28W%2B%29/",
+      "permanent": true
+    },
+    {
+      "source": "/%EC%84%A0%EC%83%9D%EB%8B%98%EC%B0%BE%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A0%90%28W\\+%29/",
+      "destination": "/%EC%84%A0%EC%83%9D%EB%8B%98%EC%B0%BE%EA%B8%B0/%EB%8B%A4%EC%82%B0%EC%A0%90%28W%2B%29/",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true
@@ -21,6 +31,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/assets/media-fragments/(.*).jpg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },

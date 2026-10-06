@@ -40,9 +40,17 @@ def identity(item):
     return {'link': item.findtext('link'), 'guid': item.findtext('guid'), 'guidAttributes': dict(item.find('guid').attrib), 'pubDate': item.findtext('pubDate')}
 
 def absolute(value, page):
+    # Native consultation links are part of the visible page body. Keep a
+    # validated phone URI in the feed without treating it as a web address.
+    if value.startswith('tel:'):
+        assert re.fullmatch(r'tel:\+?[0-9(). -]+', value), value
+        return value
     parts = urlsplit(urljoin(page, value))
     assert parts.scheme == 'https' and parts.netloc and not parts.username and not parts.password, value
-    return urlunsplit((parts.scheme, parts.netloc, quote(unquote(parts.path), safe='/:@!$&\'()*+,;=-._~'), parts.query, quote(unquote(parts.fragment), safe='-._~')))
+    # Keep literal plus signs and parentheses encoded in path segments, just
+    # like canonical page URLs. A raw '+' alias is not a stable Vercel asset
+    # path even though generic URL parsers consider it equivalent.
+    return urlunsplit((parts.scheme, parts.netloc, quote(unquote(parts.path), safe='/'), parts.query, quote(unquote(parts.fragment), safe='-._~')))
 
 def body(doc, page):
     mains = doc.xpath('//main'); assert len(mains) == 1
