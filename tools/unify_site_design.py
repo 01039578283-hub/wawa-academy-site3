@@ -69,7 +69,7 @@ def transform(name, text):
         if re.search(r'\bclass=', tag):
             return re.sub(r'(\bclass=["\'])([^"\']*)(["\'])', lambda x: x[1] + x[2] + ' site-brand-unified' + x[3], tag, count=1)
         return tag[:-1] + ' class="site-brand-unified">'
-    return re.sub(r'<body\b[^>]*>', add_class, text, count=1)
+    return version_head(re.sub(r'<body\b[^>]*>', add_class, text, count=1))
 
 def color(value):
     value = value.lower()
@@ -85,6 +85,49 @@ def color(value):
     if min(rgb) > 215: return '#fff3eb'
     if min(rgb) > 155: return '#dedbd3'
     return '#5c6672'
+
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def asset_url(name):
+    raw=(ROOT/name).read_bytes()
+    version=digest(raw.decode('utf-8').replace('\r\n','\n').encode('utf-8'))[:12]
+    return '/'+name+'?brand='+version
+
+def version_head(text):
+    head=re.search(r'<head\b[^>]*>.*?</head>',text,re.S|re.I)
+    assert head
+    names={'assets/'+f for f in CSS}|set(ASSETS)
+    def tag_version(match):
+        tag=match[0]
+        def replace(attribute):
+            value=attribute[2]; parsed=urlsplit(escape_html.unescape(value))
+            name='assets/'+parsed.path.rsplit('/',1)[-1]
+            if name not in names:return attribute[0]
+            token=asset_url(name).split('?',1)[1]
+            query='&'.join(p for p in parsed.query.split('&') if p and not p.startswith('brand='))
+            href=parsed.path+'?'+('&'.join([query,token]) if query else token)
+            return attribute[1]+escape_html.escape(href,quote=True)+attribute[3]
+        return re.sub(r'((?:href|src)=["\'])([^"\']*)(["\'])',replace,tag)
+    updated=re.sub(r'<(?:link|script)\b[^>]*>',tag_version,head[0],flags=re.I)
+    return text[:head.start()]+updated+text[head.end():]
+
+def cache_versions():
+    manifest=json.loads((ROOT/'release-public-manifest.json').read_text('utf-8'))
+    names=[n for n in manifest['files'] if n.endswith('.html')]
+    def update(name):
+        raw=(ROOT/name).read_bytes();assert digest(raw)==manifest['files'][name]
+        text=raw.decode('utf-8');updated=version_head(text)
+        assert landmark(text,'main')==landmark(updated,'main')
+        result=updated.encode('utf-8');(ROOT/name).write_bytes(result)
+        return name,digest(result),digest(updated.replace('\r\n','\n').encode('utf-8'))
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        for name,binary,normalized in pool.map(update,names):
+            manifest['files'][name]=binary;manifest['textSha256'][name]=normalized
+    (ROOT/'release-public-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n','utf-8')
+    (OUT/'release-manifest-sha.txt').write_text(digest((ROOT/'release-public-manifest.json').read_bytes())+'\n','utf-8')
+    dump('asset-cache-versions.json',{'htmlPages':len(names),'versionedAssets':{n:asset_url(n) for n in sorted({'assets/'+f for f in CSS}|set(ASSETS))},'mainContentPreserved':True})
+    print('Added content-based asset versions to',len(names),'page heads',flush=True)
 
 def recolor(text):
     colors = sorted(set(re.findall(r'#[0-9a-fA-F]{3,8}\b', text)))
@@ -154,8 +197,12 @@ def verify():
         assert landmark(text, 'main').encode('utf-8') == landmark(before.decode('utf-8'), 'main').encode('utf-8'), ('body changed', name)
         doc = html.document_fromstring(raw)
         assert len(doc.xpath('/html/body/header[@class="brand-shell"]')) == len(doc.xpath('/html/body/footer[@class="brand-footer"]')) == 1
-        assert doc.xpath('//head/link[@rel="stylesheet"]/@href')[-1] == '/' + ASSETS[0]
-        assert len(doc.xpath('//head/script[@src="/' + ASSETS[1] + '"][@defer]')) == 1
+        assert doc.xpath('//head/link[@rel="stylesheet"]/@href')[-1] == asset_url(ASSETS[0])
+        assert len(doc.xpath('//head/script[@src="' + asset_url(ASSETS[1]) + '"][@defer]')) == 1
+        versioned={'assets/'+f for f in CSS}|set(ASSETS)
+        for value in doc.xpath('//head/link[@rel="stylesheet"]/@href | //head/script/@src'):
+            parsed=urlsplit(value);asset='assets/'+parsed.path.rsplit('/',1)[-1]
+            if asset in versioned:assert asset_url(asset).split('?',1)[1] in parsed.query, (name,value)
         links = doc.xpath('//nav[@id="brand-navigation"]/a')
         assert [(a.text, a.get('href')) for a in links] == [(label, href(p)) for label, p in MENU]
         active = [a for a in links if a.get('aria-current')]
@@ -188,5 +235,5 @@ def verify():
     dump('design-source-verification.json', result); print(json.dumps(result, ensure_ascii=False), flush=True)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(); parser.add_argument('action', choices=['apply', 'palette', 'verify']); args = parser.parse_args()
-    {'apply':apply, 'palette':palette, 'verify':verify}[args.action]()
+    parser = argparse.ArgumentParser(); parser.add_argument('action', choices=['apply', 'palette', 'cache-versions', 'verify']); args = parser.parse_args()
+    {'apply':apply, 'palette':palette, 'cache-versions':cache_versions, 'verify':verify}[args.action]()
