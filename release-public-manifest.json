@@ -3,6 +3,8 @@
   "createdAt": "2026-10-06T02:58:32+09:00",
   "sitemapPages": 8814,
   "files": {
+    "assets/site-favicon.png": "353dc542b59e1f93ecdf3a5062c6521c5a008339f25377571bee764065eca256",
+    "assets/site-apple-touch-icon.png": "8a86b8a49aa3de41fd3c2dfca9ecd1d499918b17c0236d23a778323b891bd99f",
     "assets/branch-guide/directory.css": "8dc2049fb0ce786dad1b294f64c2825fe024c2acf1a0ab89db3dfd2128cca225",
     "assets/branch-guide/directory.js": "09d5d16e2f0b8f1d8ee828e133583590c75296c42b2b69d51a1881ca396886dc",
     "assets/branch-guide/grades.css": "c305a98edef6050b8d97f137cfcb02b7b36b6ef2089d00d31388b1524f50b7e2",

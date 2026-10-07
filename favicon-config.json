@@ -1,0 +1,9 @@
+{
+  "domain": "코칭학원.com",
+  "outputDirectory": ".public-release",
+  "previousBuildCommand": "node seo-feed-check.mjs && node release-public-build.mjs && node wawa-analytics-build.mjs wawa-04 .public-release && node seo-descriptions.mjs --root=.public-release && node seo-feed-check.mjs --root=.public-release --built-output",
+  "assets": {
+    "assets/site-favicon.png": "353dc542b59e1f93ecdf3a5062c6521c5a008339f25377571bee764065eca256",
+    "assets/site-apple-touch-icon.png": "8a86b8a49aa3de41fd3c2dfca9ecd1d499918b17c0236d23a778323b891bd99f"
+  }
+}

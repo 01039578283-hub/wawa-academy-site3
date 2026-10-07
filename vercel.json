@@ -71,6 +71,6 @@
       ]
     }
   ],
-  "buildCommand": "node seo-feed-check.mjs && node release-public-build.mjs && node wawa-analytics-build.mjs wawa-04 .public-release && node seo-descriptions.mjs --root=.public-release && node seo-feed-check.mjs --root=.public-release --built-output",
+  "buildCommand": "node favicon-build.mjs",
   "outputDirectory": ".public-release"
 }
