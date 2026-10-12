@@ -1,0 +1,8 @@
+/* Real anchor links remain usable without scripts and precede long media. */
+main .seo-page-nav{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;padding-top:20px;padding-bottom:20px}
+main .seo-page-nav .seo-nav-label{flex:0 0 100%;margin:0 0 4px;font-size:15px;font-weight:700;color:#62594d;line-height:1.6}
+main .seo-page-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 15px;border:1px solid #dedbcf;border-radius:12px;background:#fff;color:#252a27;text-decoration:none;font-size:14px;font-weight:700;line-height:1.55;overflow-wrap:anywhere}
+main .seo-page-nav a:hover,main .seo-page-nav a:focus-visible{border-color:#b24a2c;background:#fcf2eb;outline-offset:3px}
+#page-teachers,#page-reading,#page-curriculum{scroll-margin-top:24px}
+@media(max-width:760px){main .seo-page-nav{gap:7px;padding-top:16px;padding-bottom:16px}main .seo-page-nav a{flex:1 1 auto;font-size:13px;padding:10px 12px;max-width:100%}}
+@media print{main .seo-page-nav{display:none}}
