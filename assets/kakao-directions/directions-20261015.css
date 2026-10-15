@@ -1,0 +1,26 @@
+/* Scoped visit information. Existing body/map images keep their own styling. */
+.km-directions{max-width:800px;margin:32px auto;padding:24px;border:1px solid #d8dfd9;border-radius:18px;background:#f8faf5;color:#202832;text-align:left;box-sizing:border-box;clear:both}
+.km-directions h2,.km-directions h3{margin:0 0 12px;color:inherit;line-height:1.4;font-size:clamp(22px,3vw,30px)}
+.km-directions>.km-intro{margin:0 0 20px;line-height:1.75;color:#4b555d;font-size:16px}
+.km-map{position:relative;width:100%;height:398px;overflow:hidden;background:#eef1e9;border:1px solid #dce0d8;border-radius:10px;box-sizing:border-box}
+.km-map iframe{display:block;width:100%;height:398px;border:0;margin:0;max-width:none}
+.km-map>.km-map-status{position:absolute;inset:0;display:grid;place-content:center;padding:24px;text-align:center;pointer-events:none;color:#4b555d;font-size:14px;background:#eef1e9}
+.km-map[data-state="ready"]>.km-map-status{display:none}
+.km-details{padding:20px 4px 0}
+.km-details dl{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;margin:0;padding:0 0 20px;line-height:1.8;font-size:15px}
+.km-details dt{font-weight:700;margin:0}.km-details dd{margin:0;overflow-wrap:anywhere}
+.km-transit{padding:20px 0;border-top:1px solid #e1e4de}
+.km-transit h4{font-size:16px;line-height:1.6;margin:0 0 12px;color:inherit}
+.km-transit ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px 16px;padding:0;margin:0;line-height:1.7;font-size:15px}
+.km-transit li{padding:0;margin:0;min-width:0}
+.km-line{display:inline-block;font-size:12px;font-weight:700;line-height:1.6;border-radius:5px;padding:1px 6px;background:#e0eaf5;color:#1f496d;margin-right:6px;vertical-align:1px}
+.km-stop-number{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:6px;border:1px solid #999b8c;border-radius:50%;background:#fff;color:#555b51;font-size:13px;font-weight:700;vertical-align:middle}
+.km-transit .km-buses{display:block}.km-buses>li{display:flex;gap:10px;margin:10px 0;align-items:flex-start}
+.km-bus-kind{flex:0 0 48px;box-sizing:border-box;text-align:center;font-size:12px;font-weight:700;line-height:1.8;padding:1px 3px;border-radius:4px;background:#3c627d;color:#fff}
+.km-bus-kind[data-type="0102"],.km-bus-kind[data-type="0109"]{background:#46812d}.km-bus-kind[data-type="0103"],.km-bus-kind[data-type="0108"]{background:#b94236}
+.km-route-names{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:14px;line-height:1.8}
+.km-traffic-note{margin:12px 0 0;font-size:13px;line-height:1.8;color:#626b70}
+.km-hub{max-width:1100px;margin:40px auto}.km-hub label{display:block;font-weight:700;margin-bottom:8px}
+.km-hub select{width:100%;max-width:640px;min-height:48px;background:#fff;color:#202832;border:1px solid #bfc6bd;border-radius:8px;padding:10px 12px;font:inherit}
+.km-hub-result{margin-top:24px}.km-hub-result>.km-directions{margin-top:0}.km-hub-status{min-height:1.8em;font-size:14px;line-height:1.8;margin:10px 0;color:#4b555d}
+@media(max-width:600px){.km-directions{padding:20px 14px;margin:24px 0;border-radius:14px}.km-hub{margin:24px 16px}.km-details{padding-left:2px;padding-right:2px}.km-details dl{grid-template-columns:44px minmax(0,1fr);font-size:14px}.km-transit ul{font-size:14px;gap:9px 12px}.km-map{border-radius:8px}}
