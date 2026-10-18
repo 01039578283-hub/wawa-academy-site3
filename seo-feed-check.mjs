@@ -103,6 +103,7 @@ export async function checkFeeds({root = PROJECT, manifestPath = path.join(PROJE
   for (const [name, code, approvedHash] of [['rss.xml', 'RSS_CHANGED', review.rss.textSha256], ['sitemap.xml', 'SITEMAP_CHANGED', review.sitemap.textSha256]]) {
     try {
       const raw = await checkedRead(root, name, directories);
+      if (!/^<\?xml\b[^?]*\bencoding\s*=\s*["']UTF-8["']/i.test(text(raw))) error('FEED_ENCODING', name, 'XML 선언에 표준 UTF-8 인코딩 이름을 사용해 주세요.');
       if (raw.byteLength >= 10000000) error('NAVER_FEED_LIMIT', name, '네이버 피드 용량 제한을 초과했습니다.');
       if (digest(Buffer.from(text(raw))) !== approvedHash) error(code, name, 'RSS·사이트맵 XML 또는 내용이 마지막 검토 이후 변경되었습니다.');
     } catch (e) { error(e.code ?? 'MISSING_FEED', name, e.message); }

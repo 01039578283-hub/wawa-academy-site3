@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "domain": "https://xn--sp5b72l1taf0p.com",
-  "reviewedAt": "2026-10-18T19:06:10.292391+09:00",
+  "reviewedAt": "2026-10-18T19:39:11.793657+09:00",
   "policy": "Review-only ledger. Public content/dates are never rewritten. Hashes accept CRLF/LF only. Node build checks these independently of the release manifest; refresh only after all current RSS bodies and sitemap metadata pass this review.",
   "htmlPages": 8814,
   "sitemap": {
     "file": "sitemap.xml",
-    "textSha256": "6c6943faa9b18a11a7d90ca4c9ef56f764c93d2e4045880acdf4b0e4442a3740",
+    "textSha256": "96b9b228b1a926643d152438bd05395d3dda2c5af8f0ff347d7cb4b36199900d",
     "urls": 8814
   },
   "rss": {
     "file": "rss.xml",
-    "textSha256": "fb0ec811ff86da95f772ec6cf400f8fefc7b87a72182213adf5a9cb7de5e22a6",
+    "textSha256": "b0f97bf71aa3d11df140272b4d1a5e25c66d3af29e93d9633498ec98dbaeccd7",
     "items": [
       {
         "file": "지점안내/서울/명일점/명일동영어학원/초등/index.html",
@@ -51954,12 +51954,12 @@
     },
     "지점안내/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/",
-      "sitemapLastmod": "2026-10-15",
+      "sitemapLastmod": "2026-10-18",
       "pageModifiedDates": [
-        "2026-10-15"
+        "2026-10-18"
       ],
-      "sourceTextSha256": "f0a6fe9bdb96ad2e8340825e828204eb16814b3d5e28630194fd35f8f08d4cbc",
-      "builtTextSha256": "f0a6fe9bdb96ad2e8340825e828204eb16814b3d5e28630194fd35f8f08d4cbc"
+      "sourceTextSha256": "c8a9a785ed903e03752a9036e6882e03293a8879370730b1460ba1da88a81ee7",
+      "builtTextSha256": "c8a9a785ed903e03752a9036e6882e03293a8879370730b1460ba1da88a81ee7"
     },
     "지점안내/강원/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B0%95%EC%9B%90/",
@@ -52818,12 +52818,12 @@
     },
     "지점안내/경기/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/",
-      "sitemapLastmod": "2026-10-15",
+      "sitemapLastmod": "2026-10-18",
       "pageModifiedDates": [
-        "2026-10-15"
+        "2026-10-18"
       ],
-      "sourceTextSha256": "f8d1b45dfc4999019d9fa8c52b4bc6373375c6e8c2db3ef5ee540836bce48eca",
-      "builtTextSha256": "f8d1b45dfc4999019d9fa8c52b4bc6373375c6e8c2db3ef5ee540836bce48eca"
+      "sourceTextSha256": "6e300536c2c46bce5bb6f1489c261ba84974c79cc38a6601d9d3275d5b061cce",
+      "builtTextSha256": "6e300536c2c46bce5bb6f1489c261ba84974c79cc38a6601d9d3275d5b061cce"
     },
     "지점안내/경기/갈매점/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EA%B2%BD%EA%B8%B0/%EA%B0%88%EB%A7%A4%EC%A0%90/",
@@ -72879,12 +72879,12 @@
     },
     "지점안내/서울/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/",
-      "sitemapLastmod": "2026-10-15",
+      "sitemapLastmod": "2026-10-18",
       "pageModifiedDates": [
-        "2026-10-15"
+        "2026-10-18"
       ],
-      "sourceTextSha256": "5e5f5f16d45c4c17373d21b43114510d80dfcdf0d0b8f0f2684d8712e9882126",
-      "builtTextSha256": "5e5f5f16d45c4c17373d21b43114510d80dfcdf0d0b8f0f2684d8712e9882126"
+      "sourceTextSha256": "6ef0c8baf65adb60ec91707a45c2be5cc798139df5eafaf1513cec365a008f1e",
+      "builtTextSha256": "6ef0c8baf65adb60ec91707a45c2be5cc798139df5eafaf1513cec365a008f1e"
     },
     "지점안내/서울/가좌점/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EA%B0%80%EC%A2%8C%EC%A0%90/",
@@ -75223,8 +75223,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "b6b7553c6f7072331f4f3abd518a0382085ae65fb73481250c2fd46aada6d040",
-      "builtTextSha256": "b6b7553c6f7072331f4f3abd518a0382085ae65fb73481250c2fd46aada6d040"
+      "sourceTextSha256": "35db95dca84801a284105642df132074239a290471f26a609fe6a107df9515fd",
+      "builtTextSha256": "35db95dca84801a284105642df132074239a290471f26a609fe6a107df9515fd"
     },
     "지점안내/서울/위례점/위례수학학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%9C%84%EB%A1%80%EC%88%98%ED%95%99%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
@@ -75259,8 +75259,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "90d0caee7416c8f9590b9d2c1f8737d501122e723ba501da5d0a8f74253520eb",
-      "builtTextSha256": "90d0caee7416c8f9590b9d2c1f8737d501122e723ba501da5d0a8f74253520eb"
+      "sourceTextSha256": "1057aaacfdfaa69ec0a2ed911ca2b68e6204ffd661cf5bba25d2da9aa9b9f5c7",
+      "builtTextSha256": "1057aaacfdfaa69ec0a2ed911ca2b68e6204ffd661cf5bba25d2da9aa9b9f5c7"
     },
     "지점안내/서울/위례점/위례신도시수학학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%9C%84%EB%A1%80%EC%8B%A0%EB%8F%84%EC%8B%9C%EC%88%98%ED%95%99%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
@@ -75295,8 +75295,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "35296e14508a4358631428f8f5565a7021d23353f378eb002f7a5cd2b833ab58",
-      "builtTextSha256": "35296e14508a4358631428f8f5565a7021d23353f378eb002f7a5cd2b833ab58"
+      "sourceTextSha256": "7669cd4f626fd934ef2023f387811b072dd96e46a81a5b82b9cdc0d477ff3796",
+      "builtTextSha256": "7669cd4f626fd934ef2023f387811b072dd96e46a81a5b82b9cdc0d477ff3796"
     },
     "지점안내/서울/위례점/위례신도시영어학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%9C%84%EB%A1%80%EC%8B%A0%EB%8F%84%EC%8B%9C%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
@@ -75331,8 +75331,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "8797094c21fe74eb28c267f78d8cd52bcbf4116106658367f1e51c60448b60b4",
-      "builtTextSha256": "8797094c21fe74eb28c267f78d8cd52bcbf4116106658367f1e51c60448b60b4"
+      "sourceTextSha256": "8a82d634798cc44eaeccc22ab6776f1dfafaf6e6dfc05ff0618df5db6938cbea",
+      "builtTextSha256": "8a82d634798cc44eaeccc22ab6776f1dfafaf6e6dfc05ff0618df5db6938cbea"
     },
     "지점안내/서울/위례점/위례영어학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%9C%84%EB%A1%80%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
@@ -75367,8 +75367,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "4c247539811f08b7de0a4e83f90591422272049d8d7f001c27ba266be34954e2",
-      "builtTextSha256": "4c247539811f08b7de0a4e83f90591422272049d8d7f001c27ba266be34954e2"
+      "sourceTextSha256": "c277662f390d40409f6f6464de7c434ad455e703483d5c43690b06922ebafc74",
+      "builtTextSha256": "c277662f390d40409f6f6464de7c434ad455e703483d5c43690b06922ebafc74"
     },
     "지점안내/서울/위례점/창곡동수학학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%B0%BD%EA%B3%A1%EB%8F%99%EC%88%98%ED%95%99%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
@@ -75403,8 +75403,8 @@
       "pageModifiedDates": [
         "2026-10-18"
       ],
-      "sourceTextSha256": "9f24f46fbfccdaedc1fdd1b9c273c2bc5bb3e92678ed818caa70d2f02e6e63e1",
-      "builtTextSha256": "9f24f46fbfccdaedc1fdd1b9c273c2bc5bb3e92678ed818caa70d2f02e6e63e1"
+      "sourceTextSha256": "5973cae69055d09066832e36c45c3f3851d505f3f838c88f5538a6a8faf7b678",
+      "builtTextSha256": "5973cae69055d09066832e36c45c3f3851d505f3f838c88f5538a6a8faf7b678"
     },
     "지점안내/서울/위례점/창곡동영어학원/고등/index.html": {
       "canonical": "https://xn--sp5b72l1taf0p.com/%EC%A7%80%EC%A0%90%EC%95%88%EB%82%B4/%EC%84%9C%EC%9A%B8/%EC%9C%84%EB%A1%80%EC%A0%90/%EC%B0%BD%EA%B3%A1%EB%8F%99%EC%98%81%EC%96%B4%ED%95%99%EC%9B%90/%EA%B3%A0%EB%93%B1/",
