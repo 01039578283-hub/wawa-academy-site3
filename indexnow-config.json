@@ -1,0 +1,6 @@
+{
+  "host": "xn--sp5b72l1taf0p.com",
+  "endpoint": "https://searchadvisor.naver.com/indexnow",
+  "keyFile": "6811e4fed7fe9ce2f41d18ba5334e7ee.txt",
+  "policy": "Submit only changed canonical HTML URLs after production verification; no build-time calls or repeated submissions."
+}
